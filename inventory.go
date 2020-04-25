@@ -1,8 +1,8 @@
 package tfvm
 
 import (
+	"github.com/mitchellh/go-homedir"
 	"os"
-	"os/user"
 	"path/filepath"
 )
 
@@ -65,19 +65,10 @@ func (this *Inventory) initInventory() error {
 }
 
 func getInventoryDir() (string, error) {
-	homeDir, err := getUserHomeDir()
+	homeDir, err := homedir.Dir()
 	if err != nil {
 		return "", err
 	}
 
 	return filepath.Join(homeDir, ".tfvm"), nil
-}
-
-func getUserHomeDir() (string, error) {
-	usr, err := user.Current()
-	if err != nil {
-		return "", err
-	}
-
-	return usr.HomeDir, nil
 }
