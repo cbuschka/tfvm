@@ -21,7 +21,7 @@ func GetInventory() (*Inventory, error) {
 }
 
 func (this *Inventory) GetTerraform(version string) (*Terraform, error) {
-	tfPath, err := getTerraformPath(version)
+	tfPath, err := this.getTerraformPath(version)
 	if err != nil {
 		return nil, err
 	}
@@ -33,18 +33,28 @@ func (this *Inventory) GetTerraform(version string) (*Terraform, error) {
 	return &Terraform{version: version, path: tfPath}, nil
 }
 
-func getTerraformPath(version string) (string, error) {
+func (this *Inventory) GetTerraformBasePath(version string) (string, error) {
 	inventoryDir, err := getInventoryDir()
 	if err != nil {
 		return "", err
 	}
 
-	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", version, fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH), "terraform")
+	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", version, fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
 	return versionedTfPath, nil
 }
 
+func (this *Inventory) getTerraformPath(version string) (string, error) {
+	basePath, err := this.GetTerraformBasePath(version)
+	if err != nil {
+		return "", err
+	}
+
+	terraformPath := filepath.Join(basePath, "terraform")
+	return terraformPath, nil
+}
+
 func (this *Inventory) IsTerraformInstalled(version string) (bool, error) {
-	versionedTfPath, err := getTerraformPath(version)
+	versionedTfPath, err := this.getTerraformPath(version)
 	if err != nil {
 		return false, err
 	}

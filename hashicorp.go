@@ -14,6 +14,11 @@ type TerraformRelease struct {
 	url string
 }
 
+func GetTerraformRelease(version string) TerraformRelease {
+	release := createTerraformRelease(version)
+	return release
+}
+
 func ListTerraformReleases() ([]TerraformRelease, error) {
 
 	releasesPage, err := downloadReleasesPage()
@@ -49,10 +54,14 @@ func extractReleases(releasePage string) ([]TerraformRelease, error) {
 	var releases []TerraformRelease
 	for _, matchSet := range matchSets {
 		version := strings.TrimSpace(matchSet[1])
-		url := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", version, version, runtime.GOOS, runtime.GOARCH)
-		release := TerraformRelease{version: version, url: url}
+		release := createTerraformRelease(version)
 		releases = append(releases, release)
 	}
 
 	return releases, nil
+}
+
+func createTerraformRelease(version string) TerraformRelease {
+	url := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", version, version, runtime.GOOS, runtime.GOARCH)
+	return TerraformRelease{version: version, url: url}
 }
