@@ -1,12 +1,12 @@
 PROJECT_DIR ::= ${PWD}
 
+all:	test build
+
 build:
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags \"-static\"' -o tfvm cmd/main.go
 
 test:
 	go test ./...
-
-all:	test build
 
 build_with_docker:
 	docker run -u $(shell id -u):$(shell id -g) \
