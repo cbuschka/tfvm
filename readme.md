@@ -5,6 +5,9 @@
 
 ## TODOs
 * download and install tf version
+* create release (linux, windows, osx)
+* add usage instructions
+* document commands
 
 ## Usage
 ...
