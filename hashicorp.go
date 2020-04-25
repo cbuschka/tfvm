@@ -5,12 +5,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"runtime"
 	"strings"
 )
 
 type TerraformRelease struct {
 	version string
-	baseUrl string
+	url string
 }
 
 func ListTerraformReleases() ([]TerraformRelease, error) {
@@ -48,8 +49,8 @@ func extractReleases(releasePage string) ([]TerraformRelease, error) {
 	var releases []TerraformRelease
 	for _, matchSet := range matchSets {
 		version := strings.TrimSpace(matchSet[1])
-		baseUrl := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/", version)
-		release := TerraformRelease{version: version, baseUrl: baseUrl}
+		url := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", version, version, runtime.GOOS, runtime.GOARCH)
+		release := TerraformRelease{version: version, url: url}
 		releases = append(releases, release)
 	}
 
