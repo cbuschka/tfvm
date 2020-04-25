@@ -1,39 +1,50 @@
 package tfvm
 
 import (
+	"errors"
 	"fmt"
-	"io/ioutil"
-	"strings"
+	"os"
 )
 
 func RunTerraformCommand(args []string) error {
 
-	dotTfvmRcFile, err := GetNearestDotTfvmRcFileFromCwd()
-	if err != nil {
-		panic(fmt.Sprintf("%v", err.Error()))
-	}
+        tfVersion, err := GetConfiguredVersion()
+        if err != nil {
+                return err
+        }
 
-	tfVersionBytes, err := ioutil.ReadFile(dotTfvmRcFile)
-	if err != nil {
-		panic(fmt.Sprintf("%v", err.Error()))
+	if tfVersion == "" {
+		return errors.New("No terraform version configured.")
 	}
-	tfVersion := string(tfVersionBytes)
-	tfVersion = strings.TrimSpace(tfVersion)
 
 	inventory, err := GetInventory()
 	if err != nil {
-		panic(fmt.Sprintf("Getting inventory failed: %v", err.Error()))
+		return err
+	}
+
+	installed, err := inventory.IsTerraformInstalled(tfVersion)
+	if err != nil {
+		return err
+	}
+
+	if !installed {
+		err = inventory.InstallTerraform(tfVersion)
+		if err != nil {
+			return nil
+		}
 	}
 
 	tf, err := inventory.GetTerraform(tfVersion)
 	if err != nil {
-		panic(fmt.Sprintf("Terraform %s not found: %v", tfVersion, err))
+		return err
 	}
 
-	exitCode, err := tf.Run(args[1:]...)
-	if err != nil || exitCode != 0 {
-		panic(fmt.Sprintf("Running tf failed: %v exitCode=%d", err, exitCode))
+	exitCode, err := tf.Run(args...)
+	if err != nil {
+		return fmt.Errorf("Running tf failed: %v exitCode=%d", err, exitCode)
 	}
+
+	os.Exit(exitCode)
 
 	return nil
 }

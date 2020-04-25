@@ -13,6 +13,8 @@ func RunTfvmCommand(args []string) error {
 		return RunTfvmListCommand(args[1:])
 	} else if args[0] == "install" {
 		return RunTfvmInstallCommand(args[1:])
+	} else if args[0] == "which" {
+		return RunTfvmWhichCommand(args[1:])
 	} else if args[0] == "help" {
 		printUsage()
 		return nil
@@ -20,7 +22,9 @@ func RunTfvmCommand(args []string) error {
 		printVersion()
 		return nil
 	} else {
-		panic(fmt.Sprintf("Unsupported command: %s", args))
+		fmt.Printf("Unsupported command: %s.\n", args[0])
+		printUsage()
+		return nil
 	}
 
 	return nil
