@@ -16,6 +16,9 @@ func RunTfvmCommand(args []string) error {
 	} else if args[0] == "help" {
 		printUsage()
 		return nil
+	} else if args[0] == "version" {
+		printVersion()
+		return nil
 	} else {
 		panic(fmt.Sprintf("Unsupported command: %s", args))
 	}
