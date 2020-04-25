@@ -7,7 +7,6 @@
 ## TODOs
 * create release (linux, windows, osx)
 * document commands
-* automatically download and install terraform version configure via .tfvmrc if missing
 
 ## Usage
 ...
