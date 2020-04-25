@@ -2,12 +2,12 @@
 
 ## Features
 * invoke terraform configured via .tfvmrc
+* download and install terraform version
 
 ## TODOs
-* download and install tf version
 * create release (linux, windows, osx)
-* add usage instructions
 * document commands
+* automatically download and install terraform version configure via .tfvmrc if missing
 
 ## Usage
 ...
