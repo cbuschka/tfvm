@@ -3,11 +3,10 @@ package tfvm
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"strings"
 )
 
-func RunTerraformSubCommand(args []string) error {
+func RunTerraformCommand(args []string) error {
 
 	dotTfvmRcFile, err := GetNearestDotTfvmRcFileFromCwd()
 	if err != nil {
@@ -31,7 +30,7 @@ func RunTerraformSubCommand(args []string) error {
 		panic(fmt.Sprintf("Terraform %s not found: %v", tfVersion, err))
 	}
 
-	exitCode, err := tf.Run(os.Args[1:]...)
+	exitCode, err := tf.Run(args[1:]...)
 	if err != nil || exitCode != 0 {
 		panic(fmt.Sprintf("Running tf failed: %v exitCode=%d", err, exitCode))
 	}
