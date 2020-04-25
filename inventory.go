@@ -1,9 +1,11 @@
 package tfvm
 
 import (
+	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 type Inventory struct {}
@@ -37,7 +39,7 @@ func getTerraformPath(version string) (string, error) {
 		return "", err
 	}
 
-	versionedTfPath := filepath.Join(inventoryDir, "installed", version, "terraform")
+	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", version, fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH), "terraform")
 	return versionedTfPath, nil
 }
 

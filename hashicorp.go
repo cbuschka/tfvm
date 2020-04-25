@@ -1,6 +1,7 @@
 package tfvm
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -47,7 +48,8 @@ func extractReleases(releasePage string) ([]TerraformRelease, error) {
 	var releases []TerraformRelease
 	for _, matchSet := range matchSets {
 		version := strings.TrimSpace(matchSet[1])
-		release := TerraformRelease{version: version}
+		baseUrl := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/", version)
+		release := TerraformRelease{version: version, baseUrl: baseUrl}
 		releases = append(releases, release)
 	}
 
