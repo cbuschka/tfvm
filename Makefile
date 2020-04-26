@@ -1,4 +1,5 @@
 PROJECT_DIR ::= ${PWD}
+VERSION ::= $(shell git describe --always --tags --dirty)
 
 all:	test build lint build_windows_and_macosx
 
@@ -7,6 +8,7 @@ lint:
 	golint ./... 
 
 build:
+	perl -i -pe "s#VERSION = \"[^\"]+\"#VERSION = \"${VERSION}\"#g" version.go
 	go vet ./...
 	mkdir -p target/
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags \"-static\"' -o target/tfvm-linux_amd64 cmd/main.go
