@@ -42,6 +42,10 @@ terraform version
 tfvm help
 ```
 
+## Similar tools
+* [nvm](https://github.com/nvm-sh/nvm) - the version manager nodejs was an great inspiration for this
+* [tfenv](https://github.com/tfutils/tfenv) - very similar to tfvm and more mature than this on 2020-04-26
+
 ## License
 Copyright (c) 2020 by [Cornelius Buschka](https://github.com/cbuschka).
 
