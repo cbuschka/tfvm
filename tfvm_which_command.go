@@ -6,15 +6,15 @@ import (
 
 func RunTfvmWhichCommand(args []string) error {
 
-	tfVersion, err := GetConfiguredVersion()
+	config, err := GetConfiguration()
 	if err != nil {
 		return err
 	}
 
-	if tfVersion == "" {
+	if config == nil {
 		fmt.Printf("No terraform version configured.\n")
 	} else {
-		fmt.Printf("Configured terraform is %s.\n", tfVersion)
+		fmt.Printf("Configured terraform is %s (%s).\n", config.version, config.file)
 	}
 
 	return nil

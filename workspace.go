@@ -8,21 +8,27 @@ import (
 	"strings"
 )
 
-func GetConfiguredVersion() (string, error) {
+type Configuration struct {
+	// A .tfvmrc configuration
+	version string
+	file string
+}
+
+func GetConfiguration() (*Configuration, error) {
 	// Get a terraform version by walking through directory structure up to the root
 	// and looking for .tfvmrc files.
 	dotTfvmRcFile, err := getNearestDotTfvmRcFileFromCwd()
 	if err != nil {
 		if os.IsNotExist(err) {
-			return "", nil
+			return nil, nil
 		}
 
-		return "", err
+		return nil, err
 	}
 
 	file, err := os.Open(dotTfvmRcFile)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer file.Close()
 
@@ -36,10 +42,10 @@ func GetConfiguredVersion() (string, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return tfVersion, nil
+	return &Configuration{version: tfVersion, file: dotTfvmRcFile}, nil
 }
 
 func getNearestDotTfvmRcFileFromCwd() (string, error) {
