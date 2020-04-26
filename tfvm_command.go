@@ -11,6 +11,8 @@ func RunTfvmCommand(args []string) error {
 		return nil
 	} else if args[0] == "list" {
 		return RunTfvmListCommand(args[1:])
+	} else if args[0] == "uptodate" {
+		return RunTfvmUptodateCommand(args[1:])
 	} else if args[0] == "install" {
 		return RunTfvmInstallCommand(args[1:])
 	} else if args[0] == "which" {

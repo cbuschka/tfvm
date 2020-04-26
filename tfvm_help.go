@@ -12,6 +12,7 @@ Usage: tfvm <sub command> or terraform <terraform opts*>
  list - List terraform versions.
  install - Install terraform version.
  which - Print selected terraform version.
+ uptodate - Check for updates.
  help - Print this usage information.
  version - Print tfvm version.
 
