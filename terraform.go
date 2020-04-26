@@ -13,8 +13,8 @@ type Terraform struct {
 }
 
 // Call terraform with args
-func (this *Terraform) Run(args ...string) (int, error) {
-	cmd := exec.Command(this.path, args...)
+func (terraform *Terraform) Run(args ...string) (int, error) {
+	cmd := exec.Command(terraform.path, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Env = os.Environ()
