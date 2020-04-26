@@ -7,6 +7,11 @@
 * invoke configured terraform through tfvm 
 * download and install terraform version
 
+## Installation
+* Download tfvm from [latest release](https://github.com/cbuschka/tfvm/releases/latest) to your bin dir
+* Make executable ```chmod o+x tfvm```
+* Optionally link to tfvm as terraform ```ln -s tfvm terraform```
+
 ## Usage
 
 ### List terraform versions
@@ -21,12 +26,12 @@ echo "0.12.8" > .tfvmrc
 tfvm which
 ```
 
-### Invoke configured terraform
+### Invoke selected terraform
 ```
 tfvm terraform version
 ```
 
-### Tip: Call configured terraform directly
+### Tip: Call selected terraform directly
 ```
 ln -s tfvm terraform
 
