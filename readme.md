@@ -7,10 +7,6 @@
 * invoke configured terraform through tfvm 
 * download and install terraform version
 
-## TODOs
-* create release (linux, windows, osx)
-* add shell completion support
-
 ## Usage
 
 ### List terraform versions
