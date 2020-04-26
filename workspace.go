@@ -8,17 +8,17 @@ import (
 	"strings"
 )
 
+// A .tfvmrc configuration
 type Configuration struct {
-	// A .tfvmrc configuration
 	version string
 	file    string
 }
 
-var CONFIG_FILE_NAMES = []string{".tfvmrc", ".terraform-version"}
+var configFileNames = []string{".tfvmrc", ".terraform-version"}
 
+// Get a terraform version by walking through directory structure up to the root
+// and looking for .tfvmrc files.
 func GetConfiguration() (*Configuration, error) {
-	// Get a terraform version by walking through directory structure up to the root
-	// and looking for .tfvmrc files.
 	configFile, err := getNearestConfigFileFromCwd()
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -62,7 +62,7 @@ func getNearestConfigFileFromCwd() (string, error) {
 func getNearestConfigFile(workingDir string) string {
 	currentDir := workingDir
 	for currentDir != "/" {
-		for _, currentConfigFileName := range CONFIG_FILE_NAMES {
+		for _, currentConfigFileName := range configFileNames {
 			currentConfigFile := path.Join(currentDir, currentConfigFileName)
 			if _, err := os.Stat(currentConfigFile); err == nil {
 				return currentConfigFile

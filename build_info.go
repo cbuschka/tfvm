@@ -2,9 +2,9 @@ package tfvm
 
 import "strings"
 
+// Build info of tfvm
 type BuildInfo struct {
-	// Build info of tfvm
-	version string
+	version   string
 	commitish string
 	buildTime string
 }
