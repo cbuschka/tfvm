@@ -1,6 +1,10 @@
 PROJECT_DIR ::= ${PWD}
 
-all:	test build build_windows_and_macosx
+all:	test build lint build_windows_and_macosx
+
+lint:
+	go get -u golang.org/x/lint/golint
+	golint ./... 
 
 build:
 	go vet ./...
