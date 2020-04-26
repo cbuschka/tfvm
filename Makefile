@@ -3,9 +3,13 @@ PROJECT_DIR ::= ${PWD}
 all:	test build build_windows_and_macosx
 
 build:
+	go vet ./...
 	mkdir -p target/
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags \"-static\"' -o target/tfvm-linux_amd64 cmd/main.go
 	cp target/tfvm-linux_amd64 tfvm
+
+format:
+	go fmt ./...
 
 build_windows_and_macosx:
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -ldflags '-extldflags \"-static\"' -o target/tfvm-windows_amd64 cmd/main.go
