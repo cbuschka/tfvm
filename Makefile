@@ -18,7 +18,6 @@ format:
 
 build_windows_and_macosx:
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -ldflags '-extldflags \"-static\"' -o dist/tfvm-windows_amd64 cmd/main.go
-	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -a -ldflags '-extldflags \"-static\"' -o dist/tfvm-windows_386 cmd/main.go
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -a -ldflags '-extldflags \"-static\"' -o dist/tfvm-darwin_amd64 cmd/main.go
 
 test:
