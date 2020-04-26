@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// VERSION The current tfvm version.
 const VERSION = "devel"
 
 func printVersion() {
