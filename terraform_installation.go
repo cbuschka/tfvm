@@ -28,6 +28,7 @@ func (inventory *Inventory) InstallTerraform(version string) error {
 	if err != nil {
 		return err
 	}
+	defer os.Remove(tmpfile.Name())
 
 	fmt.Printf("Downloading terraform %s...\n", version)
 	err = downloadFile(tfRelease.url, tmpfile.Name())
@@ -85,7 +86,6 @@ func unzip(src string, dest string) ([]string, error) {
 		// Store filename/path for returning and using later on
 		fpath := filepath.Join(dest, f.Name)
 
-		// Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
 		if !strings.HasPrefix(fpath, filepath.Clean(dest)+string(os.PathSeparator)) {
 			return filenames, fmt.Errorf("%s: illegal file path", fpath)
 		}
@@ -93,12 +93,10 @@ func unzip(src string, dest string) ([]string, error) {
 		filenames = append(filenames, fpath)
 
 		if f.FileInfo().IsDir() {
-			// Make Folder
 			os.MkdirAll(fpath, os.ModePerm)
 			continue
 		}
 
-		// Make File
 		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
 			return filenames, err
 		}
@@ -115,7 +113,6 @@ func unzip(src string, dest string) ([]string, error) {
 
 		_, err = io.Copy(outFile, rc)
 
-		// Close the file without defer to close before next iteration of loop
 		outFile.Close()
 		rc.Close()
 
