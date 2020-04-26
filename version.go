@@ -5,7 +5,7 @@ import (
 )
 
 // VERSION The current tfvm version.
-const VERSION = "devel"
+const VERSION = "v0.1"
 
 func printVersion() {
 	fmt.Printf("Tfvm version %s.\n", VERSION)
