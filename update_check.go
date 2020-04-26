@@ -12,6 +12,7 @@ func GetUpdateStatus() *UpdateStatus {
 	githubTag := &latest.GithubTag{
 		Owner: "cbuschka",
 		Repository: "tfvm",
+		FixVersionStrFunc: latest.DeleteFrontV(),
 	}
 
 	buildInfo := GetBuildInfo()
