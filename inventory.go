@@ -62,9 +62,9 @@ func (this *Inventory) IsTerraformInstalled(version string) (bool, error) {
 	if _, err := os.Stat(versionedTfPath); err != nil {
 		if os.IsNotExist(err) {
 			return false, nil
-		} else {
-			return false, err
 		}
+
+		return false, err
 	}
 
 	return true, nil
