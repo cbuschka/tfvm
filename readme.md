@@ -3,15 +3,44 @@
 ### Configure required terraform version via adding .tfvmrc file to your project
 
 ## Features
-* invoke terraform configured via .tfvmrc
+* configure terraform via .tfvmrc
+* invoke configured terraform through tfvm 
 * download and install terraform version
 
 ## TODOs
 * create release (linux, windows, osx)
-* document commands
+* add shell completion support
 
 ## Usage
-...
+
+### List terraform versions
+```
+tfvm list
+```
+
+### Configure terraform version
+```
+echo "0.12.8" > .tfvmrc
+
+tfvm which
+```
+
+### Invoke configured terraform
+```
+tfvm terraform version
+```
+
+### Tip: Call configured terraform directly
+```
+ln -s tfvm terraform
+
+terraform version
+```
+
+### More commands via tfvm usage info
+```
+tfvm help
+```
 
 ## License
 Copyright (c) 2020 by [Cornelius Buschka](https://github.com/cbuschka).
