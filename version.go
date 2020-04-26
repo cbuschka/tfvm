@@ -4,9 +4,7 @@ import (
 	"fmt"
 )
 
-// VERSION The current tfvm version.
-const VERSION = "v0.1"
-
 func printVersion() {
-	fmt.Printf("Tfvm version %s.\n", VERSION)
+	buildInfo := GetBuildInfo()
+	fmt.Printf("Tfvm version is %s, commitish=%s, built on %s.\n", buildInfo.version, buildInfo.commitish, buildInfo.buildTime)
 }
