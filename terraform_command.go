@@ -14,7 +14,7 @@ func RunTerraformCommand(args []string) error {
 	}
 
 	if tfVersion == "" {
-		return errors.New("No terraform version configured.")
+		return errors.New("no terraform version configured")
 	}
 
 	inventory, err := GetInventory()
@@ -41,7 +41,7 @@ func RunTerraformCommand(args []string) error {
 
 	exitCode, err := tf.Run(args...)
 	if err != nil {
-		return fmt.Errorf("Running tf failed: %v exitCode=%d", err, exitCode)
+		return fmt.Errorf("running tf failed: %v exitCode=%d", err, exitCode)
 	}
 
 	os.Exit(exitCode)
