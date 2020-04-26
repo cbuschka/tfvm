@@ -9,7 +9,9 @@ import (
 )
 
 func GetConfiguredVersion() (string, error) {
-	dotTfvmRcFile, err := GetNearestDotTfvmRcFileFromCwd()
+	// Get a terraform version by walking through directory structure up to the root
+	// and looking for .tfvmrc files.
+	dotTfvmRcFile, err := getNearestDotTfvmRcFileFromCwd()
 	if err != nil {
 		if os.IsNotExist(err) {
 			return "", nil
@@ -27,16 +29,16 @@ func GetConfiguredVersion() (string, error) {
 	return tfVersion, nil
 }
 
-func GetNearestDotTfvmRcFileFromCwd() (string, error) {
+func getNearestDotTfvmRcFileFromCwd() (string, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return "", err
 	}
 
-	return GetNearestDotTfvmRcFile(cwd), nil
+	return getNearestDotTfvmRcFile(cwd), nil
 }
 
-func GetNearestDotTfvmRcFile(workingDir string) string {
+func getNearestDotTfvmRcFile(workingDir string) string {
 	currentDir := workingDir
 	for currentDir != "/" {
 		currentRcFile := path.Join(currentDir, ".tfvmrc")

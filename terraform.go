@@ -7,11 +7,13 @@ import (
 )
 
 type Terraform struct {
+	// A version of terraform installed into the local inventory
 	version string
 	path    string
 }
 
 func (this *Terraform) Run(args ...string) (int, error) {
+	// Call terraform version with args
 	cmd := exec.Command(this.path, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
