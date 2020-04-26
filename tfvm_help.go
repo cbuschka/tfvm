@@ -11,7 +11,7 @@ Usage: tfvm <sub command> or terraform <terraform opts*>
  terraform <terraform opts*> - Run terraform configured via .tfvmrc file.
  list - List terraform versions.
  install - Install terraform version.
- which - Print configured terraform.
+ which - Print selected terraform version.
  help - Print this usage information.
  version - Print tfvm version.
 
