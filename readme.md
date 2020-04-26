@@ -39,8 +39,10 @@ tfvm help
 ```
 
 ## Similar tools
-* [nvm](https://github.com/nvm-sh/nvm) - the version manager nodejs was an great inspiration for this
-* [tfenv](https://github.com/tfutils/tfenv) - very similar to tfvm and more mature than this (2020-04-26)
+* [tfenv](https://github.com/tfutils/tfenv) - similar to tfvm and more mature than this (2020-04-26)
+* [renatoassis01/tfvm](https://github.com/renatoassis01/tfvm) - like this, configuration similar to nvm
+* [jkehres/tfvm](https://github.com/jkehres/tfvm) - like this, no releases yet
+* [terraformw](https://objectpartners.com/2017/12/21/use-a-terraform-wrapper-script-to-easily-manage-terraform-installations/) - simple solution, no releases yet
 
 ## License
 Copyright (c) 2020 by [Cornelius Buschka](https://github.com/cbuschka).
