@@ -1,7 +1,7 @@
 package tfvm
 
 import (
-	"io/ioutil"
+	"bufio"
 	"os"
 	"path"
 	"path/filepath"
@@ -20,12 +20,25 @@ func GetConfiguredVersion() (string, error) {
 		return "", err
 	}
 
-	tfVersionBytes, err := ioutil.ReadFile(dotTfvmRcFile)
+	file, err := os.Open(dotTfvmRcFile)
 	if err != nil {
 		return "", err
 	}
-	tfVersion := string(tfVersionBytes)
-	tfVersion = strings.TrimSpace(tfVersion)
+	defer file.Close()
+
+	tfVersion := ""
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if !strings.HasPrefix(line, "#") && line != "" {
+			tfVersion = line
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+
 	return tfVersion, nil
 }
 
