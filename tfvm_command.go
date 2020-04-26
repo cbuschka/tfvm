@@ -26,6 +26,4 @@ func RunTfvmCommand(args []string) error {
 		printUsage()
 		return nil
 	}
-
-	return nil
 }
