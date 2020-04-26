@@ -15,5 +15,7 @@ Usage: tfvm <sub command> or terraform <terraform opts*>
  help - Print this usage information.
  version - Print tfvm version.
 
+For binaries, issues and source code visit https://github.com/cbuschka/tfvm.
+
 `)
 }
