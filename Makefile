@@ -12,14 +12,14 @@ lint:
 build:
 	go vet ./...
 	mkdir -p dist/
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.version=${VERSION} -X github.com/cbuschka/tfvm.buildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.commitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-linux_amd64 cmd/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-linux_amd64 cmd/main.go
 
 format:
 	go fmt ./...
 
 build_windows_and_macosx:
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.version=${VERSION} -X github.com/cbuschka/tfvm.buildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.commitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-windows_amd64 cmd/main.go
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.version=${VERSION} -X github.com/cbuschka/tfvm.buildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.commitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-darwin_amd64 cmd/main.go
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-windows_amd64 cmd/main.go
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-darwin_amd64 cmd/main.go
 
 test:
 	go test ./...

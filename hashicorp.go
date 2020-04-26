@@ -2,10 +2,12 @@ package tfvm
 
 import (
 	"fmt"
+	"github.com/hashicorp/go-version"
 	"io/ioutil"
 	"net/http"
 	"regexp"
 	"runtime"
+	"sort"
 	"strings"
 )
 
@@ -51,11 +53,22 @@ func extractReleases(releasePage string) ([]TerraformRelease, error) {
 	}
 
 	matchSets := re.FindAllStringSubmatch(releasePage, -1)
-	var releases []TerraformRelease
-	for _, matchSet := range matchSets {
-		version := strings.TrimSpace(matchSet[1])
-		release := createTerraformRelease(version)
-		releases = append(releases, release)
+
+	semVersions := make([]*version.Version, len(matchSets))
+	for index, matchSet := range matchSets {
+		semVersionStr := strings.TrimSpace(matchSet[1])
+		semVersion, err := version.NewVersion(semVersionStr)
+		if err != nil {
+			return nil, err
+		}
+		semVersions[index] = semVersion
+	}
+
+	sort.Sort(version.Collection(semVersions))
+
+	releases := make([]TerraformRelease, len(semVersions))
+	for index, semVersion := range semVersions {
+		releases[index] = createTerraformRelease(semVersion.String())
 	}
 
 	return releases, nil

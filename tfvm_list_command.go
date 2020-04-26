@@ -26,9 +26,11 @@ func RunTfvmListCommand(args []string) error {
 			return err
 		}
 
+		current := " "
 		notes := ""
 		if config != nil && config.version == tfRelease.version {
-			notes = fmt.Sprintf(" (selected, configured in %s)", config.file)
+			notes = fmt.Sprintf(" (selected via %s)", config.file)
+			current = "*"
 		}
 		version := tfRelease.version
 		status := ""
@@ -36,7 +38,7 @@ func RunTfvmListCommand(args []string) error {
 			status = "installed"
 		}
 
-		fmt.Printf("%s - %s%s\n", version, status, notes)
+		fmt.Printf("%s %s\t\t- %s%s\n", current, version, status, notes)
 	}
 
 	return nil

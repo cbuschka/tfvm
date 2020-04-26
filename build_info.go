@@ -9,10 +9,10 @@ type BuildInfo struct {
 	buildTime string
 }
 
-var version string
-var commitish string
-var buildTime string
+var buildInfoVersion string
+var buildInfoCommitish string
+var buildInfoBuildTime string
 
 func GetBuildInfo() BuildInfo {
-	return BuildInfo{version: version, commitish: commitish, buildTime: strings.Replace(buildTime, "_", " ", -1)}
+	return BuildInfo{version: buildInfoVersion, commitish: buildInfoCommitish, buildTime: strings.Replace(buildInfoBuildTime, "_", " ", -1)}
 }
