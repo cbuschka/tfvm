@@ -8,10 +8,10 @@ import (
 
 func RunTerraformCommand(args []string) error {
 
-        tfVersion, err := GetConfiguredVersion()
-        if err != nil {
-                return err
-        }
+	tfVersion, err := GetConfiguredVersion()
+	if err != nil {
+		return err
+	}
 
 	if tfVersion == "" {
 		return errors.New("No terraform version configured.")

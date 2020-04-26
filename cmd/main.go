@@ -12,7 +12,7 @@ func main() {
 	var err error
 	if programName == "terraform" {
 		err = tfvm.RunTerraformCommand(os.Args[1:])
-	} else if programName != "terraform" && len(os.Args)>1 && os.Args[1] == "terraform" {
+	} else if programName != "terraform" && len(os.Args) > 1 && os.Args[1] == "terraform" {
 		err = tfvm.RunTerraformCommand(os.Args[2:])
 	} else {
 		err = tfvm.RunTfvmCommand(os.Args[1:])

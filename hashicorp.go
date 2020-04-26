@@ -11,7 +11,7 @@ import (
 
 type TerraformRelease struct {
 	version string
-	url string
+	url     string
 }
 
 func GetTerraformRelease(version string) TerraformRelease {

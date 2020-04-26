@@ -8,7 +8,7 @@ import (
 
 type Terraform struct {
 	version string
-	path string
+	path    string
 }
 
 func (this *Terraform) Run(args ...string) (int, error) {

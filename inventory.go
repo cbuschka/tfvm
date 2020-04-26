@@ -8,7 +8,7 @@ import (
 	"runtime"
 )
 
-type Inventory struct {}
+type Inventory struct{}
 
 func GetInventory() (*Inventory, error) {
 	inventory := Inventory{}

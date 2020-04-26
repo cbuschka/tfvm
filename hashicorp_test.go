@@ -1,8 +1,8 @@
 package tfvm
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestExtractReleases(t *testing.T) {

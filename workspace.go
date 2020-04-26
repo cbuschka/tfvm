@@ -9,21 +9,21 @@ import (
 )
 
 func GetConfiguredVersion() (string, error) {
-        dotTfvmRcFile, err := GetNearestDotTfvmRcFileFromCwd()
-        if err != nil {
+	dotTfvmRcFile, err := GetNearestDotTfvmRcFileFromCwd()
+	if err != nil {
 		if os.IsNotExist(err) {
 			return "", nil
 		}
 
 		return "", err
-        }
+	}
 
-        tfVersionBytes, err := ioutil.ReadFile(dotTfvmRcFile)
-        if err != nil {
+	tfVersionBytes, err := ioutil.ReadFile(dotTfvmRcFile)
+	if err != nil {
 		return "", err
-        }
-        tfVersion := string(tfVersionBytes)
-        tfVersion = strings.TrimSpace(tfVersion)
+	}
+	tfVersion := string(tfVersionBytes)
+	tfVersion = strings.TrimSpace(tfVersion)
 	return tfVersion, nil
 }
 
