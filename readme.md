@@ -1,4 +1,4 @@
-# [![build](https://api.travis-ci.com/cbuschka/tfvm.svg?branch=master)](https://travis-ci.com/github/cbuschka/tfvm) [![latest release](https://img.shields.io/github/tag/cbuschka/tfvm.svg)](https://github.com/cbuschka/tfvm/releases) [![go report](https://goreportcard.com/badge/github.com/cbuschka/tfvm)](https://goreportcard.com/github.com/cbuschka/tfvm) [![license](https://img.shields.io/github/license/cbuschka/tfvm.svg)](https://github.com/cbuschka/tfvm/blob/master/license.txt) tfvm - Terraform version manager
+# [![build](https://api.travis-ci.com/cbuschka/tfvm.svg?branch=master)](https://travis-ci.com/github/cbuschka/tfvm) [![latest release](https://img.shields.io/github/tag/cbuschka/tfvm.svg)](https://github.com/cbuschka/tfvm/releases) [![go report](https://goreportcard.com/badge/github.com/cbuschka/tfvm)](https://goreportcard.com/report/github.com/cbuschka/tfvm) [![license](https://img.shields.io/github/license/cbuschka/tfvm.svg)](https://github.com/cbuschka/tfvm/blob/master/license.txt) tfvm - Terraform version manager
 
 ## Features
 * invoke terraform configured via .tfvmrc
