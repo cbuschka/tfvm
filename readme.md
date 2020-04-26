@@ -3,9 +3,9 @@
 ### Always the right terraform version for your project
 
 ## Features
-* configure terraform via .tfvmrc
-* invoke configured terraform through tfvm 
 * download and install terraform version
+* select terraform version via .tfvmrc (or .terraform-version for compatibility to tfenv)
+* invoke selected terraform through tfvm
 
 ## Installation
 * Download tfvm from [latest release](https://github.com/cbuschka/tfvm/releases/latest) to your bin dir
