@@ -1,7 +1,6 @@
 package tfvm
 
 import (
-	"errors"
 	"fmt"
 	"os"
 )
@@ -10,11 +9,12 @@ func RunTerraformCommand(args []string) error {
 
 	config, err := GetConfiguration()
 	if err != nil {
-		return err
-	}
+		if IsNoConfigExists(err) {
+			fmt.Printf("No terraform version configured. Place .tfvmrc or .terraform-version in current or parent dir.\n")
+			os.Exit(1)
+		}
 
-	if config == nil {
-		return errors.New("no terraform version configured")
+		return err
 	}
 
 	inventory, err := GetInventory()

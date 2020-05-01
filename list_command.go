@@ -16,7 +16,7 @@ func RunTfvmListCommand(args []string) error {
 	}
 
 	config, err := GetConfiguration()
-	if err != nil {
+	if err != nil && !IsNoConfigExists(err) {
 		return err
 	}
 

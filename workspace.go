@@ -2,6 +2,7 @@ package tfvm
 
 import (
 	"bufio"
+	"errors"
 	"os"
 	"path"
 	"path/filepath"
@@ -14,6 +15,16 @@ type Configuration struct {
 	file    string
 }
 
+const noConfigExistsMsg = "config not exists"
+
+func IsNoConfigExists(err error) bool {
+	return err.Error() == noConfigExistsMsg
+}
+
+func newNoConfigExists() error {
+	return errors.New(noConfigExistsMsg)
+}
+
 var configFileNames = []string{".tfvmrc", ".terraform-version"}
 
 // Get a terraform version by walking through directory structure up to the root
@@ -22,7 +33,7 @@ func GetConfiguration() (*Configuration, error) {
 	configFile, err := getNearestConfigFileFromCwd()
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, nil
+			return nil, newNoConfigExists()
 		}
 
 		return nil, err
@@ -56,19 +67,19 @@ func getNearestConfigFileFromCwd() (string, error) {
 		return "", err
 	}
 
-	return getNearestConfigFile(cwd), nil
+	return getNearestConfigFile(cwd)
 }
 
-func getNearestConfigFile(workingDir string) string {
+func getNearestConfigFile(workingDir string) (string, error) {
 	currentDir := workingDir
 	for currentDir != "/" {
 		for _, currentConfigFileName := range configFileNames {
 			currentConfigFile := path.Join(currentDir, currentConfigFileName)
 			if _, err := os.Stat(currentConfigFile); err == nil {
-				return currentConfigFile
+				return currentConfigFile, nil
 			}
 		}
 		currentDir = filepath.Dir(currentDir)
 	}
-	return ""
+	return "", newNoConfigExists()
 }

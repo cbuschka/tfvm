@@ -8,14 +8,13 @@ func RunTfvmWhichCommand(args []string) error {
 
 	config, err := GetConfiguration()
 	if err != nil {
+		if IsNoConfigExists(err) {
+			fmt.Printf("No terraform version configured.\n")
+			return nil
+		}
 		return err
 	}
 
-	if config == nil {
-		fmt.Printf("No terraform version configured.\n")
-	} else {
-		fmt.Printf("Configured terraform is %s (%s).\n", config.version, config.file)
-	}
-
+	fmt.Printf("Configured terraform is %s (%s).\n", config.version, config.file)
 	return nil
 }
