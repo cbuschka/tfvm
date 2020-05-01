@@ -31,7 +31,8 @@ func (inventory *Inventory) InstallTerraform(version string) error {
 	defer os.Remove(tmpfile.Name())
 
 	fmt.Printf("Downloading terraform %s...\n", version)
-	err = downloadFile(tfRelease.url, tmpfile.Name())
+	url := tfRelease.GetUrl()
+	err = downloadFile(url, tmpfile.Name())
 	if err != nil {
 		return err
 	}

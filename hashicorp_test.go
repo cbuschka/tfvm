@@ -15,8 +15,8 @@ func TestExtractReleases(t *testing.T) {
 	}
 
 	assert.Equal(t, 2, len(releases))
-	assert.Equal(t, "1.0.0", releases[0].version)
-	assert.Equal(t, "https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip", releases[0].url)
-	assert.Equal(t, "2.0.0-abc", releases[1].version)
-	assert.Equal(t, "https://releases.hashicorp.com/terraform/2.0.0-abc/terraform_2.0.0-abc_linux_amd64.zip", releases[1].url)
+	assert.Equal(t, "1.0.0", releases[0].Version)
+	assert.Equal(t, "https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip", releases[0].GetUrl())
+	assert.Equal(t, "2.0.0-abc", releases[1].Version)
+	assert.Equal(t, "https://releases.hashicorp.com/terraform/2.0.0-abc/terraform_2.0.0-abc_linux_amd64.zip", releases[1].GetUrl())
 }

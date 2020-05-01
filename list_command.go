@@ -2,6 +2,7 @@ package tfvm
 
 import (
 	"fmt"
+	"time"
 )
 
 func RunTfvmListCommand(args []string) error {
@@ -11,8 +12,19 @@ func RunTfvmListCommand(args []string) error {
 	}
 
 	tfReleases, err := ListTerraformReleases()
-	if err != nil {
+	if err != nil && len(inventory.TerraformReleases) == 0 {
 		return err
+	}
+
+	if tfReleases != nil {
+		inventory.TerraformReleases = tfReleases
+		inventory.LastUpdateTime = time.Now()
+		err = inventory.Save()
+		if err != nil {
+			return err
+		}
+	} else {
+		tfReleases = inventory.TerraformReleases
 	}
 
 	config, err := GetConfiguration()
@@ -21,18 +33,18 @@ func RunTfvmListCommand(args []string) error {
 	}
 
 	for _, tfRelease := range tfReleases {
-		installed, err := inventory.IsTerraformInstalled(tfRelease.version)
+		installed, err := inventory.IsTerraformInstalled(tfRelease.Version)
 		if err != nil {
 			return err
 		}
 
 		current := " "
 		notes := ""
-		if config != nil && config.version == tfRelease.version {
+		if config != nil && config.version == tfRelease.Version {
 			notes = fmt.Sprintf(" (selected via %s)", config.file)
 			current = "*"
 		}
-		version := tfRelease.version
+		version := tfRelease.Version
 		status := ""
 		if installed {
 			status = "installed"

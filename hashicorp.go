@@ -11,13 +11,8 @@ import (
 	"strings"
 )
 
-type TerraformRelease struct {
-	version string
-	url     string
-}
-
 func GetTerraformRelease(version string) TerraformRelease {
-	release := createTerraformRelease(version)
+	release := TerraformRelease{Version: version}
 	return release
 }
 
@@ -68,13 +63,12 @@ func extractReleases(releasePage string) ([]TerraformRelease, error) {
 
 	releases := make([]TerraformRelease, len(semVersions))
 	for index, semVersion := range semVersions {
-		releases[index] = createTerraformRelease(semVersion.String())
+		releases[index] = TerraformRelease{Version: semVersion.String()}
 	}
 
 	return releases, nil
 }
 
-func createTerraformRelease(version string) TerraformRelease {
-	url := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", version, version, runtime.GOOS, runtime.GOARCH)
-	return TerraformRelease{version: version, url: url}
+func (release *TerraformRelease) GetUrl() string {
+	return fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", release.Version, release.Version, runtime.GOOS, runtime.GOARCH)
 }
