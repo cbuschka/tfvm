@@ -43,7 +43,6 @@ function get_arch() {
   local arch=""
   case "${unameOut}" in
     x86_64*) arch="amd64";;
-    386*) arch="386";;
     *) ;;
   esac
   echo -n "${arch}"
