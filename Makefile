@@ -15,7 +15,7 @@ build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-linux_amd64 cmd/main.go
 
 clean:
-	rm -rf ${PROJECT_DIR}/dist/
+	rm -rf ${PROJECT_DIR}/dist/ ${PROJECT_DIR}/.cache/
 
 format:
 	go fmt ./...
