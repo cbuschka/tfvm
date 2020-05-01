@@ -32,6 +32,8 @@ func (inventory *Inventory) InstallTerraform(tfRelease TerraformRelease) error {
 	url := tfRelease.GetUrl()
 	err = downloadFile(url, tmpfile.Name())
 	if err != nil {
+		fmt.Printf("Download failed: %s\n", err.Error())
+		os.Exit(1)
 		return err
 	}
 
@@ -43,6 +45,8 @@ func (inventory *Inventory) InstallTerraform(tfRelease TerraformRelease) error {
 
 	_, err = unzip(tmpfile.Name(), basePath)
 	if err != nil {
+		fmt.Printf("Unzipping failed: %s\n", err.Error())
+		os.Exit(1)
 		return err
 	}
 

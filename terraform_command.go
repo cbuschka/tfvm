@@ -22,9 +22,19 @@ func RunTerraformCommand(args []string) error {
 		return err
 	}
 
+	err = inventory.Update()
+	if err != nil {
+		return err
+	}
+
 	tfRelease, err := inventory.GetTerraformRelease(config.version)
 	if err != nil {
-		return nil
+		if IsNoSuchTerraformRelease(err) {
+			fmt.Printf("Terraform version %s is not known.\n", config.version)
+			os.Exit(1)
+		}
+
+		return err
 	}
 
 	installed, err := inventory.IsTerraformInstalled(tfRelease)
@@ -35,7 +45,7 @@ func RunTerraformCommand(args []string) error {
 	if !installed {
 		err = inventory.InstallTerraform(tfRelease)
 		if err != nil {
-			return nil
+			return err
 		}
 	}
 

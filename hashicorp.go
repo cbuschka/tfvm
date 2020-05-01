@@ -11,11 +11,6 @@ import (
 	"strings"
 )
 
-func GetTerraformRelease(version string) TerraformRelease {
-	release := TerraformRelease{Version: version}
-	return release
-}
-
 func ListTerraformReleases() ([]TerraformRelease, error) {
 
 	releasesPage, err := downloadReleasesPage()

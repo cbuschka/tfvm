@@ -2,6 +2,7 @@ package tfvm
 
 import (
 	"fmt"
+	"os"
 )
 
 func RunTfvmInstallCommand(args []string) error {
@@ -10,11 +11,24 @@ func RunTfvmInstallCommand(args []string) error {
 		return err
 	}
 
+	err = inventory.Update()
+	if err != nil {
+		return err
+	}
+
+	if len(args) < 1 {
+		fmt.Printf("Expected version to install.\n")
+		os.Exit(1)
+	}
 	version := args[0]
 
 	tfRelease, err := inventory.GetTerraformRelease(version)
 	if err != nil {
-		return nil
+		if IsNoSuchTerraformRelease(err) {
+			fmt.Printf("Terraform version %s is not known.\n", version)
+			os.Exit(1)
+		}
+		return err
 	}
 
 	installed, err := inventory.IsTerraformInstalled(tfRelease)

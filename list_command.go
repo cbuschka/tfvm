@@ -2,7 +2,6 @@ package tfvm
 
 import (
 	"fmt"
-	"time"
 )
 
 func RunTfvmListCommand(args []string) error {
@@ -11,20 +10,9 @@ func RunTfvmListCommand(args []string) error {
 		return err
 	}
 
-	tfReleases, err := ListTerraformReleases()
-	if err != nil && len(inventory.TerraformReleases) == 0 {
+	err = inventory.Update()
+	if err != nil {
 		return err
-	}
-
-	if tfReleases != nil {
-		inventory.TerraformReleases = tfReleases
-		inventory.LastUpdateTime = time.Now()
-		err = inventory.Save()
-		if err != nil {
-			return err
-		}
-	} else {
-		tfReleases = inventory.TerraformReleases
 	}
 
 	config, err := GetConfiguration()
@@ -33,7 +21,7 @@ func RunTfvmListCommand(args []string) error {
 	}
 
 	latestTfRelease := inventory.GetLatestRelease()
-	for _, tfRelease := range tfReleases {
+	for _, tfRelease := range inventory.GetTerraformReleases() {
 		installed, err := inventory.IsTerraformInstalled(tfRelease)
 		if err != nil {
 			return err
