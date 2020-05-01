@@ -8,6 +8,13 @@
 * invoke selected terraform through tfvm
 
 ## Installation
+```
+curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/master/install.sh -o - | bash
+```
+
+Installs to ${HOME}/bin or /usr/local/bin if executed as root.
+
+### or
 * Download tfvm from [latest release](https://github.com/cbuschka/tfvm/releases/latest) to your bin dir
 * Make executable ```chmod o+x tfvm```
 * Optionally link to tfvm as terraform ```ln -s tfvm terraform```
