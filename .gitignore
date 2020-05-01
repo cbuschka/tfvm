@@ -1,4 +1,6 @@
-dist/
+/.terraform-version
+/.tfvmrc
+/dist/
 /terraform
 /tfvm
 /.cache/
