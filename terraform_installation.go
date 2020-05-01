@@ -11,9 +11,9 @@ import (
 	"strings"
 )
 
-func (inventory *Inventory) InstallTerraform(version string) error {
+func (inventory *Inventory) InstallTerraform(tfRelease TerraformRelease) error {
 
-	installed, err := inventory.IsTerraformInstalled(version)
+	installed, err := inventory.IsTerraformInstalled(tfRelease)
 	if err != nil {
 		return err
 	}
@@ -22,23 +22,21 @@ func (inventory *Inventory) InstallTerraform(version string) error {
 		return nil
 	}
 
-	tfRelease := GetTerraformRelease(version)
-
 	tmpfile, err := ioutil.TempFile("", "tfvm_terraform*.zip")
 	if err != nil {
 		return err
 	}
 	defer os.Remove(tmpfile.Name())
 
-	fmt.Printf("Downloading terraform %s...\n", version)
+	fmt.Printf("Downloading terraform %s...\n", tfRelease.Version)
 	url := tfRelease.GetUrl()
 	err = downloadFile(url, tmpfile.Name())
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Installing terraform %s...\n", version)
-	basePath, err := inventory.GetTerraformBasePath(version)
+	fmt.Printf("Installing terraform %s...\n", tfRelease.Version)
+	basePath, err := inventory.GetTerraformBasePath(tfRelease)
 	if err != nil {
 		return err
 	}
@@ -48,7 +46,7 @@ func (inventory *Inventory) InstallTerraform(version string) error {
 		return err
 	}
 
-	fmt.Printf("Terraform %s installed.\n", version)
+	fmt.Printf("Terraform %s installed.\n", tfRelease.Version)
 
 	return nil
 }

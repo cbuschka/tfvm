@@ -22,19 +22,24 @@ func RunTerraformCommand(args []string) error {
 		return err
 	}
 
-	installed, err := inventory.IsTerraformInstalled(config.version)
+	tfRelease, err := inventory.GetTerraformRelease(config.version)
+	if err != nil {
+		return nil
+	}
+
+	installed, err := inventory.IsTerraformInstalled(tfRelease)
 	if err != nil {
 		return err
 	}
 
 	if !installed {
-		err = inventory.InstallTerraform(config.version)
+		err = inventory.InstallTerraform(tfRelease)
 		if err != nil {
 			return nil
 		}
 	}
 
-	tf, err := inventory.GetTerraform(config.version)
+	tf, err := inventory.GetTerraform(tfRelease)
 	if err != nil {
 		return err
 	}

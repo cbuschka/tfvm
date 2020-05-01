@@ -32,15 +32,16 @@ func RunTfvmListCommand(args []string) error {
 		return err
 	}
 
+	latestTfRelease := inventory.GetLatestRelease()
 	for _, tfRelease := range tfReleases {
-		installed, err := inventory.IsTerraformInstalled(tfRelease.Version)
+		installed, err := inventory.IsTerraformInstalled(tfRelease)
 		if err != nil {
 			return err
 		}
 
 		current := " "
 		notes := ""
-		if config != nil && config.version == tfRelease.Version {
+		if config != nil && (config.version == tfRelease.Version || config.version == "latest" && latestTfRelease.Version == tfRelease.Version) {
 			notes = fmt.Sprintf(" (selected via %s)", config.file)
 			current = "*"
 		}

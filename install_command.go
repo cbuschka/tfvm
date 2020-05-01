@@ -11,7 +11,13 @@ func RunTfvmInstallCommand(args []string) error {
 	}
 
 	version := args[0]
-	installed, err := inventory.IsTerraformInstalled(version)
+
+	tfRelease, err := inventory.GetTerraformRelease(version)
+	if err != nil {
+		return nil
+	}
+
+	installed, err := inventory.IsTerraformInstalled(tfRelease)
 	if err != nil {
 		return err
 	}
@@ -21,7 +27,7 @@ func RunTfvmInstallCommand(args []string) error {
 		return nil
 	}
 
-	err = inventory.InstallTerraform(version)
+	err = inventory.InstallTerraform(tfRelease)
 	if err != nil {
 		return err
 	}

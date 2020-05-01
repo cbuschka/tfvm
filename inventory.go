@@ -2,6 +2,7 @@ package tfvm
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"io/ioutil"
@@ -414,6 +415,16 @@ const defaultStateJson = `
  ]
 }`
 
+const noSuchTerraformReleaseMsg = "no such terraform release"
+
+func IsNoSuchTerraformRelease(err error) bool {
+	return err.Error() == noSuchTerraformReleaseMsg
+}
+
+func newNoSuchTerraformRelease() error {
+	return errors.New(noSuchTerraformReleaseMsg)
+}
+
 type TerraformRelease struct {
 	Version string `json:"version"`
 }
@@ -438,8 +449,26 @@ func GetInventory() (*Inventory, error) {
 	return &inventory, nil
 }
 
-func (inventory *Inventory) GetTerraform(version string) (*Terraform, error) {
-	tfPath, err := inventory.getTerraformPath(version)
+func (inventory *Inventory) GetLatestRelease() TerraformRelease {
+	return inventory.TerraformReleases[len(inventory.TerraformReleases)-1]
+}
+
+func (inventory *Inventory) GetTerraformRelease(version string) (TerraformRelease, error) {
+	if version == "latest" {
+		return inventory.GetLatestRelease(), nil
+	}
+
+	for _, tfRelease := range inventory.TerraformReleases {
+		if tfRelease.Version == version {
+			return tfRelease, nil
+		}
+	}
+
+	return TerraformRelease{}, newNoSuchTerraformRelease()
+}
+
+func (inventory *Inventory) GetTerraform(tfRelease TerraformRelease) (*Terraform, error) {
+	tfPath, err := inventory.getTerraformPath(tfRelease)
 	if err != nil {
 		return nil, err
 	}
@@ -448,21 +477,21 @@ func (inventory *Inventory) GetTerraform(version string) (*Terraform, error) {
 		return nil, err
 	}
 
-	return &Terraform{version: version, path: tfPath}, nil
+	return &Terraform{version: tfRelease.Version, path: tfPath}, nil
 }
 
-func (inventory *Inventory) GetTerraformBasePath(version string) (string, error) {
+func (inventory *Inventory) GetTerraformBasePath(tfRelease TerraformRelease) (string, error) {
 	inventoryDir, err := getInventoryDir()
 	if err != nil {
 		return "", err
 	}
 
-	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", version, fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
+	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", tfRelease.Version, fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
 	return versionedTfPath, nil
 }
 
-func (inventory *Inventory) getTerraformPath(version string) (string, error) {
-	basePath, err := inventory.GetTerraformBasePath(version)
+func (inventory *Inventory) getTerraformPath(tfRelease TerraformRelease) (string, error) {
+	basePath, err := inventory.GetTerraformBasePath(tfRelease)
 	if err != nil {
 		return "", err
 	}
@@ -471,8 +500,8 @@ func (inventory *Inventory) getTerraformPath(version string) (string, error) {
 	return terraformPath, nil
 }
 
-func (inventory *Inventory) IsTerraformInstalled(version string) (bool, error) {
-	versionedTfPath, err := inventory.getTerraformPath(version)
+func (inventory *Inventory) IsTerraformInstalled(tfRelease TerraformRelease) (bool, error) {
+	versionedTfPath, err := inventory.getTerraformPath(tfRelease)
 	if err != nil {
 		return false, err
 	}
