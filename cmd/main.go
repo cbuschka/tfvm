@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/cbuschka/tfvm"
 	"os"
 	"path"
@@ -19,6 +18,6 @@ func main() {
 	}
 
 	if err != nil {
-		panic(fmt.Sprintf("%v", err.Error()))
+		tfvm.Die(1, err.Error())
 	}
 }

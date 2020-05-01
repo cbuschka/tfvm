@@ -1,9 +1,5 @@
 package tfvm
 
-import (
-	"fmt"
-)
-
 func RunTfvmCommand(args []string) error {
 
 	if len(args) == 0 {
@@ -24,7 +20,7 @@ func RunTfvmCommand(args []string) error {
 		printVersion()
 		return nil
 	} else {
-		fmt.Printf("Unsupported command: %s.\n", args[0])
+		Print("Unsupported command: %s.", args[0])
 		printUsage()
 		return nil
 	}

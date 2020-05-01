@@ -1,7 +1,6 @@
 package tfvm
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -10,8 +9,8 @@ func RunTerraformCommand(args []string) error {
 	config, err := GetConfiguration()
 	if err != nil {
 		if IsNoConfigExists(err) {
-			fmt.Printf("No terraform version configured. Place .tfvmrc or .terraform-version in current or parent dir.\n")
-			os.Exit(1)
+			Die(1, "No terraform version configured. Place .tfvmrc or .terraform-version in current or parent dir.")
+			return err
 		}
 
 		return err
@@ -30,8 +29,8 @@ func RunTerraformCommand(args []string) error {
 	tfRelease, err := inventory.GetTerraformRelease(config.version)
 	if err != nil {
 		if IsNoSuchTerraformRelease(err) {
-			fmt.Printf("Terraform version %s is not known.\n", config.version)
-			os.Exit(1)
+			Die(1, "Terraform version %s is not known.", config.version)
+			return err
 		}
 
 		return err
@@ -56,7 +55,8 @@ func RunTerraformCommand(args []string) error {
 
 	exitCode, err := tf.Run(args...)
 	if err != nil {
-		return fmt.Errorf("running tf failed: %v exitCode=%d", err, exitCode)
+		Die(exitCode, "Running terraform failed: %s, exitCode=%d.", err.Error(), exitCode)
+		return err
 	}
 
 	os.Exit(exitCode)

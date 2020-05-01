@@ -39,7 +39,7 @@ func RunTfvmListCommand(args []string) error {
 			status = "installed"
 		}
 
-		fmt.Printf("%s %s\t\t- %s%s\n", current, version, status, notes)
+		Print("%s %s\t\t- %s%s", current, version, status, notes)
 	}
 
 	return nil

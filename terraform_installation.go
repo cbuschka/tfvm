@@ -28,16 +28,15 @@ func (inventory *Inventory) InstallTerraform(tfRelease TerraformRelease) error {
 	}
 	defer os.Remove(tmpfile.Name())
 
-	fmt.Printf("Downloading terraform %s...\n", tfRelease.Version)
+	Print("Downloading terraform %s...", tfRelease.Version)
 	url := tfRelease.GetUrl()
 	err = downloadFile(url, tmpfile.Name())
 	if err != nil {
-		fmt.Printf("Download failed: %s\n", err.Error())
-		os.Exit(1)
+		Die(1, "Download failed: %s", err.Error())
 		return err
 	}
 
-	fmt.Printf("Installing terraform %s...\n", tfRelease.Version)
+	Print("Installing terraform %s...", tfRelease.Version)
 	basePath, err := inventory.GetTerraformBasePath(tfRelease)
 	if err != nil {
 		return err
@@ -45,12 +44,11 @@ func (inventory *Inventory) InstallTerraform(tfRelease TerraformRelease) error {
 
 	_, err = unzip(tmpfile.Name(), basePath)
 	if err != nil {
-		fmt.Printf("Unzipping failed: %s\n", err.Error())
-		os.Exit(1)
+		Die(1, "Unzipping failed: %s", err.Error())
 		return err
 	}
 
-	fmt.Printf("Terraform %s installed.\n", tfRelease.Version)
+	Print("Terraform %s installed.", tfRelease.Version)
 
 	return nil
 }

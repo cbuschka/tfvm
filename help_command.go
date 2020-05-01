@@ -1,11 +1,7 @@
 package tfvm
 
-import (
-	"fmt"
-)
-
 func printUsage() {
-	fmt.Printf(`
+	Print(`
 Usage:	tfvm <command>
 	or terraform <terraform command and options>
 
@@ -22,6 +18,5 @@ Commands:
   version	Print tfvm version.
 
 For binaries, issues and source code visit https://github.com/cbuschka/tfvm.
-
 `)
 }
