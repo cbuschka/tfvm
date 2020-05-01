@@ -22,5 +22,6 @@ Commands:
   version	Print tfvm version.
 
 For binaries, issues and source code visit https://github.com/cbuschka/tfvm.
+
 `)
 }
