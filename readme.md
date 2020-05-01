@@ -7,6 +7,11 @@
 * select terraform version via .tfvmrc (or .terraform-version for compatibility to tfenv)
 * invoke selected terraform through tfvm
 
+## System Requirements
+* Linux, MacOS X or Windows
+* 64 Bit
+* curl, jq, bash installed
+
 ## Installation
 ```
 curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/master/install.sh -o - | bash
