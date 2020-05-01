@@ -33,6 +33,8 @@ echo "0.12.8" > .tfvmrc
 tfvm which
 ```
 
+"latest" is also supported.
+
 ### Invoke selected terraform
 ```
 tfvm terraform version
