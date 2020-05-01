@@ -167,7 +167,6 @@ func (inventory *Inventory) loadState() error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			file = []byte(defaultStateJson)
-			err = nil
 		} else {
 			return err
 		}
@@ -181,6 +180,9 @@ func (inventory *Inventory) loadState() error {
 
 	inventory.TerraformReleases = state.TerraformReleases
 	inventory.LastUpdateTime, err = time.Parse(time.RFC3339, state.LastUpdateTime)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
