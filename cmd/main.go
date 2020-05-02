@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/cbuschka/tfvm"
 	"os"
 	"path/filepath"
@@ -10,7 +9,6 @@ import (
 
 func main() {
 	programName := filepath.Base(os.Args[0])
-	fmt.Printf("%s\n", programName)
 	var err error
 	if programName == "terraform" || (runtime.GOOS == "windows" && programName == "terraform.exe") {
 		err = tfvm.RunTerraformCommand(os.Args[1:])
