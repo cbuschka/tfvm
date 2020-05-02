@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/cbuschka/tfvm"
+	"github.com/cbuschka/tfvm/internal"
 	"os"
 	"path/filepath"
 	"runtime"

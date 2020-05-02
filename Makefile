@@ -18,7 +18,7 @@ init:
 
 lint:	init
 	go get -u golang.org/x/lint/golint
-	${GOPATH}/bin/golint ./...
+	${GOPATH}/bin/golint ./internal/... ./cmd/...
 
 build:	test lint
 	go vet ./...
@@ -32,7 +32,7 @@ clean:
 	rm -rf ${PROJECT_DIR}/dist/ ${PROJECT_DIR}/.cache/
 
 format:
-	go fmt ./...
+	go fmt ./internal/... ./cmd/...
 
 build_windows:	build
 	$(call build_binary,windows,amd64,.exe)
@@ -42,7 +42,7 @@ build_macosx:	build
 	$(call build_binary,darwin,amd64,)
 
 test:	init
-	go test ./...
+	go test ./internal/... ./cmd/...
 
 build_with_docker:
 	docker run -u $(shell id -u):$(shell id -g) \
