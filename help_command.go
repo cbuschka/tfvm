@@ -16,6 +16,7 @@ Commands:
   uptodate	Check for updates.
   help		Print this usage information.
   version	Print tfvm version.
+  info		Print tfvm/runtime info.
 
 For binaries, issues and source code visit https://github.com/cbuschka/tfvm.
 `)
