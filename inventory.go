@@ -202,6 +202,10 @@ func (inventory *Inventory) saveState() error {
 		return err
 	}
 
+	if err = os.MkdirAll(filepath.Dir(statefilepath), os.ModePerm); err != nil {
+		return err
+	}
+
 	state := StateStruct{}
 	state.LastUpdateTime = inventory.LastUpdateTime.Format(time.RFC3339)
 	state.TerraformReleases = inventory.TerraformReleases
