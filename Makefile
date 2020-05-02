@@ -3,7 +3,7 @@ VERSION ::= $(shell git describe --always --tags --dirty)
 BUILD_TIME ::= $(shell date "+%Y-%m-%d_%H:%M:%S%:z")
 COMMITISH ::= $(shell git describe --always --dirty)
 
-all:	clean test build lint build_windows_and_macosx
+all:	clean test lint build build_windows build_macosx
 
 lint:
 	go get -u golang.org/x/lint/golint
@@ -20,8 +20,12 @@ clean:
 format:
 	go fmt ./...
 
-build_windows_and_macosx:
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-windows_amd64 cmd/main.go
+build_windows:
+	mkdir -p dist/
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-windows_amd64.exe cmd/main.go
+
+build_macosx:
+	mkdir -p dist/
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -extldflags \"-static\"" -o dist/tfvm-darwin_amd64 cmd/main.go
 
 test:

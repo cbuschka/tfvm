@@ -28,42 +28,37 @@ VERSION=$(curl --silent "https://api.github.com/repos/cbuschka/tfvm/releases" | 
 
 function get_os() {
   local unameOut="$(uname -s)"
-  local os=""
   case "${unameOut}" in
-    Linux*) os="linux";;
-    Darwin*) os="darwin";;
-    CYGWIN*|MINGW*) os="windows";;
-    *) ;;
+    Linux*) OS="linux"; EXT="";;
+    Darwin*) OS="darwin"; EXT="";;
+    CYGWIN*|MINGW*) OS="windows"; EXT=".exe";;
+    *) echo "${unameOut} is not supported. Aborted"; exit 1;;
   esac
-  echo -n "${os}"
 }
 
 function get_arch() {
   local unameOut="$(uname -m)"
-  local arch=""
   case "${unameOut}" in
-    x86_64*) arch="amd64";;
-    *) ;;
+    x86_64*) ARCH="amd64";;
+    *) echo "${unameOut} is not supported. Aborted"; exit 1;;
   esac
-  echo -n "${arch}"
 }
 
-OS=$(get_os)
-ARCH="$(get_arch)"
-if [ -z "${OS}" ] || [ -z "${ARCH}" ]; then
-  echo "Sorry, $(uname -s)/$(uname -m) not supported."
-  exit 1
-fi
+get_os
+get_arch
 
 echo "Downloading tfvm ${VERSION}..."
 TMP_FILE=$(mktemp)
-curl -L --progress-bar -o ${TMP_FILE} https://github.com/cbuschka/tfvm/releases/download/${VERSION}/tfvm-${OS}_${ARCH}
+curl -L --progress-bar -o ${TMP_FILE} https://github.com/cbuschka/tfvm/releases/download/${VERSION}/tfvm-${OS}_${ARCH}${EXT}
 
-echo "Installing tfvm as ${TARGET_DIR}/tfvm..."
-mv ${TMP_FILE} ${TARGET_DIR}/tfvm
-chmod 755 ${TARGET_DIR}/tfvm
-echo "Creating symlink ${TARGET_DIR}/terraform to ${TARGET_DIR}/tfvm..."
-ln -s ${TARGET_DIR}/tfvm ${TARGET_DIR}/terraform
+TARGET_TFVM=${TARGET_DIR}/tfvm${EXT}
+TARGET_TERRAFORM=${TARGET_DIR}/terraform${EXT}
+
+echo "Installing tfvm as ${TARGET_TFVM}..."
+mv ${TMP_FILE} ${TARGET_TFVM}
+chmod 755 ${TARGET_TFVM}
+echo "Creating symlink ${TARGET_TERRAFORM} to ${TARGET_TFVM}..."
+ln -s ${TARGET_TFVM} ${TARGET_TERRAFORM}
 
 echo "tfvm successfully installed."
 exit 0
