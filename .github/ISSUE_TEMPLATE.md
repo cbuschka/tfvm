@@ -19,7 +19,7 @@ please describe
 describe the steps to reproduce exactly
 -->
 
-**Output of `tfvm version`:**
+**Output of `tfvm info`:**
 
 ```
 (paste your output here)
