@@ -40,6 +40,7 @@ function get_arch() {
   local unameOut="$(uname -m)"
   case "${unameOut}" in
     x86_64*) ARCH="amd64";;
+    386*) ARCH="386";;
     *) echo "${unameOut} is not supported. Aborted"; exit 1;;
   esac
 }
