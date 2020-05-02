@@ -2,6 +2,9 @@ PROJECT_DIR ::= ${PWD}
 VERSION ::= $(shell git describe --always --tags --dirty)
 BUILD_TIME ::= $(shell date "+%Y-%m-%d_%H:%M:%S%:z")
 COMMITISH ::= $(shell git describe --always --dirty)
+ifeq (${GOPATH},)
+	GOPATH := ${HOME}/go
+endif
 
 define build_binary
 	echo "Building $(1)/$(2)..."
@@ -10,9 +13,12 @@ endef
 
 all:	clean build_linux build_windows build_macosx
 
-lint:
+init:
+	mkdir -p ${GOPATH}
+
+lint:	init
 	go get -u golang.org/x/lint/golint
-	golint ./... 
+	${GOPATH}/bin/golint ./...
 
 build:	test lint
 	go vet ./...
@@ -35,7 +41,7 @@ build_windows:	build
 build_macosx:	build
 	$(call build_binary,darwin,amd64,)
 
-test:
+test:	init
 	go test ./...
 
 build_with_docker:
