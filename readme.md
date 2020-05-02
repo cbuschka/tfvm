@@ -58,11 +58,11 @@ tfvm help
 ```
 
 ## Similar tools
-* [tfenv](https://github.com/tfutils/tfenv) - similar to tfvm
-* [renatoassis01/tfvm](https://github.com/renatoassis01/tfvm) - like this, configuration similar to nvm
-* [jkehres/tfvm](https://github.com/jkehres/tfvm) - like this, no releases yet
-* [terraformw](https://objectpartners.com/2017/12/21/use-a-terraform-wrapper-script-to-easily-manage-terraform-installations/) - simple solution, no releases yet
-* [tfswitch](https://github.com/warrensbox/terraform-switcher) - looks good, no windows support
+* [tfenv](https://github.com/tfutils/tfenv)
+* [renatoassis01/tfvm](https://github.com/renatoassis01/tfvm)
+* [jkehres/tfvm](https://github.com/jkehres/tfvm)
+* [terraformw](https://objectpartners.com/2017/12/21/use-a-terraform-wrapper-script-to-easily-manage-terraform-installations/)
+* [tfswitch](https://github.com/warrensbox/terraform-switcher)
 * [terraform-installer](https://github.com/robertpeteuil/terraform-installer)
 
 ## License
