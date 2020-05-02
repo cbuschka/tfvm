@@ -3,6 +3,11 @@ VERSION ::= $(shell git describe --always --tags --dirty)
 BUILD_TIME ::= $(shell date "+%Y-%m-%d_%H:%M:%S%:z")
 COMMITISH ::= $(shell git describe --always --dirty)
 
+define build_binary
+	echo "Building $(1)/$(2)..."
+	CGO_ENABLED=0 GOOS=$(1) GOARCH=$(2) go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=$(1) -X github.com/cbuschka/tfvm.buildInfoArch=$(2) -extldflags \"-static\"" -o dist/tfvm-$(1)_$(2)$(3) cmd/main.go
+endef
+
 all:	clean build_linux build_windows build_macosx
 
 lint:
@@ -14,8 +19,8 @@ build:	test lint
 	mkdir -p dist/
 
 build_linux:	build
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=linux -X github.com/cbuschka/tfvm.buildInfoArch=amd64 -extldflags \"-static\"" -o dist/tfvm-linux_amd64 cmd/main.go
-	CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=linux -X github.com/cbuschka/tfvm.buildInfoArch=386 -extldflags \"-static\"" -o dist/tfvm-linux_386 cmd/main.go
+	$(call build_binary,linux,amd64,)
+	$(call build_binary,linux,386,)
 
 clean:
 	rm -rf ${PROJECT_DIR}/dist/ ${PROJECT_DIR}/.cache/
@@ -24,11 +29,11 @@ format:
 	go fmt ./...
 
 build_windows:	build
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=windows -X github.com/cbuschka/tfvm.buildInfoArch=amd64 -extldflags \"-static\"" -o dist/tfvm-windows_amd64.exe cmd/main.go
-	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=windows -X github.com/cbuschka/tfvm.buildInfoArch=386 -extldflags \"-static\"" -o dist/tfvm-windows_386.exe cmd/main.go
+	$(call build_binary,windows,amd64,.exe)
+	$(call build_binary,windows,386,.exe)
 
 build_macosx:	build
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=darwin -X github.com/cbuschka/tfvm.buildInfoArch=amd64 -extldflags \"-static\"" -o dist/tfvm-darwin_amd64 cmd/main.go
+	$(call build_binary,darwin,amd64,)
 
 test:
 	go test ./...
