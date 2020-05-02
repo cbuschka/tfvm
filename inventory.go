@@ -111,7 +111,13 @@ func (inventory *Inventory) getTerraformPath(tfRelease TerraformRelease) (string
 		return "", err
 	}
 
-	terraformPath := filepath.Join(basePath, "terraform")
+	var terraformPath string
+	if runtime.GOOS == "windows" {
+		terraformPath = filepath.Join(basePath, "terraform.exe")
+	} else {
+		terraformPath = filepath.Join(basePath, "terraform")
+	}
+
 	return terraformPath, nil
 }
 

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 )
@@ -72,13 +71,15 @@ func getNearestConfigFileFromCwd() (string, error) {
 
 func getNearestConfigFile(workingDir string) (string, error) {
 	currentDir := workingDir
-	for currentDir != "/" {
+	previousDir := ""
+	for currentDir != previousDir {
 		for _, currentConfigFileName := range configFileNames {
-			currentConfigFile := path.Join(currentDir, currentConfigFileName)
+			currentConfigFile := filepath.Join(currentDir, currentConfigFileName)
 			if _, err := os.Stat(currentConfigFile); err == nil {
 				return currentConfigFile, nil
 			}
 		}
+		previousDir = currentDir
 		currentDir = filepath.Dir(currentDir)
 	}
 	return "", newNoConfigExists()
