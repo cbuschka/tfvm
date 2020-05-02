@@ -15,6 +15,7 @@ build:	test lint
 
 build_linux:	build
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=linux -X github.com/cbuschka/tfvm.buildInfoArch=amd64 -extldflags \"-static\"" -o dist/tfvm-linux_amd64 cmd/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=linux -X github.com/cbuschka/tfvm.buildInfoArch=386 -extldflags \"-static\"" -o dist/tfvm-linux_386 cmd/main.go
 
 clean:
 	rm -rf ${PROJECT_DIR}/dist/ ${PROJECT_DIR}/.cache/
@@ -24,6 +25,7 @@ format:
 
 build_windows:	build
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=windows -X github.com/cbuschka/tfvm.buildInfoArch=amd64 -extldflags \"-static\"" -o dist/tfvm-windows_amd64.exe cmd/main.go
+	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=windows -X github.com/cbuschka/tfvm.buildInfoArch=386 -extldflags \"-static\"" -o dist/tfvm-windows_386.exe cmd/main.go
 
 build_macosx:	build
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -a -ldflags "-X github.com/cbuschka/tfvm.buildInfoVersion=${VERSION} -X github.com/cbuschka/tfvm.buildInfoBuildTime=${BUILD_TIME} -X github.com/cbuschka/tfvm.buildInfoCommitish=${COMMITISH} -X github.com/cbuschka/tfvm.buildInfoOs=darwin -X github.com/cbuschka/tfvm.buildInfoArch=amd64 -extldflags \"-static\"" -o dist/tfvm-darwin_amd64 cmd/main.go
