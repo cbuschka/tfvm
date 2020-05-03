@@ -8,9 +8,7 @@
 * invoke selected terraform through tfvm
 
 ## System Requirements
-* Linux, MacOS X or Windows
-* 64 Bit
-* curl, jq, bash installed
+* 64-Bit Linux, MacOS X or Windows
 
 ## Installation
 ```

@@ -24,7 +24,7 @@ fi
 
 echo "Will install tfvm as ${TARGET_DIR}/tfvm and ${TARGET_DIR}/terraform."
 
-VERSION=$(curl --silent "https://api.github.com/repos/cbuschka/tfvm/releases" | jq -r '.[0].tag_name')
+VERSION=$(curl --silent "https://api.github.com/repos/cbuschka/tfvm/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
 
 function get_os() {
   local unameOut="$(uname -s)"
