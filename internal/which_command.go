@@ -22,10 +22,10 @@ func RunTfvmWhichCommand(args []string) error {
 		return err
 	}
 
-	tfRelease, err := inventory.GetTerraformRelease(config.version)
+	tfRelease, err := inventory.GetTerraformRelease(config.versionSpec)
 	if err != nil {
 		if IsNoSuchTerraformRelease(err) {
-			Die(1, "Configured terraform version %s (%s) is not known.", config.version, config.file)
+			Die(1, "Configured terraform version %s (%s) is not known.", config.versionSpec, config.file)
 			return err
 		}
 

@@ -29,7 +29,7 @@ func RunTfvmListCommand(args []string) error {
 
 		current := " "
 		notes := ""
-		if config != nil && (config.version == tfRelease.Version || config.version == "latest" && latestTfRelease.Version == tfRelease.Version) {
+		if config != nil && (config.versionSpec == tfRelease.Version || config.versionSpec == "latest" && latestTfRelease.Version == tfRelease.Version) {
 			notes = fmt.Sprintf(" (selected via %s)", config.file)
 			current = "*"
 		}

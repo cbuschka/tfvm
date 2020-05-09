@@ -3,6 +3,8 @@ package tfvm
 import (
 	"bufio"
 	"errors"
+	"fmt"
+	"github.com/hashicorp/go-version"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,8 +12,8 @@ import (
 
 // A .tfvmrc configuration
 type Configuration struct {
-	version string
-	file    string
+	versionSpec string
+	file        string
 }
 
 const noConfigExistsMsg = "config not exists"
@@ -44,12 +46,12 @@ func GetConfiguration() (*Configuration, error) {
 	}
 	defer file.Close()
 
-	tfVersion := ""
+	versionSpec := ""
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		if !strings.HasPrefix(line, "#") && line != "" {
-			tfVersion = line
+			versionSpec = line
 		}
 	}
 
@@ -57,7 +59,14 @@ func GetConfiguration() (*Configuration, error) {
 		return nil, err
 	}
 
-	return &Configuration{version: tfVersion, file: configFile}, nil
+	if versionSpec != "latest" {
+		_, err = version.NewConstraint(versionSpec)
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("Invalid version spec: '%s' (%s)", versionSpec, err.Error()))
+		}
+	}
+
+	return &Configuration{versionSpec: versionSpec, file: configFile}, nil
 }
 
 func getNearestConfigFileFromCwd() (string, error) {
