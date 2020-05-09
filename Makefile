@@ -20,7 +20,7 @@ define build_binary
 			cmd/tfvm.go
 endef
 
-all:	clean build_linux build_windows build_macosx
+all:	clean build_linux build_windows build_macosx integration_test
 
 init:
 	mkdir -p ${GOPATH}
@@ -32,6 +32,8 @@ lint:	init
 build:	test lint
 	go vet ./...
 	mkdir -p dist/
+
+build_all:	build build_linux build_windows build_macosx
 
 build_linux:	build_linux_amd64 build_linux_386
 	$(call build_binary,linux,amd64,)
@@ -57,6 +59,9 @@ build_macosx:	build
 
 test:	init
 	go test ./internal/... ./cmd/...
+
+integration_test:
+	${PROJECT_DIR}/scripts/run-integration-tests.sh
 
 build_with_docker:
 	docker run -u $(shell id -u):$(shell id -g) \
