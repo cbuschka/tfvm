@@ -19,12 +19,15 @@ func RunTfvmInstallCommand(args []string) error {
 		Die(1, "Expected version to install.")
 		return errors.New("unreachable code")
 	}
-	version := args[0]
+	versionSpec, err := ParseTerraformVersionSpec(args[0])
+	if err != nil {
+		return err
+	}
 
-	tfRelease, err := inventory.GetTerraformRelease(version)
+	tfRelease, err := inventory.GetTerraformRelease(versionSpec)
 	if err != nil {
 		if IsNoSuchTerraformRelease(err) {
-			Die(1, "Terraform version %s is not known.", version)
+			Die(1, "No matching terraform version for %s.", versionSpec.text)
 			return err
 		}
 		return err
@@ -36,7 +39,7 @@ func RunTfvmInstallCommand(args []string) error {
 	}
 
 	if installed {
-		Print("Terraform %s is already installed.", version)
+		Print("Terraform %s is already installed.", tfRelease.Version.String())
 		return nil
 	}
 

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func ListTerraformReleases() ([]TerraformRelease, error) {
+func ListTerraformReleases() ([]TerraformVersion, error) {
 
 	releasesPage, err := downloadReleasesPage()
 	if err != nil {
@@ -36,7 +36,7 @@ func downloadReleasesPage() (string, error) {
 	return string(html), nil
 }
 
-func extractReleases(releasePage string) ([]TerraformRelease, error) {
+func extractReleases(releasePage string) ([]TerraformVersion, error) {
 	re, err := regexp.Compile(">terraform_([^<]+)</a>")
 	if err != nil {
 		return nil, err
@@ -56,14 +56,14 @@ func extractReleases(releasePage string) ([]TerraformRelease, error) {
 
 	sort.Sort(version.Collection(semVersions))
 
-	releases := make([]TerraformRelease, len(semVersions))
+	releases := make([]TerraformVersion, len(semVersions))
 	for index, semVersion := range semVersions {
-		releases[index] = TerraformRelease{Version: semVersion.String()}
+		releases[index] = TerraformVersion{Version: semVersion}
 	}
 
 	return releases, nil
 }
 
-func (release *TerraformRelease) GetUrl() string {
-	return fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", release.Version, release.Version, runtime.GOOS, runtime.GOARCH)
+func (release *TerraformVersion) GetUrl() string {
+	return fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", release.Version.String(), release.Version, runtime.GOOS, runtime.GOARCH)
 }

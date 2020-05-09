@@ -2,6 +2,7 @@ package tfvm
 
 import (
 	"errors"
+	"github.com/hashicorp/go-version"
 )
 
 const noSuchTerraformReleaseMsg = "no such terraform release"
@@ -14,6 +15,10 @@ func newNoSuchTerraformRelease() error {
 	return errors.New(noSuchTerraformReleaseMsg)
 }
 
-type TerraformRelease struct {
-	Version string
+func (release *TerraformVersion) String() string {
+	return release.Version.String()
+}
+
+type TerraformVersion struct {
+	Version *version.Version
 }

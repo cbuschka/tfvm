@@ -2,6 +2,7 @@ package tfvm
 
 import (
 	"encoding/json"
+	"github.com/hashicorp/go-version"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -26,7 +27,7 @@ func (inventory *Inventory) loadState() error {
 	file, err := ioutil.ReadFile(statefilepath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			file = []byte(defaultStateJson)
+			file = []byte(defaultStateJSON)
 		} else {
 			return err
 		}
@@ -38,9 +39,13 @@ func (inventory *Inventory) loadState() error {
 		return err
 	}
 
-	tfReleases := make([]TerraformRelease, len(state.TerraformReleases))
+	tfReleases := make([]TerraformVersion, len(state.TerraformReleases))
 	for index, tfReleaseState := range state.TerraformReleases {
-		tfReleases[index] = TerraformRelease{Version: tfReleaseState.Version}
+		tfReleaseVersion, err := version.NewVersion(tfReleaseState.Version)
+		if err != nil {
+			return err
+		}
+		tfReleases[index] = TerraformVersion{Version: tfReleaseVersion}
 	}
 
 	inventory.TerraformReleases = tfReleases
@@ -76,7 +81,7 @@ func (inventory *Inventory) saveState() error {
 
 	tfReleaseStates := make([]TerraformReleaseState, len(inventory.TerraformReleases))
 	for index, tfRelease := range inventory.TerraformReleases {
-		tfReleaseStates[index] = TerraformReleaseState{Version: tfRelease.Version}
+		tfReleaseStates[index] = TerraformReleaseState{Version: tfRelease.Version.String()}
 	}
 
 	state.TerraformReleases = tfReleaseStates

@@ -12,7 +12,7 @@ import (
 
 // A .tfvmrc configuration
 type Configuration struct {
-	versionSpec string
+	versionSpec *TerraformVersionSpec
 	file        string
 }
 
@@ -46,12 +46,12 @@ func GetConfiguration() (*Configuration, error) {
 	}
 	defer file.Close()
 
-	versionSpec := ""
+	versionSpecStr := ""
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		if !strings.HasPrefix(line, "#") && line != "" {
-			versionSpec = line
+			versionSpecStr = line
 		}
 	}
 
@@ -59,11 +59,10 @@ func GetConfiguration() (*Configuration, error) {
 		return nil, err
 	}
 
-	if versionSpec != "latest" {
-		_, err = version.NewConstraint(versionSpec)
-		if err != nil {
-			return nil, errors.New(fmt.Sprintf("Invalid version spec: '%s' (%s)", versionSpec, err.Error()))
-		}
+	versionSpec, err := ParseTerraformVersionSpec(versionSpecStr)
+	_, err = version.NewConstraint(versionSpecStr)
+	if err != nil {
+		return nil, fmt.Errorf("Invalid version spec: '%s' (%s)", versionSpecStr, err.Error())
 	}
 
 	return &Configuration{versionSpec: versionSpec, file: configFile}, nil

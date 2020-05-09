@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func (inventory *Inventory) InstallTerraform(tfRelease TerraformRelease) error {
+func (inventory *Inventory) InstallTerraform(tfRelease *TerraformVersion) error {
 
 	installed, err := inventory.IsTerraformInstalled(tfRelease)
 	if err != nil {

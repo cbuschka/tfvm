@@ -1,6 +1,6 @@
 package tfvm
 
-const defaultStateJson = `
+const defaultStateJSON = `
 {
  "lastUpdateTime": "2020-05-01T16:35:41+02:00",
  "terraformReleases": [

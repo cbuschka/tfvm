@@ -22,17 +22,21 @@ func RunTfvmListCommand(args []string) error {
 
 	latestTfRelease := inventory.GetLatestRelease()
 	for _, tfRelease := range inventory.GetTerraformReleases() {
-		installed, err := inventory.IsTerraformInstalled(tfRelease)
+		installed, err := inventory.IsTerraformInstalled(&tfRelease)
 		if err != nil {
 			return err
 		}
 
 		current := " "
 		notes := ""
-		if config != nil && (config.versionSpec == tfRelease.Version || config.versionSpec == "latest" && latestTfRelease.Version == tfRelease.Version) {
-			notes = fmt.Sprintf(" (selected via %s)", config.file)
-			current = "*"
+		if config != nil {
+			isSelected := config.versionSpec.Matches(&tfRelease, latestTfRelease)
+			if isSelected {
+				notes = fmt.Sprintf(" (selected via %s)", config.file)
+				current = "*"
+			}
 		}
+
 		version := tfRelease.Version
 		status := ""
 		if installed {

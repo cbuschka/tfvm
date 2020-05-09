@@ -29,7 +29,7 @@ func RunTerraformCommand(args []string) error {
 	tfRelease, err := inventory.GetTerraformRelease(config.versionSpec)
 	if err != nil {
 		if IsNoSuchTerraformRelease(err) {
-			Die(1, "Terraform version %s is not known.", config.versionSpec)
+			Die(1, "Terraform version %s is not known.", config.versionSpec.String())
 			return err
 		}
 
