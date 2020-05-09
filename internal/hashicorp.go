@@ -5,6 +5,7 @@ import (
 	"github.com/hashicorp/go-version"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"regexp"
 	"runtime"
 	"sort"
@@ -22,7 +23,7 @@ func ListTerraformReleases() ([]TerraformVersion, error) {
 }
 
 func downloadReleasesPage() (string, error) {
-	url := "https://releases.hashicorp.com/terraform/index.html"
+	url := fmt.Sprintf("%s/index.html", getReleasesBaseUrl())
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
@@ -65,5 +66,15 @@ func extractReleases(releasePage string) ([]TerraformVersion, error) {
 }
 
 func (release *TerraformVersion) GetUrl() string {
-	return fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", release.Version.String(), release.Version, runtime.GOOS, runtime.GOARCH)
+	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseUrl(),
+		release.Version.String(), release.Version, runtime.GOOS, runtime.GOARCH)
+}
+
+func getReleasesBaseUrl() string {
+	baseUrl := os.Getenv("TFVM_RELEASES_BASE_URL")
+	if baseUrl != "" {
+		return baseUrl
+	}
+
+	return "https://releases.hashicorp.com/terraform"
 }
