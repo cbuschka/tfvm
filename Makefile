@@ -10,11 +10,11 @@ define build_binary
 	echo "Building $(1)/$(2)..."
 	CGO_ENABLED=0 GOOS=$(1) GOARCH=$(2) go build \
 		-a \
-		-ldflags "-X github.com/cbuschka/tfvm/internal.buildInfoVersion=${VERSION} \
-			-X github.com/cbuschka/tfvm/internal.buildInfoBuildTime=${BUILD_TIME} \
-			-X github.com/cbuschka/tfvm/internal.buildInfoCommitish=${COMMITISH} \
-			-X github.com/cbuschka/tfvm/internal.buildInfoOs=$(1) \
-			-X github.com/cbuschka/tfvm/internal.buildInfoArch=$(2) \
+		-ldflags "-X github.com/cbuschka/tfvm/internal.build.buildInfoVersion=${VERSION} \
+			-X github.com/cbuschka/tfvm/internal.build.buildInfoBuildTime=${BUILD_TIME} \
+			-X github.com/cbuschka/tfvm/internal.build.buildInfoCommitish=${COMMITISH} \
+			-X github.com/cbuschka/tfvm/internal.build.buildInfoOs=$(1) \
+			-X github.com/cbuschka/tfvm/internal.build.buildInfoArch=$(2) \
 			-extldflags \"-static\"" \
 			-o dist/tfvm-$(1)_$(2)$(3) \
 			cmd/tfvm.go
@@ -33,8 +33,13 @@ build:	test lint
 	go vet ./...
 	mkdir -p dist/
 
-build_linux:	build
+build_linux:	build_linux_amd64 build_linux_386
 	$(call build_binary,linux,amd64,)
+
+build_linux_amd64:	build
+	$(call build_binary,linux,amd64,)
+
+build_linux_386:	build
 	$(call build_binary,linux,386,)
 
 clean:

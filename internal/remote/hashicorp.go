@@ -1,18 +1,18 @@
-package tfvm
+package remote
 
 import (
 	"fmt"
-	"github.com/hashicorp/go-version"
+	"github.com/cbuschka/tfvm/internal/version"
+	goversion "github.com/hashicorp/go-version"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"regexp"
 	"runtime"
-	"sort"
 	"strings"
 )
 
-func ListTerraformReleases() ([]TerraformVersion, error) {
+func ListTerraformReleases() ([]*version.TerraformVersion, error) {
 
 	releasesPage, err := downloadReleasesPage()
 	if err != nil {
@@ -37,7 +37,7 @@ func downloadReleasesPage() (string, error) {
 	return string(html), nil
 }
 
-func extractReleases(releasePage string) ([]TerraformVersion, error) {
+func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
 	re, err := regexp.Compile(">terraform_([^<]+)</a>")
 	if err != nil {
 		return nil, err
@@ -45,27 +45,20 @@ func extractReleases(releasePage string) ([]TerraformVersion, error) {
 
 	matchSets := re.FindAllStringSubmatch(releasePage, -1)
 
-	semVersions := make([]*version.Version, len(matchSets))
+	releases := make([]*version.TerraformVersion, len(matchSets))
 	for index, matchSet := range matchSets {
 		semVersionStr := strings.TrimSpace(matchSet[1])
-		semVersion, err := version.NewVersion(semVersionStr)
+		semVersion, err := goversion.NewVersion(semVersionStr)
 		if err != nil {
 			return nil, err
 		}
-		semVersions[index] = semVersion
-	}
-
-	sort.Sort(version.Collection(semVersions))
-
-	releases := make([]TerraformVersion, len(semVersions))
-	for index, semVersion := range semVersions {
-		releases[index] = TerraformVersion{Version: semVersion}
+		releases[index] = &version.TerraformVersion{Version: semVersion}
 	}
 
 	return releases, nil
 }
 
-func (release *TerraformVersion) GetUrl() string {
+func GetUrl(release *version.TerraformVersion) string {
 	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseUrl(),
 		release.Version.String(), release.Version, runtime.GOOS, runtime.GOARCH)
 }

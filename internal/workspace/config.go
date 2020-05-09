@@ -1,24 +1,17 @@
-package tfvm
+package workspace
 
 import (
 	"bufio"
 	"errors"
-	"fmt"
-	"github.com/hashicorp/go-version"
+	"github.com/cbuschka/tfvm/internal/version"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-// A .tfvmrc configuration
-type Configuration struct {
-	versionSpec *TerraformVersionSpec
-	file        string
-}
-
 const noConfigExistsMsg = "config not exists"
 
-func IsNoConfigExists(err error) bool {
+func isNoConfigExists(err error) bool {
 	return err.Error() == noConfigExistsMsg
 }
 
@@ -30,16 +23,20 @@ var configFileNames = []string{".tfvmrc", ".terraform-version"}
 
 // Get a terraform version by walking through directory structure up to the root
 // and looking for .tfvmrc files.
-func GetConfiguration() (*Configuration, error) {
+func getConfiguration() (*TerraformVersionSelection, error) {
 	configFile, err := getNearestConfigFileFromCwd()
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, newNoConfigExists()
+			return nil, newNoTfVersionSelected()
 		}
 
 		return nil, err
 	}
 
+	return readConfiguration(configFile)
+}
+
+func readConfiguration(configFile string) (*TerraformVersionSelection, error) {
 	file, err := os.Open(configFile)
 	if err != nil {
 		return nil, err
@@ -59,13 +56,12 @@ func GetConfiguration() (*Configuration, error) {
 		return nil, err
 	}
 
-	versionSpec, err := ParseTerraformVersionSpec(versionSpecStr)
-	_, err = version.NewConstraint(versionSpecStr)
+	versionSpec, err := version.ParseTerraformVersionSpec(versionSpecStr)
 	if err != nil {
-		return nil, fmt.Errorf("Invalid version spec: '%s' (%s)", versionSpecStr, err.Error())
+		return nil, err
 	}
 
-	return &Configuration{versionSpec: versionSpec, file: configFile}, nil
+	return &TerraformVersionSelection{versionSpec: versionSpec, file: configFile}, nil
 }
 
 func getNearestConfigFileFromCwd() (string, error) {

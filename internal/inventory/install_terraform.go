@@ -1,8 +1,11 @@
-package tfvm
+package inventory
 
 import (
 	"archive/zip"
 	"fmt"
+	"github.com/cbuschka/tfvm/internal/remote"
+	"github.com/cbuschka/tfvm/internal/util"
+	"github.com/cbuschka/tfvm/internal/version"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -11,7 +14,7 @@ import (
 	"strings"
 )
 
-func (inventory *Inventory) InstallTerraform(tfRelease *TerraformVersion) error {
+func (inventory *Inventory) InstallTerraform(tfRelease *version.TerraformVersion) error {
 
 	installed, err := inventory.IsTerraformInstalled(tfRelease)
 	if err != nil {
@@ -28,15 +31,15 @@ func (inventory *Inventory) InstallTerraform(tfRelease *TerraformVersion) error 
 	}
 	defer os.Remove(tmpfile.Name())
 
-	Print("Downloading terraform %s...", tfRelease.Version)
-	url := tfRelease.GetUrl()
+	util.Print("Downloading terraform %s...", tfRelease.Version)
+	url := remote.GetUrl(tfRelease)
 	err = downloadFile(url, tmpfile.Name())
 	if err != nil {
-		Die(1, "Download failed: %s", err.Error())
+		util.Die(1, "Download failed: %s", err.Error())
 		return err
 	}
 
-	Print("Installing terraform %s...", tfRelease.Version)
+	util.Print("Installing terraform %s...", tfRelease.Version)
 	basePath, err := inventory.GetTerraformBasePath(tfRelease)
 	if err != nil {
 		return err
@@ -44,11 +47,11 @@ func (inventory *Inventory) InstallTerraform(tfRelease *TerraformVersion) error 
 
 	_, err = unzip(tmpfile.Name(), basePath)
 	if err != nil {
-		Die(1, "Unzipping failed: %s", err.Error())
+		util.Die(1, "Unzipping failed: %s", err.Error())
 		return err
 	}
 
-	Print("Terraform %s installed.", tfRelease.Version)
+	util.Print("Terraform %s installed.", tfRelease.Version)
 
 	return nil
 }

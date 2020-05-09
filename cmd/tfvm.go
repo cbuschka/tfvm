@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/cbuschka/tfvm/internal"
+	"github.com/cbuschka/tfvm/internal/commands"
+	"github.com/cbuschka/tfvm/internal/util"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,14 +12,14 @@ func main() {
 	programName := filepath.Base(os.Args[0])
 	var err error
 	if programName == "terraform" || (runtime.GOOS == "windows" && programName == "terraform.exe") {
-		err = tfvm.RunTerraformCommand(os.Args[1:])
+		err = commands.RunTerraformCommand(os.Args[1:])
 	} else if programName != "terraform" && len(os.Args) > 1 && os.Args[1] == "terraform" {
-		err = tfvm.RunTerraformCommand(os.Args[2:])
+		err = commands.RunTerraformCommand(os.Args[2:])
 	} else {
-		err = tfvm.RunTfvmCommand(os.Args[1:])
+		err = commands.RunTfvmCommand(os.Args[1:])
 	}
 
 	if err != nil {
-		tfvm.Die(1, err.Error())
+		util.Die(1, err.Error())
 	}
 }

@@ -1,4 +1,4 @@
-package tfvm
+package version
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ func IsNoSuchTerraformRelease(err error) bool {
 	return err.Error() == noSuchTerraformReleaseMsg
 }
 
-func newNoSuchTerraformRelease() error {
+func NewNoSuchTerraformRelease() error {
 	return errors.New(noSuchTerraformReleaseMsg)
 }
 

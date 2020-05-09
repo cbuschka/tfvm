@@ -1,16 +1,10 @@
-package tfvm
+package inventory
 
 import (
 	"os"
 	"os/exec"
 	"syscall"
 )
-
-// A version of terraform installed into the local inventory
-type Terraform struct {
-	version string
-	path    string
-}
 
 // Call terraform with args
 func (terraform *Terraform) Run(args ...string) (int, error) {

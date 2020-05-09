@@ -1,4 +1,4 @@
-package tfvm
+package util
 
 import (
 	"fmt"

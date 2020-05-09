@@ -1,7 +1,9 @@
-package tfvm
+package commands
+
+import "github.com/cbuschka/tfvm/internal/util"
 
 func printUsage() {
-	Print(`
+	util.Print(`
 Usage:	tfvm <command>
 	or terraform <terraform command and options>
 

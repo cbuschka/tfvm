@@ -1,4 +1,8 @@
-package tfvm
+package commands
+
+import (
+	"github.com/cbuschka/tfvm/internal/util"
+)
 
 func RunTfvmCommand(args []string) error {
 
@@ -23,7 +27,7 @@ func RunTfvmCommand(args []string) error {
 		printVersion()
 		return nil
 	} else {
-		Print("Unsupported command: %s.", args[0])
+		util.Print("Unsupported command: %s.", args[0])
 		printUsage()
 		return nil
 	}

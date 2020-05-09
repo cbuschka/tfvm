@@ -1,11 +1,14 @@
-package tfvm
+package commands
 
 import (
 	"errors"
+	inventoryPkg "github.com/cbuschka/tfvm/internal/inventory"
+	"github.com/cbuschka/tfvm/internal/util"
+	"github.com/cbuschka/tfvm/internal/version"
 )
 
 func RunTfvmInstallCommand(args []string) error {
-	inventory, err := GetInventory()
+	inventory, err := inventoryPkg.GetInventory()
 	if err != nil {
 		return err
 	}
@@ -16,18 +19,19 @@ func RunTfvmInstallCommand(args []string) error {
 	}
 
 	if len(args) < 1 {
-		Die(1, "Expected version to install.")
+		util.Die(1, "Expected version to install.")
 		return errors.New("unreachable code")
 	}
-	versionSpec, err := ParseTerraformVersionSpec(args[0])
+	
+	versionSpec, err := version.ParseTerraformVersionSpec(args[0])
 	if err != nil {
 		return err
 	}
 
 	tfRelease, err := inventory.GetTerraformRelease(versionSpec)
 	if err != nil {
-		if IsNoSuchTerraformRelease(err) {
-			Die(1, "No matching terraform version for %s.", versionSpec.text)
+		if version.IsNoSuchTerraformRelease(err) {
+			util.Die(1, "No matching terraform version for %s.", versionSpec.String())
 			return err
 		}
 		return err
@@ -39,7 +43,7 @@ func RunTfvmInstallCommand(args []string) error {
 	}
 
 	if installed {
-		Print("Terraform %s is already installed.", tfRelease.Version.String())
+		util.Print("Terraform %s is already installed.", tfRelease.Version.String())
 		return nil
 	}
 

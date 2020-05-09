@@ -1,4 +1,4 @@
-package tfvm
+package inventory
 
 const defaultStateJSON = `
 {

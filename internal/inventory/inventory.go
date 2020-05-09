@@ -1,21 +1,24 @@
-package tfvm
+package inventory
 
 import (
 	"fmt"
+	"github.com/cbuschka/tfvm/internal/remote"
+	"github.com/cbuschka/tfvm/internal/version"
 	"github.com/mitchellh/go-homedir"
 	"os"
 	"path/filepath"
 	"runtime"
+	"sort"
 	"time"
 )
 
 type Inventory struct {
-	LastUpdateTime    time.Time
-	TerraformReleases []TerraformVersion
+	lastUpdateTime       time.Time
+	terraformReleasesAsc []*version.TerraformVersion
 }
 
 func GetInventory() (*Inventory, error) {
-	inventory := Inventory{LastUpdateTime: time.Now(), TerraformReleases: make([]TerraformVersion, 0)}
+	inventory := Inventory{lastUpdateTime: time.Now(), terraformReleasesAsc: make([]*version.TerraformVersion, 0)}
 	err := inventory.initInventory()
 	if err != nil {
 		return nil, err
@@ -24,15 +27,18 @@ func GetInventory() (*Inventory, error) {
 	return &inventory, nil
 }
 
-func (inventory *Inventory) GetTerraformReleases() []TerraformVersion {
-	return inventory.TerraformReleases
+func (inventory *Inventory) GetTerraformReleasesAsc() []*version.TerraformVersion {
+	return inventory.terraformReleasesAsc[:]
 }
 
 func (inventory *Inventory) Update() error {
-	tfReleases, err := ListTerraformReleases()
+	tfReleases, err := remote.ListTerraformReleases()
+
+	sort.Sort(version.Collection(tfReleases))
+
 	if err == nil && len(tfReleases) > 0 {
-		inventory.TerraformReleases = tfReleases
-		inventory.LastUpdateTime = time.Now()
+		inventory.terraformReleasesAsc = tfReleases
+		inventory.lastUpdateTime = time.Now()
 		err = inventory.saveState()
 		if err != nil {
 			return err
@@ -42,27 +48,28 @@ func (inventory *Inventory) Update() error {
 	return nil
 }
 
-func (inventory *Inventory) GetLatestRelease() *TerraformVersion {
-	if len(inventory.TerraformReleases) == 0 {
+func (inventory *Inventory) GetLatestRelease() *version.TerraformVersion {
+	if len(inventory.terraformReleasesAsc) == 0 {
 		panic("Inventory has no terraform releases.")
 	}
 
-	return &inventory.TerraformReleases[len(inventory.TerraformReleases)-1]
+	return inventory.terraformReleasesAsc[len(inventory.terraformReleasesAsc)-1]
 }
 
-func (inventory *Inventory) GetTerraformRelease(versionSpec *TerraformVersionSpec) (*TerraformVersion, error) {
+func (inventory *Inventory) GetTerraformRelease(versionSpec *version.TerraformVersionSpec) (*version.TerraformVersion, error) {
 	latestTfRelease := inventory.GetLatestRelease()
 
-	for _, tfRelease := range inventory.TerraformReleases {
-		if versionSpec.Matches(&tfRelease, latestTfRelease) {
-			return &tfRelease, nil
+	for index := range inventory.terraformReleasesAsc {
+		tfRelease := inventory.terraformReleasesAsc[len(inventory.terraformReleasesAsc)-index-1]
+		if versionSpec.Matches(tfRelease, latestTfRelease) {
+			return tfRelease, nil
 		}
 	}
 
-	return nil, newNoSuchTerraformRelease()
+	return nil, version.NewNoSuchTerraformRelease()
 }
 
-func (inventory *Inventory) GetTerraform(tfRelease *TerraformVersion) (*Terraform, error) {
+func (inventory *Inventory) GetTerraform(tfRelease *version.TerraformVersion) (*Terraform, error) {
 	tfPath, err := inventory.getTerraformPath(tfRelease)
 	if err != nil {
 		return nil, err
@@ -72,10 +79,10 @@ func (inventory *Inventory) GetTerraform(tfRelease *TerraformVersion) (*Terrafor
 		return nil, err
 	}
 
-	return &Terraform{version: tfRelease.Version.String(), path: tfPath}, nil
+	return newTerraform(tfRelease.Version.String(), tfPath), nil
 }
 
-func (inventory *Inventory) GetTerraformBasePath(tfRelease *TerraformVersion) (string, error) {
+func (inventory *Inventory) GetTerraformBasePath(tfRelease *version.TerraformVersion) (string, error) {
 	inventoryDir, err := getInventoryDir()
 	if err != nil {
 		return "", err
@@ -86,7 +93,7 @@ func (inventory *Inventory) GetTerraformBasePath(tfRelease *TerraformVersion) (s
 	return versionedTfPath, nil
 }
 
-func (inventory *Inventory) getTerraformPath(tfRelease *TerraformVersion) (string, error) {
+func (inventory *Inventory) getTerraformPath(tfRelease *version.TerraformVersion) (string, error) {
 	basePath, err := inventory.GetTerraformBasePath(tfRelease)
 	if err != nil {
 		return "", err
@@ -102,7 +109,7 @@ func (inventory *Inventory) getTerraformPath(tfRelease *TerraformVersion) (strin
 	return terraformPath, nil
 }
 
-func (inventory *Inventory) IsTerraformInstalled(tfRelease *TerraformVersion) (bool, error) {
+func (inventory *Inventory) IsTerraformInstalled(tfRelease *version.TerraformVersion) (bool, error) {
 	versionedTfPath, err := inventory.getTerraformPath(tfRelease)
 	if err != nil {
 		return false, err

@@ -1,8 +1,9 @@
-package tfvm
+package inventory
 
 import (
 	"encoding/json"
-	"github.com/hashicorp/go-version"
+	"github.com/cbuschka/tfvm/internal/version"
+	goversion "github.com/hashicorp/go-version"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -39,17 +40,17 @@ func (inventory *Inventory) loadState() error {
 		return err
 	}
 
-	tfReleases := make([]TerraformVersion, len(state.TerraformReleases))
+	tfReleases := make([]*version.TerraformVersion, len(state.TerraformReleases))
 	for index, tfReleaseState := range state.TerraformReleases {
-		tfReleaseVersion, err := version.NewVersion(tfReleaseState.Version)
+		tfReleaseVersion, err := goversion.NewVersion(tfReleaseState.Version)
 		if err != nil {
 			return err
 		}
-		tfReleases[index] = TerraformVersion{Version: tfReleaseVersion}
+		tfReleases[index] = &version.TerraformVersion{Version: tfReleaseVersion}
 	}
 
-	inventory.TerraformReleases = tfReleases
-	inventory.LastUpdateTime, err = time.Parse(time.RFC3339, state.LastUpdateTime)
+	inventory.terraformReleasesAsc = tfReleases
+	inventory.lastUpdateTime, err = time.Parse(time.RFC3339, state.LastUpdateTime)
 	if err != nil {
 		return err
 	}
@@ -77,10 +78,10 @@ func (inventory *Inventory) saveState() error {
 	}
 
 	state := InventoryState{}
-	state.LastUpdateTime = inventory.LastUpdateTime.Format(time.RFC3339)
+	state.LastUpdateTime = inventory.lastUpdateTime.Format(time.RFC3339)
 
-	tfReleaseStates := make([]TerraformReleaseState, len(inventory.TerraformReleases))
-	for index, tfRelease := range inventory.TerraformReleases {
+	tfReleaseStates := make([]TerraformReleaseState, len(inventory.terraformReleasesAsc))
+	for index, tfRelease := range inventory.terraformReleasesAsc {
 		tfReleaseStates[index] = TerraformReleaseState{Version: tfRelease.Version.String()}
 	}
 
