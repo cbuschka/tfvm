@@ -155,6 +155,11 @@ func (inventory *Inventory) initInventory() error {
 }
 
 func getInventoryDir() (string, error) {
+	invDirFromEnv := os.Getenv("TFVM_DIR")
+	if invDirFromEnv != "" {
+		return invDirFromEnv, nil
+	}
+
 	homeDir, err := homedir.Dir()
 	if err != nil {
 		return "", err
