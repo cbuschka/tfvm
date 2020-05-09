@@ -2,11 +2,11 @@ package remote
 
 import (
 	"fmt"
+	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
 	goversion "github.com/hashicorp/go-version"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"regexp"
 	"runtime"
 	"strings"
@@ -59,12 +59,22 @@ func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
 }
 
 func GetUrl(release *version.TerraformVersion) string {
+	tfArch := util.GetFirstEnv("TFVM_TERRAFORM_ARCH", "TERRAFORM_ARCH")
+	if tfArch == "" {
+		tfArch = runtime.GOARCH
+	}
+
+	tfOs := util.GetFirstEnv("TFVM_TERRAFORM_OS", "TERRAFORM_OS")
+	if tfOs == "" {
+		tfOs = runtime.GOOS
+	}
+
 	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseUrl(),
-		release.Version.String(), release.Version, runtime.GOOS, runtime.GOARCH)
+		release.Version.String(), release.Version, tfOs, tfArch)
 }
 
 func getReleasesBaseUrl() string {
-	baseUrl := os.Getenv("TFVM_RELEASES_BASE_URL")
+	baseUrl := util.GetFirstEnv("TFVM_TERRAFORM_RELEASES_BASE_URL")
 	if baseUrl != "" {
 		return baseUrl
 	}

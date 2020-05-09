@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
-	"os"
 )
 
 type Workspace struct {
@@ -57,7 +56,7 @@ func newNoTfVersionSelected() error {
 // and looking for .tfvmrc files.
 func (workspace *Workspace) GetTerraformVersionSelection() (*TerraformVersionSelection, error) {
 
-	tfVersionEnvVar := os.Getenv("TERRAFORM_VERSION")
+	tfVersionEnvVar := util.GetFirstEnv("TFVM_TERRAFORM_VERSION", "TERRAFORM_VERSION")
 	if tfVersionEnvVar != "" {
 		versionSpec, err := version.ParseTerraformVersionSpec(tfVersionEnvVar)
 		if err != nil {
