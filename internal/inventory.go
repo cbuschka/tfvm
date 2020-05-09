@@ -1,7 +1,6 @@
 package tfvm
 
 import (
-	"errors"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"os"
@@ -9,20 +8,6 @@ import (
 	"runtime"
 	"time"
 )
-
-const noSuchTerraformReleaseMsg = "no such terraform release"
-
-func IsNoSuchTerraformRelease(err error) bool {
-	return err.Error() == noSuchTerraformReleaseMsg
-}
-
-func newNoSuchTerraformRelease() error {
-	return errors.New(noSuchTerraformReleaseMsg)
-}
-
-type TerraformRelease struct {
-	Version string `json:"version"`
-}
 
 type Inventory struct {
 	LastUpdateTime    time.Time
