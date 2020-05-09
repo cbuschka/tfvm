@@ -40,7 +40,7 @@ func RunTfvmListCommand(args []string) error {
 		if tfVersionSelection != nil {
 			isSelected := tfVersionSelection.VersionSpec().Matches(tfRelease, latestTfRelease)
 			if isSelected {
-				notes = fmt.Sprintf(" (selected via %s)", tfVersionSelection.File())
+				notes = fmt.Sprintf(" (selected via %s)", tfVersionSelection.Source())
 				current = "*"
 			}
 		}

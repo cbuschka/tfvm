@@ -5,6 +5,7 @@ import (
 	inventoryPkg "github.com/cbuschka/tfvm/internal/inventory"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
+	workspacePkg "github.com/cbuschka/tfvm/internal/workspace"
 )
 
 func RunTfvmInstallCommand(args []string) error {
@@ -18,12 +19,7 @@ func RunTfvmInstallCommand(args []string) error {
 		return err
 	}
 
-	if len(args) < 1 {
-		util.Die(1, "Expected version to install.")
-		return errors.New("unreachable code")
-	}
-	
-	versionSpec, err := version.ParseTerraformVersionSpec(args[0])
+	versionSpec, err := getTfVersionSpecToInstall(args)
 	if err != nil {
 		return err
 	}
@@ -53,4 +49,33 @@ func RunTfvmInstallCommand(args []string) error {
 	}
 
 	return nil
+}
+
+func getTfVersionSpecToInstall(args []string) (*version.TerraformVersionSpec, error) {
+	if len(args) > 1 {
+		util.Die(1, "Only version to install allowed.")
+		return nil, errors.New("unreachable code")
+	}
+
+	if len(args) == 1 {
+		versionSpec, err := version.ParseTerraformVersionSpec(args[0])
+		if err != nil {
+			util.Die(1, "Invalid version '%s'.", args[0])
+			return nil, errors.New("unreachable code")
+		}
+
+		return versionSpec, nil
+	}
+
+	workspace, err := workspacePkg.GetWorkspace()
+	if err != nil {
+		return nil, err
+	}
+
+	tfVersionSelection, err := workspace.GetTerraformVersionSelection()
+	if err != nil {
+		return nil, err
+	}
+
+	return tfVersionSelection.VersionSpec(), nil
 }

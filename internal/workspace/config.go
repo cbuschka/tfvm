@@ -61,7 +61,7 @@ func readConfiguration(configFile string) (*TerraformVersionSelection, error) {
 		return nil, err
 	}
 
-	return &TerraformVersionSelection{versionSpec: versionSpec, file: configFile}, nil
+	return &TerraformVersionSelection{versionSpec: versionSpec, sourceName: configFile, sourceType: File}, nil
 }
 
 func getNearestConfigFileFromCwd() (string, error) {
