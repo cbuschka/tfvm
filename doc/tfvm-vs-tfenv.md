@@ -8,10 +8,11 @@
 | configuration    | put anywhere in your path | [add ~/.tfenv/bin/ to your path](https://github.com/tfutils/tfenv#manual) | 
 | home brew package | no | [yes](https://github.com/tfutils/tfenv#automatic) |
 | terraform auto install  | yes | [yes](https://github.com/tfutils/tfenv#tfenv_auto_install) |
-| .terraform-version file | yes | [yes](https://github.com/tfutils/tfenv#terraform-version) |
-| .tfvmrc file | yes | no |
+| .terraform-version file | [yes](https://github.com/cbuschka/tfvm#configure-terraform-version) | [yes](https://github.com/tfutils/tfenv#terraform-version) |
+| .tfvmrc file | [yes](https://github.com/cbuschka/tfvm#configure-terraform-version) | no |
 | terraform binary checksum verification | no | [yes](https://github.com/tfutils/tfenv#tfenv-install-version) |
-| version ranges   | yes | [no](https://github.com/tfutils/tfenv#min-required) |
-| override hashicorp repo | yes | [yes](https://github.com/tfutils/tfenv#tfenv_remote) |
-| override terraform arch | no | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
+| version ranges   | [yes](https://github.com/cbuschka/tfvm#configure-terraform-version) | [no](https://github.com/tfutils/tfenv#min-required) |
+| override hashicorp repo | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_remote) |
+| override terraform arch | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
+| override terraform os | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
 

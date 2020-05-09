@@ -36,7 +36,7 @@ echo "0.12.8" > .tfvmrc
 tfvm which
 ```
 
-"latest" is also supported.
+"latest" and [semver ranges](https://github.com/hashicorp/go-version#version-constraints), e.g. ```>= 0.12.1, <0.12.10```, are also supported.
 
 ### Invoke selected terraform
 ```
@@ -54,6 +54,9 @@ terraform version
 ```
 tfvm help
 ```
+
+### Environment Variables
+[Supported Environment Variables](./doc/env-vars.md)
 
 ## Similar tools
 * [tfenv](https://github.com/tfutils/tfenv) [(comparison)](./doc/tfvm-vs-tfenv.md)
