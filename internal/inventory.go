@@ -1,11 +1,9 @@
 package tfvm
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -24,11 +22,6 @@ func newNoSuchTerraformRelease() error {
 
 type TerraformRelease struct {
 	Version string `json:"version"`
-}
-
-type StateStruct struct {
-	LastUpdateTime    string             `json:"lastUpdateTime"`
-	TerraformReleases []TerraformRelease `json:"terraformReleases"`
 }
 
 type Inventory struct {
@@ -166,70 +159,4 @@ func getInventoryDir() (string, error) {
 	}
 
 	return filepath.Join(homeDir, ".tfvm"), nil
-}
-
-func (inventory *Inventory) loadState() error {
-	statefilepath, err := getStateFilePath()
-	if err != nil {
-		return err
-	}
-
-	file, err := ioutil.ReadFile(statefilepath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			file = []byte(defaultStateJson)
-		} else {
-			return err
-		}
-	}
-
-	state := StateStruct{}
-	err = json.Unmarshal(file, &state)
-	if err != nil {
-		return err
-	}
-
-	inventory.TerraformReleases = state.TerraformReleases
-	inventory.LastUpdateTime, err = time.Parse(time.RFC3339, state.LastUpdateTime)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func getStateFilePath() (string, error) {
-	inventoryDir, err := getInventoryDir()
-	if err != nil {
-		return "", err
-	}
-	statefilepath := filepath.Join(inventoryDir, "v1", "state.json")
-	return statefilepath, nil
-}
-
-func (inventory *Inventory) saveState() error {
-	statefilepath, err := getStateFilePath()
-	if err != nil {
-		return err
-	}
-
-	if err = os.MkdirAll(filepath.Dir(statefilepath), os.ModePerm); err != nil {
-		return err
-	}
-
-	state := StateStruct{}
-	state.LastUpdateTime = inventory.LastUpdateTime.Format(time.RFC3339)
-	state.TerraformReleases = inventory.TerraformReleases
-
-	file, err := json.MarshalIndent(state, "", " ")
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile(statefilepath, file, 0644)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
