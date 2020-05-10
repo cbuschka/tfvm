@@ -21,7 +21,6 @@ const (
 	Env  SelectionSourceType = 1
 )
 
-// A .tfvmrc configuration
 type TerraformVersionSelection struct {
 	versionSpec *version.TerraformVersionSpec
 	sourceName  string
@@ -52,8 +51,6 @@ func newNoTfVersionSelected() error {
 	return errors.New(noTfVersionSelectedMsg)
 }
 
-// Get a terraform version by walking through directory structure up to the root
-// and looking for .tfvmrc files.
 func (workspace *Workspace) GetTerraformVersionSelection() (*TerraformVersionSelection, error) {
 
 	tfVersionEnvVar := util.GetFirstEnv("TFVM_TERRAFORM_VERSION", "TERRAFORM_VERSION")

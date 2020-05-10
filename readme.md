@@ -4,7 +4,7 @@
 
 ## Features
 * download and install terraform version
-* select terraform version via .tfvmrc (or .terraform-version for compatibility to tfenv)
+* select terraform version via .terraform-version
 * invoke selected terraform through tfvm
 
 ## System Requirements
@@ -31,7 +31,7 @@ tfvm list
 
 ### Configure terraform version
 ```
-echo "0.12.8" > .tfvmrc
+echo "0.12.8" > .terraform-version
 
 tfvm which
 ```

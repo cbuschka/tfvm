@@ -19,10 +19,10 @@ func newNoConfigExists() error {
 	return errors.New(noConfigExistsMsg)
 }
 
-var configFileNames = []string{".tfvmrc", ".terraform-version"}
+var configFileNames = []string{".terraform-version"}
 
 // Get a terraform version by walking through directory structure up to the root
-// and looking for .tfvmrc files.
+// and looking for selection files.
 func getConfiguration() (*TerraformVersionSelection, error) {
 	configFile, err := getNearestConfigFileFromCwd()
 	if err != nil {

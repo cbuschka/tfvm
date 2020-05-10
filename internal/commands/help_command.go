@@ -10,7 +10,7 @@ Usage:	tfvm <command>
 A terraform version manager.
 
 Commands:
-  terraform	Run terraform configured via .tfvmrc/.terraform-version file.
+  terraform	Run terraform selected via .terraform-version file.
 		(Run 'terraform help' for more information.)
   list		List terraform versions.
   install	Install terraform version.

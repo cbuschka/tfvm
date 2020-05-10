@@ -1,6 +1,5 @@
 /coverage.txt
 /.terraform-version
-/.tfvmrc
 /dist/
 /terraform
 /tfvm
