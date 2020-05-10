@@ -1,8 +1,13 @@
 package commands
 
-import "github.com/cbuschka/tfvm/internal/util"
+import (
+	"github.com/cbuschka/tfvm/internal/build"
+	"github.com/cbuschka/tfvm/internal/util"
+)
 
 func printUsage() {
+	buildInfo := build.GetBuildInfo()
+
 	util.Print(`
 Usage:	tfvm <command>
 	or terraform <terraform command and options>
@@ -20,6 +25,6 @@ Commands:
   version	Print tfvm version.
   info		Print tfvm/runtime info.
 
-For binaries, issues and source code visit https://github.com/cbuschka/tfvm.
-`)
+For binaries, issues and source code visit %s.
+`, buildInfo.Repo)
 }
