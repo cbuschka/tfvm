@@ -58,7 +58,7 @@ build_macosx:	build
 	$(call build_binary,darwin,amd64,)
 
 test:	init
-	go test ./internal/... ./cmd/...
+	go test -cover -race -coverprofile=coverage.txt -covermode=atomic ./internal/... ./cmd/...
 
 integration_test:
 	${PROJECT_DIR}/scripts/run-integration-tests.sh
