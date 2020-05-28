@@ -10,11 +10,11 @@ define build_binary
 	echo "Building $(1)/$(2)..."
 	CGO_ENABLED=0 GOOS=$(1) GOARCH=$(2) go build \
 		-a \
-		-ldflags "-X github.com/cbuschka/tfvm/internal.build.buildInfoVersion=${VERSION} \
-			-X github.com/cbuschka/tfvm/internal.build.buildInfoBuildTime=${BUILD_TIME} \
-			-X github.com/cbuschka/tfvm/internal.build.buildInfoCommitish=${COMMITISH} \
-			-X github.com/cbuschka/tfvm/internal.build.buildInfoOs=$(1) \
-			-X github.com/cbuschka/tfvm/internal.build.buildInfoArch=$(2) \
+		-ldflags "-X github.com/cbuschka/tfvm/internal/build.buildInfoVersion=${VERSION} \
+			-X github.com/cbuschka/tfvm/internal/build.buildInfoBuildTime=${BUILD_TIME} \
+			-X github.com/cbuschka/tfvm/internal/build.buildInfoCommitish=${COMMITISH} \
+			-X github.com/cbuschka/tfvm/internal/build.buildInfoOs=$(1) \
+			-X github.com/cbuschka/tfvm/internal/build.buildInfoArch=$(2) \
 			-extldflags \"-static\"" \
 			-o dist/tfvm-$(1)_$(2)$(3) \
 			cmd/tfvm.go
