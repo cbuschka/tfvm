@@ -67,6 +67,18 @@ tfvm help
 * [terraform-installer](https://github.com/robertpeteuil/terraform-installer)
 * [tfw](https://github.com/stormbeta/tfw)
 
+## Contributing
+Contributions are welcome!
+
+**By contributing you accept to contribute under the [license](./license.txt) of this project.**
+
+* [Fork](https://github.com/cbuschka/tfvm/fork) and clone the repository
+* Create a feature branch (git checkout -b foobar)
+* Commit your changes (git commit -am 'Add feature foobar')
+* Make sure the project builds and all tests are passing
+* Push to the branch (git push origin foobar)
+* Create a new pull request and describe what you want to achieve or fix
+
 ## License
 Copyright (c) 2020 by [Cornelius Buschka](https://github.com/cbuschka).
 
