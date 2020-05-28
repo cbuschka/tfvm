@@ -13,11 +13,13 @@ type BuildInfo struct {
 	Arch      string
 }
 
-var buildInfoVersion string
-var buildInfoCommitish string
-var buildInfoBuildTime string
-var buildInfoOs string
-var buildInfoArch string
+var (
+	buildInfoVersion string
+	buildInfoCommitish string
+	buildInfoBuildTime string
+	buildInfoOs string
+	buildInfoArch string
+)
 
 func GetBuildInfo() BuildInfo {
 	return BuildInfo{Version: buildInfoVersion,
