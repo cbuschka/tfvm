@@ -2,7 +2,7 @@ package inventory
 
 const defaultStateJSON = `
 {
- "lastUpdateTime": "2020-05-01T16:35:41+02:00",
+ "lastUpdateTime": "2020-05-28T22:47:36+02:00",
  "terraformReleases": [
   {
    "version": "0.1.0"
@@ -399,6 +399,12 @@ const defaultStateJSON = `
   },
   {
    "version": "0.12.24"
+  },
+  {
+   "version": "0.12.25"
+  },
+  {
+   "version": "0.12.26"
   }
  ]
 }`
