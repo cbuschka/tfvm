@@ -11,6 +11,7 @@ func (terraform *Terraform) Run(args ...string) (int, error) {
 	cmd := exec.Command(terraform.path, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
 	cmd.Env = os.Environ()
 	if err := cmd.Start(); err != nil {
 		return -1, err
