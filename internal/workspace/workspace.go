@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
+	"io/ioutil"
+	"os"
 )
 
 type Workspace struct {
@@ -51,6 +53,27 @@ func newNoTfVersionSelected() error {
 	return errors.New(noTfVersionSelectedMsg)
 }
 
+func (workspace *Workspace) WriteTerraformVersionSelection(tfVersionSelection string) error {
+	configFile, err := getNearestConfigFileFromCwd()
+	if err != nil {
+		if os.IsNotExist(err) {
+			return newNoConfigExists()
+		}
+
+		return err
+	}
+
+	err = ioutil.WriteFile(configFile, []byte(tfVersionSelection), 0644)
+	if err != nil {
+		return nil
+	}
+
+	util.Print("%s written.", configFile)
+
+	return nil
+
+}
+
 func (workspace *Workspace) GetTerraformVersionSelection() (*TerraformVersionSelection, error) {
 
 	tfVersionEnvVar := util.GetFirstEnv("TFVM_TERRAFORM_VERSION", "TERRAFORM_VERSION")
@@ -66,7 +89,7 @@ func (workspace *Workspace) GetTerraformVersionSelection() (*TerraformVersionSel
 
 	config, err := getConfiguration()
 	if err != nil {
-		if isNoConfigExists(err) {
+		if IsNoConfigExists(err) {
 			return nil, newNoTfVersionSelected()
 		}
 		return nil, err

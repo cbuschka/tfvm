@@ -20,6 +20,7 @@ Commands:
   list		List terraform versions.
   install	Install terraform version.
   which		Print selected terraform version.
+  use		Change selected version in .terraform-version file.
   uptodate	Check for updates.
   help		Print this usage information.
   version	Print tfvm version.

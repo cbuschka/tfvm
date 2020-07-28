@@ -11,7 +11,7 @@ import (
 
 const noConfigExistsMsg = "config not exists"
 
-func isNoConfigExists(err error) bool {
+func IsNoConfigExists(err error) bool {
 	return err.Error() == noConfigExistsMsg
 }
 
