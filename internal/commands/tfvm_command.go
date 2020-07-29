@@ -21,8 +21,7 @@ func RunTfvmCommand(args []string) error {
 		printUsage()
 		return nil
 	} else if args[0] == "info" {
-		printInfo()
-		return nil
+		return printInfo()
 	} else if args[0] == "use" {
 		return RunTfvmUseCommand(args[1:])
 	} else if args[0] == "version" {

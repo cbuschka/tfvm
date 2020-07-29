@@ -15,6 +15,7 @@ import (
 type Inventory struct {
 	lastUpdateTime       time.Time
 	terraformReleasesAsc []*version.TerraformVersion
+	cacheDir             string
 }
 
 func GetInventory() (*Inventory, error) {
@@ -25,6 +26,10 @@ func GetInventory() (*Inventory, error) {
 	}
 
 	return &inventory, nil
+}
+
+func (inventory *Inventory) GetCacheDir() string {
+	return inventory.cacheDir
 }
 
 func (inventory *Inventory) GetTerraformReleasesAsc() []*version.TerraformVersion {
@@ -131,6 +136,8 @@ func (inventory *Inventory) initInventory() error {
 	if err != nil {
 		return err
 	}
+
+	inventory.cacheDir = inventoryDir
 
 	err = os.MkdirAll(inventoryDir, 0755)
 	if err != nil {
