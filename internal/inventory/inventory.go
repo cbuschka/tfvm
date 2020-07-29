@@ -187,22 +187,11 @@ func getDefaultInventoryDir() (string, error) {
 		return oldInventoryDir, nil
 	}
 
-	dotCacheDirFromEnvVar := os.Getenv("XDG_CACHE_HOME")
-	if dotCacheDirFromEnvVar != "" {
-		dotCacheTfvmDir := filepath.Join(dotCacheDirFromEnvVar, "tfvm")
-		return dotCacheTfvmDir, nil
+	dotCacheDir := os.Getenv("XDG_CACHE_HOME")
+	if dotCacheDir == "" {
+		dotCacheDir = filepath.Join(homeDir, ".cache")
 	}
 
-	dotCacheDir := filepath.Join(homeDir, ".cache")
-	dotCacheDirExists, err := existsDir(dotCacheDir)
-	if err != nil {
-		return "", err
-	}
-
-	if dotCacheDirExists {
-		dotCacheTfvmDir := filepath.Join(dotCacheDir, "tfvm")
-		return dotCacheTfvmDir, nil
-	}
-
-	return oldInventoryDir, nil
+	dotCacheTfvmDir := filepath.Join(dotCacheDir, "tfvm")
+	return dotCacheTfvmDir, nil
 }
