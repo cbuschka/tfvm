@@ -148,10 +148,48 @@ func getInventoryDir() (string, error) {
 		return invDirFromEnv, nil
 	}
 
+	return getDefaultInventoryDir()
+}
+
+func existsDir(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+
+		return false, err
+	}
+
+	return true, nil
+}
+
+func getDefaultInventoryDir() (string, error) {
 	homeDir, err := homedir.Dir()
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(homeDir, ".tfvm"), nil
+	oldInventoryDir := filepath.Join(homeDir, ".tfvm")
+	oldInventoryDirExists, err := existsDir(oldInventoryDir)
+	if err != nil {
+		return "", err
+	}
+
+	if oldInventoryDirExists {
+		return oldInventoryDir, nil
+	}
+
+	dotCacheDir := filepath.Join(homeDir, ".cache")
+	dotCacheDirExists, err := existsDir(dotCacheDir)
+	if err != nil {
+		return "", err
+	}
+
+	if dotCacheDirExists {
+		dotCacheTfvmDir := filepath.Join(dotCacheDir, "tfvm")
+		return dotCacheTfvmDir, nil
+	}
+
+	return oldInventoryDir, nil
 }

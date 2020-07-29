@@ -13,5 +13,5 @@ require (
 	golang.org/x/mod v0.3.0 // indirect
 	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect
 	golang.org/x/text v0.3.2 // indirect
-	golang.org/x/tools v0.0.0-20200728190822-edd3c8e9e279
+	golang.org/x/tools v0.0.0-20200729041821-df70183b1872
 )
