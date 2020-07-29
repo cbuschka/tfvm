@@ -14,4 +14,5 @@
 | override hashicorp repo | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_remote) |
 | override terraform arch | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
 | override terraform os | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
+| compliant with xdg dir structure | yes | no (stores all below ~/.tfenv/bin/) |
 
