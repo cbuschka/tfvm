@@ -1,4 +1,4 @@
-PROJECT_DIR ::= ${PWD}
+PROJECT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 VERSION ::= $(shell git describe --always --tags --dirty)
 BUILD_TIME ::= $(shell date "+%Y-%m-%d_%H:%M:%S%:z")
 COMMITISH ::= $(shell git describe --always --dirty)
