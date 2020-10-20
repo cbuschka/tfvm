@@ -18,7 +18,7 @@ jobs:
       run: go test ./internal/... ./cmd/...
       if: runner.os != 'Linux'
     - name: Test with coverage
-      run: go test -cover -race -coverprofile=coverage.txt -covermode=atomic ./internal/... ./cmd/...
+      run: make test lint build_linux
       if: runner.os == 'Linux'
     - name: Upload coverage data to codecov.io
       uses: codecov/codecov-action@v1
