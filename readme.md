@@ -9,6 +9,7 @@
 
 ## System Requirements
 * 64-Bit Linux, MacOS X or Windows
+* Go 1.15.x, Linux or Mac OS X for development
 
 ## Installation
 ```
