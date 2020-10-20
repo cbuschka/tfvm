@@ -5,9 +5,10 @@ COMMITISH ::= $(shell git describe --always --dirty)
 ifeq (${GOPATH},)
 	GOPATH := ${HOME}/go
 endif
+OS ::= $(shell uname -s)
 
 define build_binary
-	echo "Building $(1)/$(2)..."
+	@echo "Building $(1)/$(2)..."
 	CGO_ENABLED=0 GOOS=$(1) GOARCH=$(2) go build \
 		-a \
 		-ldflags "-X github.com/cbuschka/tfvm/internal/build.buildInfoVersion=${VERSION} \
@@ -23,9 +24,14 @@ endef
 all:	clean build_linux build_windows build_macosx integration_test
 
 init:
+	@if [ "${OS}" != "Linux" ] && [ "${OS}" != "Darwin" ]; then \
+		echo "Sorry only Linux and Mac OS X supported as build platform. (This is ${OS}.)"; \
+		exit 1; \
+	fi; \
 	mkdir -p ${GOPATH}
 
 lint:	init
+	@echo "### Running linter..."
 	go get -u golang.org/x/lint/golint
 	${GOPATH}/bin/golint ./internal/... ./cmd/...
 
@@ -36,6 +42,7 @@ build:	test lint
 build_all:	build build_linux build_windows build_macosx
 
 build_linux:	build_linux_amd64 build_linux_386
+	@echo "### Building Linux variants..."
 	$(call build_binary,linux,amd64,)
 
 build_linux_amd64:	build
@@ -44,23 +51,29 @@ build_linux_amd64:	build
 build_linux_386:	build
 	$(call build_binary,linux,386,)
 
-clean:
+.PHONY: clean
+clean:	init
+	@echo "### Cleaning up..."
 	rm -rf ${PROJECT_DIR}/dist/ ${PROJECT_DIR}/.cache/
 
 format:
 	go fmt ./internal/... ./cmd/...
 
 build_windows:	build
+	@echo "### Building Windows variants..."
 	$(call build_binary,windows,amd64,.exe)
 	$(call build_binary,windows,386,.exe)
 
 build_macosx:	build
+	@echo "### Building Mac OS X variants..."
 	$(call build_binary,darwin,amd64,)
 
 test:	init
+	@echo "### Running unit tests..."
 	go test -cover -race -coverprofile=coverage.txt -covermode=atomic ./internal/... ./cmd/...
 
 integration_test:
+	@echo "### Running integration tests..."
 	${PROJECT_DIR}/scripts/run-integration-tests.sh
 
 build_with_docker:
