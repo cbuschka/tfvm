@@ -1,4 +1,5 @@
-# tfvm - Terraform version manager [![Build](https://github.com/cbuschka/tfvm/workflows/build/badge.svg)](https://github.com/cbuschka/tfvm) [![Latest Release](https://img.shields.io/github/release/cbuschka/tfvm.svg)](https://github.com/cbuschka/tfvm/releases) [![Go Report Card](https://goreportcard.com/badge/github.com/cbuschka/tfvm)](https://goreportcard.com/report/github.com/cbuschka/tfvm) [![codecov](https://codecov.io/gh/cbuschka/tfvm/branch/main/graph/badge.svg)](https://codecov.io/gh/cbuschka/tfvm) [![License](https://img.shields.io/github/license/cbuschka/tfvm.svg)](https://github.com/cbuschka/tfvm/blob/main/license.txt)
+# tfvm - Terraform version manager
+[![Build](https://github.com/cbuschka/tfvm/workflows/build/badge.svg)](https://github.com/cbuschka/tfvm) [![Latest Release](https://img.shields.io/github/release/cbuschka/tfvm.svg)](https://github.com/cbuschka/tfvm/releases) [![Go Report Card](https://goreportcard.com/badge/github.com/cbuschka/tfvm)](https://goreportcard.com/report/github.com/cbuschka/tfvm) [![codecov](https://codecov.io/gh/cbuschka/tfvm/branch/main/graph/badge.svg)](https://codecov.io/gh/cbuschka/tfvm) [![License](https://img.shields.io/github/license/cbuschka/tfvm.svg)](https://github.com/cbuschka/tfvm/blob/main/license.txt)
 
 ### Always the right terraform version for your project
 
