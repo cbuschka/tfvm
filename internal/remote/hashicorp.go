@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// ListTerraformReleases lists terraform versions from the hashicorp website.
 func ListTerraformReleases() ([]*version.TerraformVersion, error) {
 
 	releasesPage, err := downloadReleasesPage()
@@ -58,6 +59,7 @@ func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
 	return releases, nil
 }
 
+// GetUrl gives the remote url to a particular terraform version on the hashicorp site.
 func GetUrl(release *version.TerraformVersion) string {
 	tfArch := util.GetFirstEnv("TFVM_TERRAFORM_ARCH", "TERRAFORM_ARCH")
 	if tfArch == "" {
