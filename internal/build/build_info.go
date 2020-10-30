@@ -2,8 +2,8 @@ package build
 
 import "strings"
 
-// BuildInfo represents information about the current tfvm version.
-type BuildInfo struct {
+// Info represents information about the current tfvm version.
+type Info struct {
 	Version   string
 	Commitish string
 	Repo      string
@@ -22,8 +22,8 @@ var (
 )
 
 // GetBuildInfo gives meta data about the current tfvm version.
-func GetBuildInfo() BuildInfo {
-	return BuildInfo{Version: buildInfoVersion,
+func GetBuildInfo() Info {
+	return Info{Version: buildInfoVersion,
 		Repo:      "https://github.com/cbuschka/tfvm",
 		Author:    "Cornelius Buschka <cbuschka@gmail.com>, https://github.com/cbuschka",
 		Commitish: buildInfoCommitish,
