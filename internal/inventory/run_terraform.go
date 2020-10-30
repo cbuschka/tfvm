@@ -6,7 +6,7 @@ import (
 	"syscall"
 )
 
-// Call terraform with args
+// Run calls terraform with args.
 func (terraform *Terraform) Run(args ...string) (int, error) {
 	cmd := exec.Command(terraform.path, args...)
 	cmd.Stdout = os.Stdout
