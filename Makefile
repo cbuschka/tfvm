@@ -57,7 +57,7 @@ clean:	init
 	rm -rf ${PROJECT_DIR}/dist/ ${PROJECT_DIR}/.cache/
 
 format:
-	go fmt ./internal/... ./cmd/...
+	gofmt -l -w -s ${PROJECT_DIR}
 
 build_windows:	build
 	@echo "### Building Windows variants..."
