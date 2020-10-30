@@ -15,8 +15,8 @@ type TerraformReleaseState struct {
 	Version string `json:"version"`
 }
 
-// InventoryState describes the on disk inventory state format.
-type InventoryState struct {
+// State describes the on disk inventory state format.
+type State struct {
 	LastUpdateTime    string                  `json:"lastUpdateTime"`
 	TerraformReleases []TerraformReleaseState `json:"terraformReleases"`
 }
@@ -36,7 +36,7 @@ func (inventory *Inventory) loadState() error {
 		}
 	}
 
-	state := InventoryState{}
+	state := State{}
 	err = json.Unmarshal(file, &state)
 	if err != nil {
 		return err
@@ -79,7 +79,7 @@ func (inventory *Inventory) saveState() error {
 		return err
 	}
 
-	state := InventoryState{}
+	state := State{}
 	state.LastUpdateTime = inventory.lastUpdateTime.Format(time.RFC3339)
 
 	tfReleaseStates := make([]TerraformReleaseState, len(inventory.terraformReleasesAsc))
