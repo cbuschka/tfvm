@@ -14,6 +14,7 @@ import (
 	"strings"
 )
 
+// InstallTerraform installs a terraform version by downloading and extracting it.
 func (inventory *Inventory) InstallTerraform(tfRelease *version.TerraformVersion) error {
 
 	installed, err := inventory.IsTerraformInstalled(tfRelease)
