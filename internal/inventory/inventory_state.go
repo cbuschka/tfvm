@@ -10,10 +10,12 @@ import (
 	"time"
 )
 
+// TerraformReleaseState describes a single terraform release state.
 type TerraformReleaseState struct {
 	Version string `json:"version"`
 }
 
+// InventoryState describes the on disk inventory state format.
 type InventoryState struct {
 	LastUpdateTime    string                  `json:"lastUpdateTime"`
 	TerraformReleases []TerraformReleaseState `json:"terraformReleases"`
