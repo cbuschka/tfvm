@@ -24,7 +24,7 @@ func ListTerraformReleases() ([]*version.TerraformVersion, error) {
 }
 
 func downloadReleasesPage() (string, error) {
-	url := fmt.Sprintf("%s/index.html", getReleasesBaseUrl())
+	url := fmt.Sprintf("%s/index.html", getReleasesBaseURL())
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
@@ -59,8 +59,8 @@ func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
 	return releases, nil
 }
 
-// GetUrl gives the remote url to a particular terraform version on the hashicorp site.
-func GetUrl(release *version.TerraformVersion) string {
+// GetURL gives the remote url to a particular terraform version on the hashicorp site.
+func GetURL(release *version.TerraformVersion) string {
 	tfArch := util.GetFirstEnv("TFVM_TERRAFORM_ARCH", "TERRAFORM_ARCH")
 	if tfArch == "" {
 		tfArch = runtime.GOARCH
@@ -71,14 +71,14 @@ func GetUrl(release *version.TerraformVersion) string {
 		tfOs = runtime.GOOS
 	}
 
-	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseUrl(),
+	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseURL(),
 		release.Version.String(), release.Version, tfOs, tfArch)
 }
 
-func getReleasesBaseUrl() string {
-	baseUrl := util.GetFirstEnv("TFVM_TERRAFORM_RELEASES_BASE_URL")
-	if baseUrl != "" {
-		return baseUrl
+func getReleasesBaseURL() string {
+	baseURL := util.GetFirstEnv("TFVM_TERRAFORM_RELEASES_BASE_URL")
+	if baseURL != "" {
+		return baseURL
 	}
 
 	return "https://releases.hashicorp.com/terraform"

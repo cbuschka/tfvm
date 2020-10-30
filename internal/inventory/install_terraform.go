@@ -32,7 +32,7 @@ func (inventory *Inventory) InstallTerraform(tfRelease *version.TerraformVersion
 	defer os.Remove(tmpfile.Name())
 
 	util.Print("Downloading terraform %s...", tfRelease.Version)
-	url := remote.GetUrl(tfRelease)
+	url := remote.GetURL(tfRelease)
 	err = downloadFile(url, tmpfile.Name())
 	if err != nil {
 		util.Die(1, "Download failed: %s", err.Error())
