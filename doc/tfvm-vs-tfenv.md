@@ -11,8 +11,8 @@
 | .terraform-version file | [yes](https://github.com/cbuschka/tfvm#configure-terraform-version) | [yes](https://github.com/tfutils/tfenv#terraform-version) |
 | terraform binary checksum verification | no | [yes](https://github.com/tfutils/tfenv#tfenv-install-version) |
 | version ranges   | [yes](https://github.com/cbuschka/tfvm#configure-terraform-version) | [no](https://github.com/tfutils/tfenv#min-required) |
-| override hashicorp repo | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_remote) |
-| override terraform arch | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
-| override terraform os | [yes](https://github.com/cbuschka/tfvm/blob/master/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
+| override hashicorp repo | [yes](https://github.com/cbuschka/tfvm/blob/main/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_remote) |
+| override terraform arch | [yes](https://github.com/cbuschka/tfvm/blob/main/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
+| override terraform os | [yes](https://github.com/cbuschka/tfvm/blob/main/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) |
 | compliant with xdg dir structure | yes | no (stores all below ~/.tfenv/bin/) |
 
