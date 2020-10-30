@@ -5,15 +5,18 @@ import (
 	goversion "github.com/hashicorp/go-version"
 )
 
+// TerraformVersionSpec specifies a terraform version with a semver expression.
 type TerraformVersionSpec struct {
 	text        string
 	constraints goversion.Constraints
 }
 
+// String gives string representation of version spec.
 func (spec *TerraformVersionSpec) String() string {
 	return spec.text
 }
 
+// ParseTerraformVersionSpec parses a version spec string to an TerraformVersionSpec.
 func ParseTerraformVersionSpec(versionSpec string) (*TerraformVersionSpec, error) {
 
 	if versionSpec == "latest" {
@@ -28,6 +31,7 @@ func ParseTerraformVersionSpec(versionSpec string) (*TerraformVersionSpec, error
 	return &TerraformVersionSpec{text: versionSpec, constraints: constraints}, nil
 }
 
+// Matches checks if a terraform version is matched by a version spec.
 func (spec *TerraformVersionSpec) Matches(tfRelease *TerraformVersion, latestTfRelease *TerraformVersion) bool {
 	if spec.text == "latest" {
 		return tfRelease.Version.String() == latestTfRelease.Version.String()
