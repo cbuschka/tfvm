@@ -4,6 +4,7 @@ import (
 	"github.com/cbuschka/tfvm/internal/util"
 )
 
+// RunTfvmCommand runs tfvm commands.
 func RunTfvmCommand(args []string) error {
 
 	if len(args) == 0 {

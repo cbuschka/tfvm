@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// RunTerraformCommand runs tfvm terraform, resp. terraform command.
 func RunTerraformCommand(args []string) error {
 
 	workspace, err := workspacePkg.GetWorkspace()

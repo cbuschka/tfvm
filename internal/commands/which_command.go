@@ -7,6 +7,7 @@ import (
 	workspacePkg "github.com/cbuschka/tfvm/internal/workspace"
 )
 
+// RunTfvmWhichCommand runs the tfvm which command.
 func RunTfvmWhichCommand(args []string) error {
 
 	inventory, err := inventoryPkg.GetInventory()

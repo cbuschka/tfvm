@@ -8,6 +8,7 @@ import (
 	workspacePkg "github.com/cbuschka/tfvm/internal/workspace"
 )
 
+// RunTfvmInstallCommand runs tfvm install command.
 func RunTfvmInstallCommand(args []string) error {
 	inventory, err := inventoryPkg.GetInventory()
 	if err != nil {

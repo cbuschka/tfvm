@@ -5,6 +5,7 @@ import (
 	"github.com/cbuschka/tfvm/internal/util"
 )
 
+// RunTfvmUptodateCommand runs tfvm uptodate check.
 func RunTfvmUptodateCommand(args []string) error {
 
 	updateStatus := build.GetUpdateStatus()
