@@ -11,6 +11,7 @@ import (
 
 const noConfigExistsMsg = "config not exists"
 
+// IsNoConfigExists answers if an error means that no .terraform-version file could be found.
 func IsNoConfigExists(err error) bool {
 	return err.Error() == noConfigExistsMsg
 }
