@@ -4,24 +4,29 @@ import (
 	"github.com/tcnksm/go-latest"
 )
 
+// UpdateStatus represents the current update status.
 type UpdateStatus struct {
 	updateAvailable bool
 	latestVersion   string
 	currentVersion  string
 }
 
+// UpdateAvailable answers if an update is available.
 func (updateStatus *UpdateStatus) UpdateAvailable() bool {
 	return updateStatus.updateAvailable
 }
 
+// CurrentVersion gives the current tfvm version.
 func (updateStatus *UpdateStatus) CurrentVersion() string {
 	return updateStatus.currentVersion
 }
 
+// LatestVersion gives the latest tfvm version.
 func (updateStatus *UpdateStatus) LatestVersion() string {
 	return updateStatus.latestVersion
 }
 
+// GetUpdateStatus creates an instance of UpdateStatus.
 func GetUpdateStatus() *UpdateStatus {
 	githubTag := &latest.GithubTag{
 		Owner:             "cbuschka",
