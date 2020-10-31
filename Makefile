@@ -6,6 +6,7 @@ ifeq (${GOPATH},)
 	GOPATH := ${HOME}/go
 endif
 OS ::= $(shell uname -s)
+SHEEL = /bin/bash
 
 define build_binary
 	@echo "Building $(1)/$(2)..."
@@ -18,7 +19,7 @@ define build_binary
 			-X github.com/cbuschka/tfvm/internal/build.buildInfoArch=$(2) \
 			-extldflags \"-static\"" \
 			-o dist/tfvm-$(1)_$(2)$(3) \
-			cmd/tfvm.go
+			cmd/tfvm/tfvm.go
 endef
 
 all:	clean build_linux build_windows build_macosx integration_test
@@ -75,6 +76,12 @@ test:	init
 integration_test:
 	@echo "### Running integration tests..."
 	${PROJECT_DIR}/scripts/run-integration-tests.sh
+
+dump_tf_releases:	init
+	(echo -e "package inventory\n\nconst defaultStateJSON = \`" && \
+	go run ./cmd/dump_tf_releases/ ./internal/... && \
+	echo '`' ) > ${PROJECT_DIR}/internal/inventory/default_inventory_state.go.new && \
+	mv ${PROJECT_DIR}/internal/inventory/default_inventory_state.go.new ${PROJECT_DIR}/internal/inventory/default_inventory_state.go
 
 build_with_docker:
 	docker run -u $(shell id -u):$(shell id -g) \

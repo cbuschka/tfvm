@@ -75,7 +75,7 @@ func (inventory *Inventory) saveState() error {
 		return err
 	}
 
-	if err = os.MkdirAll(filepath.Dir(statefilepath), os.ModePerm); err != nil {
+	if err := os.MkdirAll(filepath.Dir(statefilepath), os.ModePerm); err != nil {
 		return err
 	}
 
@@ -89,15 +89,39 @@ func (inventory *Inventory) saveState() error {
 
 	state.TerraformReleases = tfReleaseStates
 
-	file, err := json.MarshalIndent(state, "", " ")
+	data, err := state.Marshall()
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(statefilepath, file, 0644)
+	err = ioutil.WriteFile(statefilepath, data, 0644)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+// Fill fills state with terraform releases and updates state.LastUpdateTime.
+func (state *State) Fill(terraformReleasesAsc []*version.TerraformVersion) {
+	state.LastUpdateTime = time.Now().Format(time.RFC3339)
+
+	tfReleaseStates := make([]TerraformReleaseState, len(terraformReleasesAsc))
+	for index, tfRelease := range terraformReleasesAsc {
+		tfReleaseStates[index] = TerraformReleaseState{Version: tfRelease.Version.String()}
+	}
+
+	state.TerraformReleases = tfReleaseStates
+
+}
+
+// Marshall converts state into json on disk format.
+func (state *State) Marshall() ([]byte, error) {
+
+	data, err := json.MarshalIndent(state, "", " ")
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
