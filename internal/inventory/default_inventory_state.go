@@ -2,7 +2,7 @@ package inventory
 
 const defaultStateJSON = `
 {
- "lastUpdateTime": "2020-05-28T22:47:36+02:00",
+ "lastUpdateTime": "2020-10-31T12:12:06+01:00",
  "terraformReleases": [
   {
    "version": "0.1.0"
@@ -405,6 +405,60 @@ const defaultStateJSON = `
   },
   {
    "version": "0.12.26"
+  },
+  {
+   "version": "0.12.27"
+  },
+  {
+   "version": "0.12.28"
+  },
+  {
+   "version": "0.12.29"
+  },
+  {
+   "version": "0.13.0-beta1"
+  },
+  {
+   "version": "0.13.0-beta2"
+  },
+  {
+   "version": "0.13.0-beta3"
+  },
+  {
+   "version": "0.13.0-rc1"
+  },
+  {
+   "version": "0.13.0"
+  },
+  {
+   "version": "0.13.1"
+  },
+  {
+   "version": "0.13.2"
+  },
+  {
+   "version": "0.13.3"
+  },
+  {
+   "version": "0.13.4"
+  },
+  {
+   "version": "0.13.5"
+  },
+  {
+   "version": "0.14.0-alpha20200910"
+  },
+  {
+   "version": "0.14.0-alpha20200923"
+  },
+  {
+   "version": "0.14.0-alpha20201007"
+  },
+  {
+   "version": "0.14.0-beta1"
+  },
+  {
+   "version": "0.14.0-beta2"
   }
  ]
 }`
