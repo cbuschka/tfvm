@@ -41,7 +41,7 @@ func RunTfvmUseCommand(args []string) error {
 
 	err = workspace.WriteTerraformVersionSelection(versionSpec.String())
 	if err != nil {
-		if workspacePkg.IsNoConfigExists(err) {
+		if workspacePkg.IsVersionSelectionNotFound(err) {
 			util.Die(1, "No .terraform-version found.")
 		}
 		return err

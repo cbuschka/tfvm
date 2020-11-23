@@ -13,6 +13,7 @@ import (
 // .terraform-version file with a terraform version selection.
 type Workspace struct {
 	RootDir string
+	Config  *Config
 }
 
 // GetWorkspace returns an initialized workspace instance.
@@ -22,7 +23,17 @@ func GetWorkspace() (*Workspace, error) {
 		return nil, err
 	}
 
-	return &Workspace{RootDir: rootDir}, nil
+	config, err := loadConfig(rootDir)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Workspace{RootDir: rootDir, Config: config}, nil
+}
+
+// GetConfig returns the config of a workspace.
+func (workspace *Workspace) GetConfig() *Config {
+	return workspace.Config
 }
 
 // SelectionSourceType describes the method how a TerraformVersionSelection is selected.
@@ -71,10 +82,10 @@ func newNoTfVersionSelected() error {
 
 // WriteTerraformVersionSelection writes a terraform selection to a .terraform-version file.
 func (workspace *Workspace) WriteTerraformVersionSelection(tfVersionSelection string) error {
-	configFile, err := getNearestConfigFileFromCwd()
+	configFile, err := getNearestVersionSelectionFileFromCwd()
 	if err != nil {
 		if os.IsNotExist(err) {
-			return newNoConfigExists()
+			return newVersionSelectionNotFound()
 		}
 
 		return err
@@ -105,9 +116,9 @@ func (workspace *Workspace) GetTerraformVersionSelection() (*TerraformVersionSel
 		return &TerraformVersionSelection{versionSpec: versionSpec, sourceName: "TERRAFORM_VERSION", sourceType: Env}, nil
 	}
 
-	config, err := getConfiguration()
+	config, err := getVersionSelection()
 	if err != nil {
-		if IsNoConfigExists(err) {
+		if IsVersionSelectionNotFound(err) {
 			return nil, newNoTfVersionSelected()
 		}
 		return nil, err

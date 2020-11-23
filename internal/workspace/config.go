@@ -1,91 +1,37 @@
 package workspace
 
 import (
-	"bufio"
-	"errors"
-	"github.com/cbuschka/tfvm/internal/version"
-	"os"
+	"github.com/mitchellh/go-homedir"
+	"gopkg.in/ini.v1"
 	"path/filepath"
-	"strings"
 )
 
-const noConfigExistsMsg = "config not exists"
-
-// IsNoConfigExists answers if an error means that no .terraform-version file could be found.
-func IsNoConfigExists(err error) bool {
-	return err.Error() == noConfigExistsMsg
+// Config is the tfvm config.
+type Config struct {
+	Verbose bool `ini:"verbose"`
 }
 
-func newNoConfigExists() error {
-	return errors.New(noConfigExistsMsg)
-}
+func loadConfig(workspaceRootDir string) (*Config, error) {
 
-var configFileNames = []string{".terraform-version"}
-
-// Get a terraform version by walking through directory structure up to the root
-// and looking for selection files.
-func getConfiguration() (*TerraformVersionSelection, error) {
-	configFile, err := getNearestConfigFileFromCwd()
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, newNoTfVersionSelected()
-		}
-
-		return nil, err
-	}
-
-	return readConfiguration(configFile)
-}
-
-func readConfiguration(configFile string) (*TerraformVersionSelection, error) {
-	file, err := os.Open(configFile)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	versionSpecStr := ""
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if !strings.HasPrefix(line, "#") && line != "" {
-			versionSpecStr = line
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	versionSpec, err := version.ParseTerraformVersionSpec(versionSpecStr)
+	homeDir, err := homedir.Dir()
 	if err != nil {
 		return nil, err
 	}
 
-	return &TerraformVersionSelection{versionSpec: versionSpec, sourceName: configFile, sourceType: File}, nil
-}
+	globalTfvmRc := "/etc/tfvmrc"
+	userSpecificTfvmRc := filepath.Join(homeDir, ".tfvmrc")
+	workspaceTfvmRc := filepath.Join(workspaceRootDir, ".tfvmrc")
 
-func getNearestConfigFileFromCwd() (string, error) {
-	cwd, err := os.Getwd()
+	iniConfig, err := ini.LooseLoad(globalTfvmRc, userSpecificTfvmRc, workspaceTfvmRc)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return getNearestConfigFile(cwd)
-}
-
-func getNearestConfigFile(workingDir string) (string, error) {
-	currentDir := workingDir
-	previousDir := ""
-	for currentDir != previousDir {
-		for _, currentConfigFileName := range configFileNames {
-			currentConfigFile := filepath.Join(currentDir, currentConfigFileName)
-			if _, err := os.Stat(currentConfigFile); err == nil {
-				return currentConfigFile, nil
-			}
-		}
-		previousDir = currentDir
-		currentDir = filepath.Dir(currentDir)
+	config := Config{Verbose: false}
+	err = iniConfig.MapTo(&config)
+	if err != nil {
+		return nil, err
 	}
-	return "", newNoConfigExists()
+
+	return &config, nil
 }
