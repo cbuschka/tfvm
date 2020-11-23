@@ -6,6 +6,7 @@ require (
 	github.com/google/go-github v17.0.0+incompatible // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/hashicorp/go-version v1.2.0
+	github.com/hashicorp/hcl v1.0.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.5.1
@@ -14,4 +15,5 @@ require (
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
 	golang.org/x/tools v0.0.0-20201123190950-db3e1ec26de3 // indirect
 	gopkg.in/ini.v1 v1.62.0
+	golang.org/x/mod v0.3.0 // indirect
 )

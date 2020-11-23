@@ -28,5 +28,7 @@ func getRootDir() (string, error) {
 		return "", err
 	}
 
+	util.Debug("Workspace root dir is: %s", rootDir)
+
 	return rootDir, err
 }

@@ -18,6 +18,7 @@ type Workspace struct {
 
 // GetWorkspace returns an initialized workspace instance.
 func GetWorkspace() (*Workspace, error) {
+
 	rootDir, err := getRootDir()
 	if err != nil {
 		return nil, err
@@ -44,6 +45,8 @@ const (
 	File SelectionSourceType = 0
 	// Env means the terraform version is selected via a env variable.
 	Env SelectionSourceType = 1
+	// HclFile means the terraform version is selected via a .tf file.
+	HclFile SelectionSourceType = 2
 )
 
 // TerraformVersionSelection describes the result of version selection.
@@ -64,6 +67,8 @@ func (config *TerraformVersionSelection) Source() string {
 		return fmt.Sprintf("file %s", config.sourceName)
 	} else if config.sourceType == Env {
 		return fmt.Sprintf("env var %s", config.sourceName)
+	} else if config.sourceType == HclFile {
+		return fmt.Sprintf("hcl file %s", config.sourceName)
 	} else {
 		panic("selection without sourceType type")
 	}
@@ -116,13 +121,22 @@ func (workspace *Workspace) GetTerraformVersionSelection() (*TerraformVersionSel
 		return &TerraformVersionSelection{versionSpec: versionSpec, sourceName: "TERRAFORM_VERSION", sourceType: Env}, nil
 	}
 
-	config, err := getVersionSelection()
+	versionSelection, err := getVersionSelection()
+	if err != nil && !IsVersionSelectionNotFound(err) {
+		return nil, err
+	}
+	if versionSelection != nil && err == nil {
+		return versionSelection, nil
+	}
+
+	versionSelection, err = workspace.findTerraformVersionSpecFromHclFiles()
+	if versionSelection != nil {
+		return versionSelection, nil
+	}
+
 	if err != nil {
-		if IsVersionSelectionNotFound(err) {
-			return nil, newNoTfVersionSelected()
-		}
 		return nil, err
 	}
 
-	return config, nil
+	return nil, newNoTfVersionSelected()
 }
