@@ -12,11 +12,17 @@ import (
 // Workspace represents a workspace, that possibly contains a
 // .terraform-version file with a terraform version selection.
 type Workspace struct {
+	RootDir string
 }
 
 // GetWorkspace returns an initialized workspace instance.
 func GetWorkspace() (*Workspace, error) {
-	return &Workspace{}, nil
+	rootDir, err := getRootDir()
+	if err != nil {
+		return nil, err
+	}
+
+	return &Workspace{RootDir: rootDir}, nil
 }
 
 // SelectionSourceType describes the method how a TerraformVersionSelection is selected.
