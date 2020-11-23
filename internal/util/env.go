@@ -13,3 +13,9 @@ func GetFirstEnv(names ...string) string {
 
 	return ""
 }
+
+// IsEnvVarTrue tests if a env var is set to 1, true, yes, y or t.
+func IsEnvVarTrue(name string) bool {
+	value := os.Getenv(name)
+	return value == "1" || value == "true" || value == "yes" || value == "y" || value == "t"
+}
