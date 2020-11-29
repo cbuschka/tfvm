@@ -12,6 +12,6 @@ require (
 	github.com/tcnksm/go-latest v0.0.0-20170313132115-e3007ae9052e
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
-	golang.org/x/tools v0.0.0-20201121010211-780cb80bd7fb // indirect
+	golang.org/x/tools v0.0.0-20201123190950-db3e1ec26de3 // indirect
 	gopkg.in/ini.v1 v1.62.0
 )
