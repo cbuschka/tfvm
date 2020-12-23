@@ -7,6 +7,7 @@
 * download and install terraform version
 * select terraform version via .terraform-version
 * invoke selected terraform through tfvm
+* also available as [github action setup-tfvm](https://github.com/cbuschka/setup-tfvm)
 
 ## System Requirements
 * 64-Bit Linux, MacOS X or Windows
