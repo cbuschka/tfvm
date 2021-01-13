@@ -29,7 +29,7 @@ function get_os() {
     Linux*) OS="linux"; EXT="";;
     Darwin*) OS="darwin"; EXT="";;
     CYGWIN*|MINGW*) OS="windows"; EXT=".exe";;
-    *) echo "${unameOut} is not supported. Aborted"; exit 1;;
+    *) echo "${unameOut} is not supported. Aborted."; exit 1;;
   esac
 }
 
@@ -45,6 +45,12 @@ function get_arch() {
 get_os
 get_arch
 
+CURRENT_TFVM_VERSION=$(tfvm version 2>/dev/null)
+if [ "x${CURRENT_TFVM_VERSION}" = "x${VERSION}" ]; then
+  echo "tfvm ${VERSION} is already installed."
+  exit 0
+fi
+
 echo "Downloading tfvm ${VERSION}..."
 TMP_FILE=$(mktemp)
 curl -L --progress-bar -o ${TMP_FILE} https://github.com/cbuschka/tfvm/releases/download/${VERSION}/tfvm-${OS}_${ARCH}${EXT}
@@ -57,7 +63,7 @@ mv ${TMP_FILE} ${TARGET_TFVM}
 chmod 755 ${TARGET_TFVM}
 echo "Creating symlink ${TARGET_TERRAFORM} to ${TARGET_TFVM}..."
 ln -s ${TARGET_TFVM} ${TARGET_TERRAFORM}
-echo "tfvm successfully installed."
+echo "tfvm ${VERSION} successfully installed."
 
 if [ "x" = "x$(echo ${PATH} | grep ${TARGET_DIR})" ]; then
   echo
