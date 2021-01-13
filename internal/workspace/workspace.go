@@ -129,9 +129,11 @@ func (workspace *Workspace) GetTerraformVersionSelection() (*TerraformVersionSel
 		return versionSelection, nil
 	}
 
-	versionSelection, err = workspace.findTerraformVersionSpecFromHclFiles()
-	if versionSelection != nil {
-		return versionSelection, nil
+	if util.IsAlphaFeatureEnabled() {
+		versionSelection, err = workspace.findTerraformVersionSpecFromHclFiles()
+		if versionSelection != nil {
+			return versionSelection, nil
+		}
 	}
 
 	if err != nil {
