@@ -11,6 +11,8 @@ import (
 // RunTerraformCommand runs tfvm terraform, resp. terraform command.
 func RunTerraformCommand(args []string) error {
 
+	util.PrintAlphaFeatureWaningIfEnabled()
+
 	workspace, err := workspacePkg.GetWorkspace()
 	if err != nil {
 		return err

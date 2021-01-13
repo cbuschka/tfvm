@@ -7,6 +7,8 @@ import (
 // RunTfvmCommand runs tfvm commands.
 func RunTfvmCommand(args []string) error {
 
+	util.PrintAlphaFeatureWaningIfEnabled()
+
 	if len(args) == 0 {
 		printUsage()
 		return nil
