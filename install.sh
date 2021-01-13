@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+TIMESTAMP=$(date +%Y-%m-%dT%H:%M:%S)
+
 TARGET_DIR=/usr/local/bin/
 if [ "${UID}" != "0" ]; then
   TARGET_DIR=${HOME}/bin
@@ -13,8 +15,8 @@ if [ ! -d "${TARGET_DIR}" ]; then
 fi
 
 if [ -f "${TARGET_DIR}/terraform" ]; then
-  echo "${TARGET_DIR}/terraform already exists. Aborted."
-  exit 1
+  mv ${TARGET_DIR}/terraform ${TARGET_DIR}/terraform.${TIMESTAMP}
+  echo "${TARGET_DIR}/terraform already exists. Moved out of the way as ${TARGET_DIR}/terraform.${TIMESTAMP}."
 fi
 
 echo "Will install tfvm as ${TARGET_DIR}/tfvm and ${TARGET_DIR}/terraform."
