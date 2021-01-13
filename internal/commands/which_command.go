@@ -28,7 +28,7 @@ func RunTfvmWhichCommand(args []string) error {
 	tfVersionSelection, err := workspace.GetTerraformVersionSelection()
 	if err != nil {
 		if workspacePkg.IsNoTfVersionSelected(err) {
-			util.Print("No terraform version configured.")
+			util.Print("No terraform version configured. (No env var TFVM_TERRAFORM_VERSION, TERRAFORM_VERSION or file .terraform-version found.)")
 			return nil
 		}
 

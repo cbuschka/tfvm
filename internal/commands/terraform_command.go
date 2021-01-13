@@ -19,7 +19,7 @@ func RunTerraformCommand(args []string) error {
 	tfVersionSelection, err := workspace.GetTerraformVersionSelection()
 	if err != nil {
 		if workspacePkg.IsNoTfVersionSelected(err) {
-			util.Die(1, "No terraform version configured. Place .terraform-version in current or parent dir.")
+			util.Die(1, "No terraform version configured. Place .terraform-version in current dir or above. (Or set env var TERRAFORM_VERSION or TFVM_TERRAFORM_VERSION.)")
 			return err
 		}
 
