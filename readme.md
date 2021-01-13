@@ -11,7 +11,6 @@
 
 ## System Requirements
 * 64-Bit Linux, MacOS X or Windows
-* Go 1.15.x, Linux or Mac OS X for development
 
 ## Installation
 
@@ -72,6 +71,10 @@ tfvm help
 
 ### Environment Variables
 [Supported Environment Variables](./doc/env-vars.md)
+
+## Development Requirements
+* Go 1.15.x, Linux or Mac OS X for development
+* GNU make
 
 ## Similar tools
 * [tfenv](https://github.com/tfutils/tfenv) [(comparison)](./doc/tfvm-vs-tfenv.md)
