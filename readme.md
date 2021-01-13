@@ -14,13 +14,20 @@
 * Go 1.15.x, Linux or Mac OS X for development
 
 ## Installation
+
+### in /usr/local/bin as root
+
+```
+curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/main/install.sh -o - | sudo bash
+```
+
+### in ${HOME}/bin as unpriviledged user
+
 ```
 curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/main/install.sh -o - | bash
 ```
 
-Installs into ${HOME}/bin or /usr/local/bin if executed as root.
-
-### or
+### manual installation
 * Download tfvm from [latest release](https://github.com/cbuschka/tfvm/releases/latest) to your bin dir
 * Make executable ```chmod o+x tfvm```
 * Optionally link to tfvm as terraform ```ln -s tfvm terraform```
