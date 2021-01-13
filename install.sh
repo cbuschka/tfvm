@@ -57,6 +57,11 @@ mv ${TMP_FILE} ${TARGET_TFVM}
 chmod 755 ${TARGET_TFVM}
 echo "Creating symlink ${TARGET_TERRAFORM} to ${TARGET_TFVM}..."
 ln -s ${TARGET_TFVM} ${TARGET_TERRAFORM}
-
 echo "tfvm successfully installed."
+
+if [ "x" = "x$(echo ${PATH} | grep ${TARGET_DIR})" ]; then
+  echo
+  echo "Hint: ${TARGET_DIR} is not part of your PATH yet. Do not forget to add it."
+fi
+
 exit 0
