@@ -12,11 +12,6 @@ if [ ! -d "${TARGET_DIR}" ]; then
   exit 1
 fi
 
-if [ -f "${TARGET_DIR}/tfvm" ]; then
-  echo "${TARGET_DIR}/tfvm already exists. Aborted."
-  exit 1
-fi
-
 if [ -f "${TARGET_DIR}/terraform" ]; then
   echo "${TARGET_DIR}/terraform already exists. Aborted."
   exit 1
