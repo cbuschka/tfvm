@@ -34,6 +34,11 @@ curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/main/install.sh -o - | 
 
 ## Usage
 
+### Show which terraform version would be executed
+```
+tfvm which
+```
+
 ### List terraform versions
 ```
 tfvm list
