@@ -77,7 +77,8 @@ tfvm help
 * GNU make
 
 ## Similar tools
-* [tfenv](https://github.com/tfutils/tfenv) [(comparison)](./doc/tfvm-vs-tfenv.md)
+* [tfenv](https://github.com/tfutils/tfenv) [(comparison)](./doc/tfvm-vs-tfenv-vs-terraform-switcher.md)
+* [terraform-switcher](https://github.com/warrensbox/terraform-switcher) [(comparison)](./doc/tfvm-vs-tfenv-vs-terraform-switcher.md)
 * [renatoassis01/tfvm](https://github.com/renatoassis01/tfvm)
 * [jkehres/tfvm](https://github.com/jkehres/tfvm)
 * [terraformw](https://objectpartners.com/2017/12/21/use-a-terraform-wrapper-script-to-easily-manage-terraform-installations/)
