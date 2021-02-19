@@ -45,7 +45,7 @@ function get_arch() {
 get_os
 get_arch
 
-CURRENT_TFVM_VERSION=$(tfvm version 2>/dev/null)
+CURRENT_TFVM_VERSION=$(tfvm version 2>/dev/null || true)
 if [ "x${CURRENT_TFVM_VERSION}" = "x${VERSION}" ]; then
   echo "tfvm ${VERSION} is already installed."
   exit 0
