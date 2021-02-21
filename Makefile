@@ -88,7 +88,7 @@ build_with_docker:
 		-v ${PROJECT_DIR}:/build \
 		-w /build \
 		-e HOME=/build \
-		golang:1.13-stretch \
+		golang:1.16-buster \
 		make build
 
 test_with_docker:
@@ -96,5 +96,5 @@ test_with_docker:
 		-v ${PROJECT_DIR}:/build \
 		-w /build \
 		-e HOME=/build \
-		golang:1.13-stretch \
+		golang:1.16-buster \
 		make test
