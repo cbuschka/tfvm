@@ -4,10 +4,11 @@
 ### Always the right terraform version for your project
 
 ## Features
-* download and install terraform version
+* fully transparent
+* downloads and installs terraform version
 * select terraform version via .terraform-version
 * invoke selected terraform through tfvm
-* also available as [github action setup-tfvm](https://github.com/cbuschka/setup-tfvm)
+* also available as [github action setup-tfvm](https://github.com/cbuschka/setup-tfvm) (fully transparent terraform setup)
 
 ## System Requirements
 * 64-Bit Linux, MacOS X or Windows
@@ -73,7 +74,7 @@ tfvm help
 [Supported Environment Variables](./doc/env-vars.md)
 
 ## Development Requirements
-* Go 1.15.x, Linux or Mac OS X for development
+* Go 1.16.x, Linux or Mac OS X for development
 * GNU make
 
 ## Similar tools
