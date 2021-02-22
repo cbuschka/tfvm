@@ -3,11 +3,13 @@ set -e
 
 TIMESTAMP=$(date +%Y-%m-%dT%H:%M:%S)
 
-TARGET_DIR=/usr/local/bin/
-if [ "${UID}" != "0" ]; then
-  TARGET_DIR=${HOME}/bin
-  mkdir -p ${TARGET_DIR}
+if [ "x" = "x${TARGET_DIR}" ]; then
+  TARGET_DIR=/usr/local/bin/
+  if [ "${UID}" != "0" ]; then
+    TARGET_DIR=${HOME}/bin
+  fi
 fi
+mkdir -p ${TARGET_DIR}
 
 if [ ! -d "${TARGET_DIR}" ]; then
   echo "${TARGET_DIR} is no directory. Aborted."
