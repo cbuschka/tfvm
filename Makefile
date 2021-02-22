@@ -6,7 +6,7 @@ ifeq (${GOPATH},)
 	GOPATH := ${HOME}/go
 endif
 OS ::= $(shell uname -s)
-SHEEL = /bin/bash
+SHELL = /bin/bash
 
 define build_binary
 	@echo "Building $(1)/$(2)..."
