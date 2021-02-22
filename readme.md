@@ -99,7 +99,7 @@ Contributions are welcome!
 * Create a new pull request and describe what you want to achieve or fix
 
 ## License
-Copyright (c) 2020 by [Cornelius Buschka](https://github.com/cbuschka).
+Copyright (c) 2020-2021 by [Cornelius Buschka](https://github.com/cbuschka).
 
 [Apache License, Version 2.0](./license.txt)
 
