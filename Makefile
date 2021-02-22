@@ -24,7 +24,15 @@ endef
 
 all:	clean build_linux build_windows build_macosx integration_test
 
-init:
+check_go_version:
+	@if [[ ! "$$(go version)" =~ ^.*go1.16.*$$ ]]; then \
+		echo "Wrong go version. Expected go 1.16."; \
+		exit 1; \
+	else \
+		echo "Go version ok."; \
+	fi
+
+init:	check_go_version
 	@if [ "${OS}" != "Linux" ] && [ "${OS}" != "Darwin" ]; then \
 		echo "Sorry only Linux and Mac OS X supported as build platform. (This is ${OS}.)"; \
 		exit 1; \
