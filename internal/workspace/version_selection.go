@@ -1,12 +1,9 @@
 package workspace
 
 import (
-	"bufio"
 	"errors"
-	"github.com/cbuschka/tfvm/internal/version"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 const versionSelectionNotFoundMsg = "version spec not found"
@@ -34,35 +31,7 @@ func getVersionSelection() (*TerraformVersionSelection, error) {
 		return nil, err
 	}
 
-	return readVersionSelection(versionSelectionFile)
-}
-
-func readVersionSelection(versionSelectionFile string) (*TerraformVersionSelection, error) {
-	file, err := os.Open(versionSelectionFile)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	versionSpecStr := ""
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if !strings.HasPrefix(line, "#") && line != "" {
-			versionSpecStr = line
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	versionSpec, err := version.ParseTerraformVersionSpec(versionSpecStr)
-	if err != nil {
-		return nil, err
-	}
-
-	return &TerraformVersionSelection{versionSpec: versionSpec, sourceName: versionSelectionFile, sourceType: File}, nil
+	return readVersionSelectionFromFile(versionSelectionFile)
 }
 
 func getNearestVersionSelectionFileFromCwd() (string, error) {
