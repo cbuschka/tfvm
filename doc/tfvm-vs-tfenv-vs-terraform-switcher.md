@@ -16,4 +16,5 @@
 | override terraform arch | [yes](https://github.com/cbuschka/tfvm/blob/main/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) | no |
 | override terraform os | [yes](https://github.com/cbuschka/tfvm/blob/main/doc/env-vars.md#environment-variables) | [yes](https://github.com/tfutils/tfenv#tfenv_arch) | no |
 | compliant with xdg dir structure | yes | no (stores all below ~/.tfenv/bin/) | [no](https://github.com/warrensbox/terraform-switcher/issues/80) |
+| github actions support | [yes](https://github.com/cbuschka/setup-tfvm) | no, maual setup required | no, manual setup required |
 
