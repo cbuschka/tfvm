@@ -5,7 +5,9 @@ TIMESTAMP=$(date +%Y-%m-%dT%H:%M:%S)
 
 if [ "x" = "x${TARGET_DIR}" ]; then
   TARGET_DIR=/usr/local/bin/
-  if [ "${UID}" != "0" ]; then
+  if [ "${UID}" != "0" ] && [ -d "${HOME}/.local/bin" ] && [ ! -f "${HOME}/bin/tfvm" ]; then
+    TARGET_DIR=${HOME}/.local/bin
+  else
     TARGET_DIR=${HOME}/bin
   fi
 fi
