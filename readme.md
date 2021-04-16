@@ -15,13 +15,13 @@
 
 ## Installation
 
-### in /usr/local/bin as root
+### as root in /usr/local/bin
 
 ```
 curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/main/install.sh -o - | sudo bash
 ```
 
-### in ${HOME}/bin as unpriviledged user
+### as unpriviledged user in ${HOME}/.local/bin if available of ${HOME}/bin as a fallback
 
 ```
 curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/main/install.sh -o - | bash
