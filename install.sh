@@ -25,24 +25,48 @@ fi
 
 echo "Will install tfvm as ${TARGET_DIR}/tfvm and ${TARGET_DIR}/terraform."
 
-VERSION=$(curl --silent "https://api.github.com/repos/cbuschka/tfvm/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+VERSION=$(
+  curl --silent "https://api.github.com/repos/cbuschka/tfvm/releases/latest" |
+    awk 'match($0, /"tag_name": "(.+)"/, a) { print a[1] }'
+)
 
 function get_os() {
   local unameOut="$(uname -s)"
   case "${unameOut}" in
-    Linux*) OS="linux"; EXT="";;
-    Darwin*) OS="darwin"; EXT="";;
-    CYGWIN*|MINGW*) OS="windows"; EXT=".exe";;
-    *) echo "${unameOut} is not supported. Aborted."; exit 1;;
+  Linux*)
+    OS="linux"
+    EXT=""
+    ;;
+  Darwin*)
+    OS="darwin"
+    EXT=""
+    ;;
+  CYGWIN* | MINGW*)
+    OS="windows"
+    EXT=".exe"
+    ;;
+  *)
+    echo "${unameOut} is not supported. Aborted."
+    exit 1
+    ;;
   esac
 }
 
 function get_arch() {
   local unameOut="$(uname -m)"
   case "${unameOut}" in
-    x86_64*) ARCH="amd64";;
-    386*) ARCH="386";;
-    *) echo "${unameOut} is not supported. Aborted"; exit 1;;
+  x86_64*) ARCH="amd64" ;;
+  386*) ARCH="386" ;;
+  arm64*)
+    if [[ "$OS" == darwin ]]; then
+      ARCH="amd64"
+    else
+      echo "${unameOut} is not supported except on darwin. Aborted"
+    fi
+  *)
+    echo "${unameOut} is not supported. Aborted"
+    exit 1
+    ;;
   esac
 }
 
