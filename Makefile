@@ -76,6 +76,7 @@ build_windows:	build
 build_macosx:	build
 	@echo "### Building Mac OS X variants..."
 	$(call build_binary,darwin,amd64,)
+	$(call build_binary,darwin,arm64,)
 
 test:	init
 	@echo "### Running unit tests..."
