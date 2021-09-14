@@ -2,6 +2,7 @@ package remote
 
 import (
 	"fmt"
+	"github.com/cbuschka/tfvm/internal/build"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
 	goversion "github.com/hashicorp/go-version"
@@ -40,9 +41,17 @@ func ListTerraformBuilds(release *version.TerraformVersion) ([]*TerraformBuild, 
 	return extractBuilds(buildsPage)
 }
 
-func downloadReleasesPage() (string, error) {
-	url := fmt.Sprintf("%s/index.html", getReleasesBaseURL())
-	resp, err := http.Get(url)
+func getHtmlContentsFrom(url string) (string, error) {
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return "", err
+	}
+	client := &http.Client{}
+	userAgent := fmt.Sprintf("tfvm/%s (https://github.com/cbuschka/tfvm)", build.GetBuildInfo().Version)
+	req.Header.Set("User-Agent", userAgent)
+	resp, err := client.Do(req)
+
 	if err != nil {
 		return "", err
 	}
@@ -55,19 +64,14 @@ func downloadReleasesPage() (string, error) {
 	return string(html), nil
 }
 
+func downloadReleasesPage() (string, error) {
+	url := fmt.Sprintf("%s/index.html", getReleasesBaseURL())
+	return getHtmlContentsFrom(url)
+}
+
 func downloadBuildsPage(release *version.TerraformVersion) (string, error) {
 	url := fmt.Sprintf("%s/index.html", getBuildBaseURL(release))
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	html, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(html), nil
+	return getHtmlContentsFrom(url)
 }
 
 func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
