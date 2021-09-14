@@ -63,6 +63,7 @@ function get_arch() {
     else
       echo "${unameOut} is not supported except on darwin. Aborted"
     fi
+  ;;
   *)
     echo "${unameOut} is not supported. Aborted"
     exit 1
