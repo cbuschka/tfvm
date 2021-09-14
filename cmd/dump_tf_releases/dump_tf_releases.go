@@ -22,6 +22,18 @@ func main() {
 
 	state.Fill(tfReleases)
 
+	for _, tfRelease := range tfReleases {
+		builds, err := remote.ListTerraformBuilds(tfRelease)
+		if err != nil {
+			util.Die(1, "Getting terraform builds for release %s failed: %s", tfRelease.String(), err.Error())
+		}
+
+		err = state.FillBuilds(tfRelease, builds)
+		if err != nil {
+			util.Die(1, "Filling builds for release %s failed: %s", tfRelease.String(), err.Error())
+		}
+	}
+
 	data, err := state.Marshall()
 	if err != nil {
 		util.Die(1, "Marshalling failed: %s", err.Error())

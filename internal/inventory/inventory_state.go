@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"encoding/json"
+	"github.com/cbuschka/tfvm/internal/remote"
 	"github.com/cbuschka/tfvm/internal/version"
 	goversion "github.com/hashicorp/go-version"
 	"io/ioutil"
@@ -10,15 +11,23 @@ import (
 	"time"
 )
 
+// TerraformReleaseBuildState describes a single terraform release build state.
+type TerraformReleaseBuildState struct {
+	Os           string `json:"os"`
+	Arch         string `json:"arch"`
+	DownloadPath string `json:"download_path"`
+}
+
 // TerraformReleaseState describes a single terraform release state.
 type TerraformReleaseState struct {
-	Version string `json:"version"`
+	Version string                        `json:"version"`
+	Builds  []*TerraformReleaseBuildState `json:"builds"`
 }
 
 // State describes the on disk inventory state format.
 type State struct {
-	LastUpdateTime    string                  `json:"lastUpdateTime"`
-	TerraformReleases []TerraformReleaseState `json:"terraformReleases"`
+	LastUpdateTime    string                   `json:"lastUpdateTime"`
+	TerraformReleases []*TerraformReleaseState `json:"terraformReleases"`
 }
 
 func (inventory *Inventory) loadState() error {
@@ -82,9 +91,9 @@ func (inventory *Inventory) saveState() error {
 	state := State{}
 	state.LastUpdateTime = inventory.lastUpdateTime.Format(time.RFC3339)
 
-	tfReleaseStates := make([]TerraformReleaseState, len(inventory.terraformReleasesAsc))
+	tfReleaseStates := make([]*TerraformReleaseState, len(inventory.terraformReleasesAsc))
 	for index, tfRelease := range inventory.terraformReleasesAsc {
-		tfReleaseStates[index] = TerraformReleaseState{Version: tfRelease.Version.String()}
+		tfReleaseStates[index] = &TerraformReleaseState{Version: tfRelease.Version.String()}
 	}
 
 	state.TerraformReleases = tfReleaseStates
@@ -106,9 +115,9 @@ func (inventory *Inventory) saveState() error {
 func (state *State) Fill(terraformReleasesAsc []*version.TerraformVersion) {
 	state.LastUpdateTime = time.Now().Format(time.RFC3339)
 
-	tfReleaseStates := make([]TerraformReleaseState, len(terraformReleasesAsc))
+	tfReleaseStates := make([]*TerraformReleaseState, len(terraformReleasesAsc))
 	for index, tfRelease := range terraformReleasesAsc {
-		tfReleaseStates[index] = TerraformReleaseState{Version: tfRelease.Version.String()}
+		tfReleaseStates[index] = &TerraformReleaseState{Version: tfRelease.Version.String()}
 	}
 
 	state.TerraformReleases = tfReleaseStates
@@ -124,4 +133,24 @@ func (state *State) Marshall() ([]byte, error) {
 	}
 
 	return data, nil
+}
+
+func (state *State) FillBuilds(release *version.TerraformVersion, builds []*remote.TerraformBuild) error {
+	filled := false
+	for _, tfRelease := range state.TerraformReleases {
+		if tfRelease.Version == release.String() {
+			filled = true
+			buildStates := make([]*TerraformReleaseBuildState, len(builds))
+			for index, build := range builds {
+				buildStates[index] = &TerraformReleaseBuildState{Os: build.Os, Arch: build.Arch, DownloadPath: build.DownloadPath}
+			}
+			tfRelease.Builds = buildStates
+		}
+	}
+
+	if !filled {
+		return version.NewNoSuchTerraformRelease()
+	}
+
+	return nil
 }

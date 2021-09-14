@@ -12,6 +12,13 @@ import (
 	"strings"
 )
 
+// TerraformBuild is a specific build of a terraform release
+type TerraformBuild struct {
+	Os           string
+	Arch         string
+	DownloadPath string
+}
+
 // ListTerraformReleases lists terraform versions from the hashicorp website.
 func ListTerraformReleases() ([]*version.TerraformVersion, error) {
 
@@ -23,8 +30,33 @@ func ListTerraformReleases() ([]*version.TerraformVersion, error) {
 	return extractReleases(releasesPage)
 }
 
+// ListTerraformBuilds lists builds of a particular release
+func ListTerraformBuilds(release *version.TerraformVersion) ([]*TerraformBuild, error) {
+	buildsPage, err := downloadBuildsPage(release)
+	if err != nil {
+		return nil, err
+	}
+
+	return extractBuilds(buildsPage)
+}
+
 func downloadReleasesPage() (string, error) {
 	url := fmt.Sprintf("%s/index.html", getReleasesBaseURL())
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	html, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(html), nil
+}
+
+func downloadBuildsPage(release *version.TerraformVersion) (string, error) {
+	url := fmt.Sprintf("%s/index.html", getBuildBaseURL(release))
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
@@ -82,4 +114,31 @@ func getReleasesBaseURL() string {
 	}
 
 	return "https://releases.hashicorp.com/terraform"
+}
+
+func getBuildBaseURL(release *version.TerraformVersion) string {
+	return fmt.Sprintf("%s/%s", getReleasesBaseURL(), release.String())
+}
+
+func extractBuilds(buildsPage string) ([]*TerraformBuild, error) {
+	re, err := regexp.Compile("<a\\s+data-product=\"terraform\"\\s+data-version=\"([^\"]+)\"\\s+data-os=\"([^\"]+)\"\\s+data-arch=\"([^\"]+)\"\\s+href=\"([^\"]+)\"[^>]*>[^<]+</a>")
+	if err != nil {
+		return nil, err
+	}
+
+	matchSets := re.FindAllStringSubmatch(buildsPage, -1)
+
+	builds := make([]*TerraformBuild, 0)
+	for _, matchSet := range matchSets {
+		_ = strings.TrimSpace(matchSet[1])
+		os := strings.TrimSpace(matchSet[2])
+		arch := strings.TrimSpace(matchSet[3])
+		path := strings.TrimSpace(matchSet[4])
+		if err != nil {
+			return nil, err
+		}
+		builds = append(builds, &TerraformBuild{Os: os, Arch: arch, DownloadPath: path})
+	}
+
+	return builds, nil
 }
