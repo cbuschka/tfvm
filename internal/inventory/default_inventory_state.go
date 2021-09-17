@@ -2,7 +2,7 @@ package inventory
 
 const defaultStateJSON = `
 {
- "lastUpdateTime": "2021-09-14T22:44:18+02:00",
+ "lastUpdateTime": "2021-09-14T23:19:31+02:00",
  "terraformReleases": [
   {
    "version": "0.1.0",
