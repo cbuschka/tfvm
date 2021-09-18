@@ -19,8 +19,8 @@ type TerraformReleaseBuildState struct {
 
 // TerraformReleaseState describes a single terraform release state.
 type TerraformReleaseState struct {
-	Version *version.TerraformVersion     `json:"version"`
-	Builds  []*TerraformReleaseBuildState `json:"builds"`
+	Version *version.TerraformVersion    `json:"version"`
+	Builds  []TerraformReleaseBuildState `json:"builds"`
 }
 
 // State describes the on disk inventory state format.
@@ -135,9 +135,9 @@ func (state *State) FillBuilds(release *version.TerraformVersion, builds []*remo
 	for _, tfRelease := range state.TerraformReleases {
 		if tfRelease.Version.String() == release.String() {
 			found = true
-			buildStates := make([]*TerraformReleaseBuildState, len(builds))
+			buildStates := make([]TerraformReleaseBuildState, len(builds))
 			for index, build := range builds {
-				buildStates[index] = &TerraformReleaseBuildState{Os: build.Os, Arch: build.Arch, DownloadPath: build.DownloadPath}
+				buildStates[index] = TerraformReleaseBuildState{Os: build.Os, Arch: build.Arch, DownloadPath: build.DownloadPath}
 			}
 			tfRelease.Builds = buildStates
 		}

@@ -45,14 +45,44 @@ func TestMarshallState(t *testing.T) {
 	state.TerraformReleases = make([]*TerraformReleaseState, 1)
 
 	state.TerraformReleases[0] = &TerraformReleaseState{Version: version.SafeNewTerraformVersion("1.2.3")}
-	state.TerraformReleases[0].Builds = make([]*TerraformReleaseBuildState, 1)
-	state.TerraformReleases[0].Builds[0] = &TerraformReleaseBuildState{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}
+	state.TerraformReleases[0].Builds = make([]TerraformReleaseBuildState, 1)
+	state.TerraformReleases[0].Builds[0] = TerraformReleaseBuildState{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}
 	marshalledState, err := json.Marshal(state)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert.Equal(t, "{\"lastUpdateTime\":\"\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\"}]}]}", string(marshalledState))
+}
+
+func TestMarshallUnmarshalRoundtrip(t *testing.T) {
+
+	state := State{}
+	state.TerraformReleases = make([]*TerraformReleaseState, 1)
+
+	state.TerraformReleases[0] = &TerraformReleaseState{Version: version.SafeNewTerraformVersion("1.2.3")}
+	state.TerraformReleases[0].Builds = make([]TerraformReleaseBuildState, 1)
+	state.TerraformReleases[0].Builds[0] = TerraformReleaseBuildState{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}
+	marshalledState, err := json.Marshal(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, "{\"lastUpdateTime\":\"\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\"}]}]}", string(marshalledState))
+
+	newState := State{}
+	err = json.Unmarshal(marshalledState, &newState)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	assert.Equal(t, 1, len(newState.TerraformReleases))
+	assert.Equal(t, "1.2.3", newState.TerraformReleases[0].Version.String())
+	assert.Equal(t, 1, len(newState.TerraformReleases[0].Builds))
+	assert.Equal(t, "os", newState.TerraformReleases[0].Builds[0].Os)
+	assert.Equal(t, "arch", newState.TerraformReleases[0].Builds[0].Arch)
+	assert.Equal(t, "downloadPath", newState.TerraformReleases[0].Builds[0].DownloadPath)
 }
 
 func TestUnmarshalledStateContainsBuilds(t *testing.T) {
