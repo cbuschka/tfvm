@@ -46,7 +46,7 @@ func RunTfvmListCommand(args []string) error {
 			}
 		}
 
-		version := tfRelease.Version
+		version := tfRelease.String()
 		status := ""
 		if installed {
 			status = "installed"

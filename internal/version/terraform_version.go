@@ -20,12 +20,17 @@ func NewNoSuchTerraformRelease() error {
 
 // String gives string representation of version.
 func (release *TerraformVersion) String() string {
-	return release.Version.String()
+	return release.version.String()
+}
+
+// Version retrieves semantic version of terraform version.
+func (release *TerraformVersion) Version() *goversion.Version {
+	return release.version
 }
 
 // TerraformVersion is a representation of a terraform version.
 type TerraformVersion struct {
-	Version *goversion.Version
+	version *goversion.Version
 }
 
 func SafeNewTerraformVersion(version string) *TerraformVersion {
@@ -41,7 +46,7 @@ func NewTerraformVersion(version string) (*TerraformVersion, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &TerraformVersion{Version: tfReleaseVersion}, err
+	return &TerraformVersion{version: tfReleaseVersion}, err
 }
 
 func (tfVersion *TerraformVersion) UnmarshalJSON(data []byte) error {
@@ -54,7 +59,7 @@ func (tfVersion *TerraformVersion) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	tfVersion.Version = version
+	tfVersion.version = version
 	return nil
 }
 

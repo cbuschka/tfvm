@@ -10,7 +10,7 @@ func (v Collection) Len() int {
 
 // Less compares two terraform version items.
 func (v Collection) Less(i, j int) bool {
-	return v[i].Version.LessThan(v[j].Version)
+	return v[i].version.LessThan(v[j].version)
 }
 
 // Swap swap two terraform version items.

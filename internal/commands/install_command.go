@@ -40,7 +40,7 @@ func RunTfvmInstallCommand(args []string) error {
 	}
 
 	if installed {
-		util.Print("Terraform %s is already installed.", tfRelease.Version.String())
+		util.Print("Terraform %s is already installed.", tfRelease.String())
 		return nil
 	}
 

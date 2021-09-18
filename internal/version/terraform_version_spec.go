@@ -34,8 +34,8 @@ func ParseTerraformVersionSpec(versionSpec string) (*TerraformVersionSpec, error
 // Matches checks if a terraform version is matched by a version spec.
 func (spec *TerraformVersionSpec) Matches(tfRelease *TerraformVersion, latestTfRelease *TerraformVersion) bool {
 	if spec.text == "latest" {
-		return tfRelease.Version.String() == latestTfRelease.Version.String()
+		return tfRelease.String() == latestTfRelease.String()
 	}
 
-	return spec.constraints.Check(tfRelease.Version)
+	return spec.constraints.Check(tfRelease.Version())
 }

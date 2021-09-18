@@ -94,7 +94,7 @@ func (inventory *Inventory) GetTerraform(tfRelease *version.TerraformVersion) (*
 		return nil, err
 	}
 
-	return newTerraform(tfRelease.Version.String(), tfPath), nil
+	return newTerraform(tfRelease.String(), tfPath), nil
 }
 
 // GetTerraformBasePath returns the base path for a terraform installation.
@@ -104,7 +104,7 @@ func (inventory *Inventory) GetTerraformBasePath(tfRelease *version.TerraformVer
 		return "", err
 	}
 
-	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", tfRelease.Version.String(),
+	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", tfRelease.String(),
 		fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
 	return versionedTfPath, nil
 }

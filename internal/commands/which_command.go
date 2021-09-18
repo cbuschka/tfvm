@@ -45,6 +45,6 @@ func RunTfvmWhichCommand(args []string) error {
 		return err
 	}
 
-	util.Print("Configured terraform version is %s (%s).", tfRelease.Version, tfVersionSelection.Source())
+	util.Print("Configured terraform version is %s (%s).", tfRelease.String(), tfVersionSelection.Source())
 	return nil
 }

@@ -133,7 +133,7 @@ func (state *State) Marshall() ([]byte, error) {
 func (state *State) FillBuilds(release *version.TerraformVersion, builds []*remote.TerraformBuild) error {
 	found := false
 	for _, tfRelease := range state.TerraformReleases {
-		if tfRelease.Version.String() == release.Version.String() {
+		if tfRelease.Version.String() == release.String() {
 			found = true
 			buildStates := make([]*TerraformReleaseBuildState, len(builds))
 			for index, build := range builds {
