@@ -5,7 +5,6 @@ import (
 	"github.com/cbuschka/tfvm/internal/build"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
-	goversion "github.com/hashicorp/go-version"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -85,11 +84,11 @@ func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
 	releases := make([]*version.TerraformVersion, len(matchSets))
 	for index, matchSet := range matchSets {
 		semVersionStr := strings.TrimSpace(matchSet[1])
-		semVersion, err := goversion.NewVersion(semVersionStr)
+		version, err := version.NewTerraformVersion(semVersionStr)
 		if err != nil {
 			return nil, err
 		}
-		releases[index] = &version.TerraformVersion{Version: semVersion}
+		releases[index] = version
 	}
 
 	return releases, nil
@@ -108,7 +107,7 @@ func GetURL(release *version.TerraformVersion) string {
 	}
 
 	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseURL(),
-		release.Version.String(), release.Version, tfOs, tfArch)
+		release.String(), release.String(), tfOs, tfArch)
 }
 
 func getReleasesBaseURL() string {

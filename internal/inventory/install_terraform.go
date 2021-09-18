@@ -32,7 +32,7 @@ func (inventory *Inventory) InstallTerraform(tfRelease *version.TerraformVersion
 	}
 	defer os.Remove(tmpfile.Name())
 
-	util.Print("Downloading terraform %s...", tfRelease.Version)
+	util.Print("Downloading terraform %s...", tfRelease.String())
 	url := remote.GetURL(tfRelease)
 	err = downloadFile(url, tmpfile.Name())
 	if err != nil {
@@ -40,7 +40,7 @@ func (inventory *Inventory) InstallTerraform(tfRelease *version.TerraformVersion
 		return err
 	}
 
-	util.Print("Installing terraform %s...", tfRelease.Version)
+	util.Print("Installing terraform %s...", tfRelease.String())
 	basePath, err := inventory.GetTerraformBasePath(tfRelease)
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func (inventory *Inventory) InstallTerraform(tfRelease *version.TerraformVersion
 		return err
 	}
 
-	util.Print("Terraform %s installed.", tfRelease.Version)
+	util.Print("Terraform %s installed.", tfRelease.String())
 
 	return nil
 }
