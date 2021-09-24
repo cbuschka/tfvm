@@ -6,6 +6,7 @@ import (
 	"github.com/cbuschka/tfvm/internal/version"
 	"io"
 	"io/ioutil"
+	"os"
 	"time"
 )
 
@@ -71,6 +72,15 @@ func NewEmptyState() *State {
 }
 
 func (state *State) LoadFromFile(statefilepath string) error {
+
+	_, err := os.Stat(statefilepath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+
+		return err
+	}
 
 	file, err := ioutil.ReadFile(statefilepath)
 	if err != nil {
