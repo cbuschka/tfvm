@@ -42,7 +42,7 @@ func TestUnmarshallState(t *testing.T) {
 func TestMarshallState(t *testing.T) {
 
 	state := State{}
-	state.TerraformReleases = []TerraformReleaseState{{Version: version.SafeNewTerraformVersion("1.2.3"), Builds: []TerraformReleaseBuildState{{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}}}}
+	state.TerraformReleases = []*TerraformReleaseState{{Version: version.SafeNewTerraformVersion("1.2.3"), Builds: []*TerraformReleaseBuildState{{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}}}}
 	marshalledState, err := json.Marshal(state)
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +54,7 @@ func TestMarshallState(t *testing.T) {
 func TestMarshallUnmarshalRoundtrip(t *testing.T) {
 
 	state := State{}
-	state.TerraformReleases = []TerraformReleaseState{{Version: version.SafeNewTerraformVersion("1.2.3"), Builds: []TerraformReleaseBuildState{{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}}}}
+	state.TerraformReleases = []*TerraformReleaseState{{Version: version.SafeNewTerraformVersion("1.2.3"), Builds: []*TerraformReleaseBuildState{{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}}}}
 	marshalledState, err := json.Marshal(state)
 	if err != nil {
 		t.Fatal(err)
