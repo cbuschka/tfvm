@@ -20,12 +20,17 @@ func RunTfvmUseCommand(args []string) error {
 		return err
 	}
 
+	err = inventory.Save()
+	if err != nil {
+		return err
+	}
+
 	versionSpec, err := getTfVersionSpecToUse(args)
 	if err != nil {
 		return err
 	}
 
-	_, err = inventory.GetTerraformRelease(versionSpec)
+	_, err = inventory.GetMatchingTerraformRelease(versionSpec)
 	if err != nil {
 		if version.IsNoSuchTerraformRelease(err) {
 			util.Die(1, "No matching terraform version for %s.", versionSpec.String())

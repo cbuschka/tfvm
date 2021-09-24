@@ -20,12 +20,17 @@ func RunTfvmInstallCommand(args []string) error {
 		return err
 	}
 
+	err = inventory.Save()
+	if err != nil {
+		return err
+	}
+
 	versionSpec, err := getTfVersionSpecToInstall(args)
 	if err != nil {
 		return err
 	}
 
-	tfRelease, err := inventory.GetTerraformRelease(versionSpec)
+	tfRelease, err := inventory.GetMatchingTerraformRelease(versionSpec)
 	if err != nil {
 		if version.IsNoSuchTerraformRelease(err) {
 			util.Die(1, "No matching terraform version for %s.", versionSpec.String())
@@ -34,17 +39,7 @@ func RunTfvmInstallCommand(args []string) error {
 		return err
 	}
 
-	installed, err := inventory.IsTerraformInstalled(tfRelease)
-	if err != nil {
-		return err
-	}
-
-	if installed {
-		util.Print("Terraform %s is already installed.", tfRelease.String())
-		return nil
-	}
-
-	err = inventory.InstallTerraform(tfRelease)
+	_, err = inventory.GetInstalledTerraform(tfRelease.Version)
 	if err != nil {
 		return err
 	}

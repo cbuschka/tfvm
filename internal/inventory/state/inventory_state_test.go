@@ -1,4 +1,4 @@
-package inventory
+package state
 
 import (
 	"encoding/json"

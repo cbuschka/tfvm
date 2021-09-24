@@ -20,6 +20,11 @@ func RunTfvmWhichCommand(args []string) error {
 		return err
 	}
 
+	err = inventory.Save()
+	if err != nil {
+		return err
+	}
+
 	workspace, err := workspacePkg.GetWorkspace()
 	if err != nil {
 		return err
@@ -35,7 +40,7 @@ func RunTfvmWhichCommand(args []string) error {
 		return err
 	}
 
-	tfRelease, err := inventory.GetTerraformRelease(tfVersionSelection.VersionSpec())
+	tfRelease, err := inventory.GetMatchingTerraformRelease(tfVersionSelection.VersionSpec())
 	if err != nil {
 		if version.IsNoSuchTerraformRelease(err) {
 			util.Die(1, "Configured terraform version %s (%s) is not known.", tfVersionSelection.VersionSpec().String(), tfVersionSelection.Source())
@@ -45,6 +50,6 @@ func RunTfvmWhichCommand(args []string) error {
 		return err
 	}
 
-	util.Print("Configured terraform version is %s (%s).", tfRelease.String(), tfVersionSelection.Source())
+	util.Print("Configured terraform version is %s (%s).", tfRelease.Version.String(), tfVersionSelection.Source())
 	return nil
 }
