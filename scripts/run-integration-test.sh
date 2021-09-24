@@ -43,7 +43,7 @@ echo "Test temp dir..."
 find ${TEST_TEMP_DIR}
 
 cd ${TEST_TEMP_DIR}/workspace
-${TEST_DIR}/run.sh 2>&1 1>${TEST_TEMP_DIR}/output
+${TEST_DIR}/run.sh 2>&1 | tee ${TEST_TEMP_DIR}/output
 EXIT_CODE=$?
 
 if [ -f "${TEST_DIR}/check.sh" ]; then
