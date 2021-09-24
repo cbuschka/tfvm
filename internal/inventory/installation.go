@@ -16,7 +16,8 @@ import (
 	"strings"
 )
 
-// GetInstalledTerraform installs a terraform version by downloading and extracting it.
+// GetInstalledTerraform installs a terraform version by downloading and extracting it. GetInstalledTerraform respects
+// the platform and fallbacks.
 func (inventory *Inventory) GetInstalledTerraform(terraformVersion *version.TerraformVersion) (*Terraform, error) {
 
 	for _, platform := range platformPkg.GetSupportedPlatforms() {
@@ -33,6 +34,7 @@ func (inventory *Inventory) GetInstalledTerraform(terraformVersion *version.Terr
 	return nil, NewOsArchUnsupportedByTerraform()
 }
 
+// InstallTerraform installs a terraform version for an particular os and arch.
 func (inventory *Inventory) InstallTerraform(terraformVersion *version.TerraformVersion, osName string, arch string) (*Terraform, error) {
 
 	installed, err := inventory.IsTerraformInstalled(terraformVersion, osName, arch)

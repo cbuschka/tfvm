@@ -13,11 +13,13 @@ func Die(exitCode int, format string, a ...interface{}) {
 	os.Exit(exitCode)
 }
 
+// IsOutputTerminal answers if stdout is a terminal.
 func IsOutputTerminal() bool {
 	fileInfo, _ := os.Stdout.Stat()
 	return (fileInfo.Mode() & os.ModeCharDevice) != 0
 }
 
+// SuppressOutput suppresses output messages.
 func SuppressOutput() {
 	forceQuiet = true
 }

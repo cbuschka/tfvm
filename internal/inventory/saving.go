@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 )
 
+// WriteTo writes the inventory state to writer w.
 func (inventory *Inventory) WriteTo(w io.Writer) (int64, error) {
 	terraformReleases := make([]*statePkg.TerraformReleaseState, 0, len(inventory.TerraformReleases))
 	for _, terraformRelease := range inventory.TerraformReleases {
@@ -23,6 +24,7 @@ func (inventory *Inventory) WriteTo(w io.Writer) (int64, error) {
 	return int64(size), err
 }
 
+// Save saves the inventory state into the state.json file.
 func (inventory *Inventory) Save() error {
 
 	stateFilePath, err := getStateFilePath()
