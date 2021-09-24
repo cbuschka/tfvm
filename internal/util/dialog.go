@@ -7,7 +7,7 @@ import (
 
 // Die prints a message and exists the process with exitCode.
 func Die(exitCode int, format string, a ...interface{}) {
-	fmt.Printf("%s\n", fmt.Sprintf(format, a...))
+	_, _ = fmt.Fprintf(os.Stderr, "%s\n", fmt.Sprintf(format, a...))
 	os.Exit(exitCode)
 }
 
