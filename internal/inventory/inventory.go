@@ -9,21 +9,19 @@ import (
 	"path/filepath"
 	"runtime"
 	"sort"
-	"time"
 )
 
 // Inventory represents the tfvm inventory on disk. An inventory stores
 // terraform versions and a state.json inventory state file.
 type Inventory struct {
-	lastUpdateTime       time.Time
-	terraformReleasesAsc []*version.TerraformVersion
-	cacheDir             string
+	state    *State
+	cacheDir string
 }
 
 // GetInventory initializes an inventory instance representing the
 // inventory of the current machine.
 func GetInventory() (*Inventory, error) {
-	inventory := Inventory{lastUpdateTime: time.Now(), terraformReleasesAsc: make([]*version.TerraformVersion, 0)}
+	inventory := Inventory{state: newEmptyState()}
 	err := inventory.initInventory()
 	if err != nil {
 		return nil, err
@@ -39,42 +37,47 @@ func (inventory *Inventory) GetCacheDir() string {
 
 // GetTerraformReleasesAsc lists terraform versions known in ascending order.
 func (inventory *Inventory) GetTerraformReleasesAsc() []*version.TerraformVersion {
-	return inventory.terraformReleasesAsc[:]
+	return inventory.state.GetTerraformReleasesAsc()
 }
 
 // Update updates the inventory state.
 func (inventory *Inventory) Update() error {
 	tfReleases, err := remote.ListTerraformReleases()
+	if err != nil {
+		return err
+	}
 
 	sort.Sort(version.Collection(tfReleases))
 
-	if err == nil && len(tfReleases) > 0 {
-		inventory.terraformReleasesAsc = tfReleases
-		inventory.lastUpdateTime = time.Now()
-		err = inventory.saveState()
-		if err != nil {
-			return err
-		}
-	}
+	err = inventory.saveState()
 
 	return nil
 }
 
 // GetLatestRelease returns the newest terraform version known.
-func (inventory *Inventory) GetLatestRelease() *version.TerraformVersion {
-	if len(inventory.terraformReleasesAsc) == 0 {
-		panic("Inventory has no terraform releases.")
+func (inventory *Inventory) GetLatestRelease() (*version.TerraformVersion, error) {
+
+	terraformReleasesAsc := inventory.GetTerraformReleasesAsc()
+
+	if len(terraformReleasesAsc) == 0 {
+		return nil, version.NewNoTerraformReleases()
 	}
 
-	return inventory.terraformReleasesAsc[len(inventory.terraformReleasesAsc)-1]
+	return terraformReleasesAsc[len(terraformReleasesAsc)-1], nil
 }
 
 // GetTerraformRelease returns the terraform version for a version specification.
 func (inventory *Inventory) GetTerraformRelease(versionSpec *version.TerraformVersionSpec) (*version.TerraformVersion, error) {
-	latestTfRelease := inventory.GetLatestRelease()
 
-	for index := range inventory.terraformReleasesAsc {
-		tfRelease := inventory.terraformReleasesAsc[len(inventory.terraformReleasesAsc)-index-1]
+	terraformReleasesAsc := inventory.GetTerraformReleasesAsc()
+	if len(terraformReleasesAsc) == 0 {
+		return nil, version.NewNoTerraformReleases()
+	}
+
+	latestTfRelease := terraformReleasesAsc[len(terraformReleasesAsc)-1]
+
+	for index := range terraformReleasesAsc {
+		tfRelease := terraformReleasesAsc[len(terraformReleasesAsc)-index-1]
 		if versionSpec.Matches(tfRelease, latestTfRelease) {
 			return tfRelease, nil
 		}
