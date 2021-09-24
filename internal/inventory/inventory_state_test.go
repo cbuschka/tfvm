@@ -48,7 +48,7 @@ func TestMarshallState(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, "{\"lastUpdateTime\":\"\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\"}]}]}", string(marshalledState))
+	assert.Equal(t, "{\"lastUpdateTime\":\"0001-01-01T00:00:00Z\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\"}]}]}", string(marshalledState))
 }
 
 func TestMarshallUnmarshalRoundtrip(t *testing.T) {
@@ -60,7 +60,7 @@ func TestMarshallUnmarshalRoundtrip(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, "{\"lastUpdateTime\":\"\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\"}]}]}", string(marshalledState))
+	assert.Equal(t, "{\"lastUpdateTime\":\"0001-01-01T00:00:00Z\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\"}]}]}", string(marshalledState))
 
 	newState := State{}
 	err = json.Unmarshal(marshalledState, &newState)
