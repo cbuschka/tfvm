@@ -19,13 +19,13 @@ type TerraformReleaseBuildState struct {
 
 // TerraformReleaseState describes a single terraform release state.
 type TerraformReleaseState struct {
-	Version *version.TerraformVersion    `json:"version"`
+	Version *version.TerraformVersion     `json:"version"`
 	Builds  []*TerraformReleaseBuildState `json:"builds"`
 }
 
 // State describes the on disk inventory state format.
 type State struct {
-	LastUpdateTime    string                   `json:"lastUpdateTime"`
+	LastUpdateTime    time.Time                `json:"lastUpdateTime"`
 	TerraformReleases []*TerraformReleaseState `json:"terraformReleases"`
 }
 
@@ -56,7 +56,7 @@ func (inventory *Inventory) loadState() error {
 	}
 
 	inventory.terraformReleasesAsc = tfReleases
-	inventory.lastUpdateTime, err = time.Parse(time.RFC3339, state.LastUpdateTime)
+	inventory.lastUpdateTime = state.LastUpdateTime
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func (inventory *Inventory) saveState() error {
 	}
 
 	state := State{}
-	state.LastUpdateTime = inventory.lastUpdateTime.Format(time.RFC3339)
+	state.LastUpdateTime = inventory.lastUpdateTime
 
 	tfReleaseStates := make([]*TerraformReleaseState, len(inventory.terraformReleasesAsc))
 	for index, tfRelease := range inventory.terraformReleasesAsc {
@@ -108,7 +108,7 @@ func (inventory *Inventory) saveState() error {
 
 // Fill fills state with terraform releases and updates state.LastUpdateTime.
 func (state *State) Fill(terraformReleasesAsc []*version.TerraformVersion) {
-	state.LastUpdateTime = time.Now().Format(time.RFC3339)
+	state.LastUpdateTime = time.Now()
 
 	tfReleaseStates := make([]*TerraformReleaseState, len(terraformReleasesAsc))
 	for index, tfRelease := range terraformReleasesAsc {
