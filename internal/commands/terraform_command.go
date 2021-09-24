@@ -16,6 +16,10 @@ func RunTerraformCommand(args []string) error {
 		return err
 	}
 
+	if !util.IsOutputTerminal() {
+		util.SuppressOutput()
+	}
+
 	tfVersionSelection, err := workspace.GetTerraformVersionSelection()
 	if err != nil {
 		if workspacePkg.IsNoTfVersionSelected(err) {
