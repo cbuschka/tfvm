@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"time"
 )
 
@@ -50,18 +51,21 @@ func (inventory *Inventory) loadState() error {
 		return err
 	}
 
-	tfReleases := make([]*version.TerraformVersion, len(state.TerraformReleases))
-	for index, tfReleaseState := range state.TerraformReleases {
-		tfReleases[index] = tfReleaseState.Version
-	}
-
-	inventory.terraformReleasesAsc = tfReleases
-	inventory.lastUpdateTime = state.LastUpdateTime
-	if err != nil {
-		return err
-	}
+	inventory.state = &state
 
 	return nil
+}
+
+func (state *State) GetTerraformReleasesAsc() []*version.TerraformVersion {
+
+	tfReleasesAsc := make([]*version.TerraformVersion, len(state.TerraformReleases))
+	for index, tfReleaseState := range state.TerraformReleases {
+		tfReleasesAsc[index] = tfReleaseState.Version
+	}
+
+	sort.Sort(version.Collection(tfReleasesAsc))
+
+	return tfReleasesAsc
 }
 
 func getStateFilePath() (string, error) {
@@ -71,6 +75,10 @@ func getStateFilePath() (string, error) {
 	}
 	statefilepath := filepath.Join(inventoryDir, "v1", "state.json")
 	return statefilepath, nil
+}
+
+func newEmptyState() *State {
+	return &State{LastUpdateTime: time.Unix(0, 0), TerraformReleases: []*TerraformReleaseState{}}
 }
 
 func (inventory *Inventory) saveState() error {
@@ -83,17 +91,9 @@ func (inventory *Inventory) saveState() error {
 		return err
 	}
 
-	state := State{}
-	state.LastUpdateTime = inventory.lastUpdateTime
+	inventory.state.LastUpdateTime = time.Now()
 
-	tfReleaseStates := make([]*TerraformReleaseState, len(inventory.terraformReleasesAsc))
-	for index, tfRelease := range inventory.terraformReleasesAsc {
-		tfReleaseStates[index] = &TerraformReleaseState{Version: tfRelease, Builds: nil}
-	}
-
-	state.TerraformReleases = tfReleaseStates
-
-	data, err := state.Marshall()
+	data, err := inventory.state.Marshall()
 	if err != nil {
 		return err
 	}

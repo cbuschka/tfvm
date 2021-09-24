@@ -29,7 +29,11 @@ func RunTfvmListCommand(args []string) error {
 		return err
 	}
 
-	latestTfRelease := inventory.GetLatestRelease()
+	latestTfRelease, err := inventory.GetLatestRelease()
+	if err != nil {
+		return err
+	}
+
 	for _, tfRelease := range inventory.GetTerraformReleasesAsc() {
 		installed, err := inventory.IsTerraformInstalled(tfRelease)
 		if err != nil {

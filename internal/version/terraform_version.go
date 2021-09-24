@@ -7,6 +7,7 @@ import (
 )
 
 const noSuchTerraformReleaseMsg = "no such terraform release"
+const noTerraformReleases = "inventory has no terraform releases"
 
 // IsNoSuchTerraformRelease answer if an error describes an unknown terraform version.
 func IsNoSuchTerraformRelease(err error) bool {
@@ -16,6 +17,11 @@ func IsNoSuchTerraformRelease(err error) bool {
 // NewNoSuchTerraformRelease describes an unknown terraform release version.
 func NewNoSuchTerraformRelease() error {
 	return errors.New(noSuchTerraformReleaseMsg)
+}
+
+// NewNoTerraformReleases describes that now terraform releases are available.
+func NewNoTerraformReleases() error {
+	return errors.New(noTerraformReleases)
 }
 
 // String gives string representation of version.
