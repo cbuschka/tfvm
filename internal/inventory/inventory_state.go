@@ -20,13 +20,13 @@ type TerraformReleaseBuildState struct {
 // TerraformReleaseState describes a single terraform release state.
 type TerraformReleaseState struct {
 	Version *version.TerraformVersion    `json:"version"`
-	Builds  []TerraformReleaseBuildState `json:"builds"`
+	Builds  []*TerraformReleaseBuildState `json:"builds"`
 }
 
 // State describes the on disk inventory state format.
 type State struct {
 	LastUpdateTime    string                   `json:"lastUpdateTime"`
-	TerraformReleases []TerraformReleaseState `json:"terraformReleases"`
+	TerraformReleases []*TerraformReleaseState `json:"terraformReleases"`
 }
 
 func (inventory *Inventory) loadState() error {
@@ -86,9 +86,9 @@ func (inventory *Inventory) saveState() error {
 	state := State{}
 	state.LastUpdateTime = inventory.lastUpdateTime.Format(time.RFC3339)
 
-	tfReleaseStates := make([]TerraformReleaseState, len(inventory.terraformReleasesAsc))
+	tfReleaseStates := make([]*TerraformReleaseState, len(inventory.terraformReleasesAsc))
 	for index, tfRelease := range inventory.terraformReleasesAsc {
-		tfReleaseStates[index] = TerraformReleaseState{Version: tfRelease, Builds: nil}
+		tfReleaseStates[index] = &TerraformReleaseState{Version: tfRelease, Builds: nil}
 	}
 
 	state.TerraformReleases = tfReleaseStates
@@ -110,9 +110,9 @@ func (inventory *Inventory) saveState() error {
 func (state *State) Fill(terraformReleasesAsc []*version.TerraformVersion) {
 	state.LastUpdateTime = time.Now().Format(time.RFC3339)
 
-	tfReleaseStates := make([]TerraformReleaseState, len(terraformReleasesAsc))
+	tfReleaseStates := make([]*TerraformReleaseState, len(terraformReleasesAsc))
 	for index, tfRelease := range terraformReleasesAsc {
-		tfReleaseStates[index] = TerraformReleaseState{Version: tfRelease, Builds: nil}
+		tfReleaseStates[index] = &TerraformReleaseState{Version: tfRelease, Builds: nil}
 	}
 
 	state.TerraformReleases = tfReleaseStates
@@ -135,9 +135,9 @@ func (state *State) FillBuilds(release *version.TerraformVersion, builds []*remo
 	for _, tfRelease := range state.TerraformReleases {
 		if tfRelease.Version.String() == release.String() {
 			found = true
-			buildStates := make([]TerraformReleaseBuildState, len(builds))
+			buildStates := make([]*TerraformReleaseBuildState, len(builds))
 			for index, build := range builds {
-				buildStates[index] = TerraformReleaseBuildState{Os: build.Os, Arch: build.Arch, DownloadPath: build.DownloadPath}
+				buildStates[index] = &TerraformReleaseBuildState{Os: build.Os, Arch: build.Arch, DownloadPath: build.DownloadPath}
 			}
 			tfRelease.Builds = buildStates
 		}
