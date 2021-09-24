@@ -74,7 +74,7 @@ func (inventory *Inventory) InstallTerraform(terraformVersion *version.Terraform
 			return nil, err
 		}
 
-		util.Print("Installing terraform %s...", terraformVersion.String())
+		util.Print("Installing terraform %s for %s/%s...", terraformVersion.String(), osName, arch)
 		basePath, err := inventory.GetTerraformBasePath(terraformVersion, tfReleaseBuild.Os, tfReleaseBuild.Arch)
 		if err != nil {
 			return nil, err
@@ -86,7 +86,7 @@ func (inventory *Inventory) InstallTerraform(terraformVersion *version.Terraform
 			return nil, err
 		}
 
-		util.Print("Terraform %s installed.", terraformVersion.String())
+		util.Print("Terraform %s for %s/%s installed.", terraformVersion.String(), osName, arch)
 	}
 
 	terraform, err := inventory.GetTerraform(terraformVersion, osName, arch)
