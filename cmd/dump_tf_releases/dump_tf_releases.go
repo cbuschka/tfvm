@@ -1,45 +1,32 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	inventoryPkg "github.com/cbuschka/tfvm/internal/inventory"
-	"github.com/cbuschka/tfvm/internal/remote"
 	"github.com/cbuschka/tfvm/internal/util"
-	"github.com/cbuschka/tfvm/internal/version"
 	"os"
-	"sort"
 )
 
 func main() {
-	state := inventoryPkg.State{}
-
-	tfReleases, err := remote.ListTerraformReleases()
+	inventory, err := inventoryPkg.NewInventory()
 	if err != nil {
-		util.Die(1, "Getting terraform releases failed: %s", err.Error())
+		util.Die(1, "Creating inventory failed: %s", err.Error())
 	}
 
-	sort.Sort(version.Collection(tfReleases))
-
-	state.Fill(tfReleases)
-
-	for _, tfRelease := range tfReleases {
-		builds, err := remote.ListTerraformBuilds(tfRelease)
-		if err != nil {
-			util.Die(1, "Getting terraform builds for release %s failed: %s", tfRelease.String(), err.Error())
-		}
-
-		err = state.FillBuilds(tfRelease, builds)
-		if err != nil {
-			util.Die(1, "Filling builds for release %s failed: %s", tfRelease.String(), err.Error())
-		}
+	err = inventory.Update()
+	if err != nil {
+		util.Die(1, "Updating inventory failed: %s", err.Error())
 	}
 
-	data, err := state.Marshall()
+	buffer := bytes.NewBuffer([]byte{})
+	_, err = inventory.WriteTo(buffer)
 	if err != nil {
 		util.Die(1, "Marshalling failed: %s", err.Error())
 	}
 
-	_, err = fmt.Fprintf(os.Stdout, string(data))
+
+	_, err = fmt.Fprintf(os.Stdout, buffer.String())
 	if err != nil {
 		panic(err)
 	}

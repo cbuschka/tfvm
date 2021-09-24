@@ -87,10 +87,10 @@ integration_test:
 	${PROJECT_DIR}/scripts/run-integration-tests.sh
 
 dump_tf_releases:	init
-	(echo -e "package inventory\n\nconst defaultStateJSON = \`" && \
+	(echo -e "package state\n\nconst defaultStateJSON = \`" && \
 	go run ./cmd/dump_tf_releases/ ./internal/... && \
 	echo '`' ) > ${PROJECT_DIR}/internal/inventory/default_inventory_state.go.new && \
-	mv ${PROJECT_DIR}/internal/inventory/default_inventory_state.go.new ${PROJECT_DIR}/internal/inventory/default_inventory_state.go
+	mv ${PROJECT_DIR}/internal/inventory/default_inventory_state.go.new ${PROJECT_DIR}/internal/inventory/state/default_inventory_state.go
 
 build_with_docker:
 	docker run -u $(shell id -u):$(shell id -g) \

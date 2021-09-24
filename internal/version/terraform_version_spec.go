@@ -16,19 +16,29 @@ func (spec *TerraformVersionSpec) String() string {
 	return spec.text
 }
 
-// ParseTerraformVersionSpec parses a version spec string to an TerraformVersionSpec.
-func ParseTerraformVersionSpec(versionSpec string) (*TerraformVersionSpec, error) {
-
-	if versionSpec == "latest" {
-		return &TerraformVersionSpec{text: versionSpec, constraints: nil}, nil
-	}
-
-	constraints, err := goversion.NewConstraint(versionSpec)
+// SafeParseTerraformVersionSpec parses a version spec string to an TerraformVersionSpec, or panics if fails.
+func SafeParseTerraformVersionSpec(versionSpecStr string) *TerraformVersionSpec {
+	versionSpec, err := ParseTerraformVersionSpec(versionSpecStr)
 	if err != nil {
-		return nil, fmt.Errorf("Invalid version spec: '%s' (%s)", versionSpec, err.Error())
+		panic(err)
 	}
 
-	return &TerraformVersionSpec{text: versionSpec, constraints: constraints}, nil
+	return versionSpec
+}
+
+// ParseTerraformVersionSpec parses a version spec string to an TerraformVersionSpec.
+func ParseTerraformVersionSpec(versionSpecStr string) (*TerraformVersionSpec, error) {
+
+	if versionSpecStr == "latest" {
+		return &TerraformVersionSpec{text: versionSpecStr, constraints: nil}, nil
+	}
+
+	constraints, err := goversion.NewConstraint(versionSpecStr)
+	if err != nil {
+		return nil, fmt.Errorf("Invalid version spec: '%s' (%s)", versionSpecStr, err.Error())
+	}
+
+	return &TerraformVersionSpec{text: versionSpecStr, constraints: constraints}, nil
 }
 
 // Matches checks if a terraform version is matched by a version spec.

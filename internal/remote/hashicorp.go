@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
-	"runtime"
 	"strings"
 )
 
@@ -19,8 +18,11 @@ type TerraformBuild struct {
 	DownloadPath string
 }
 
+type HashicorpRemote struct {
+}
+
 // ListTerraformReleases lists terraform versions from the hashicorp website.
-func ListTerraformReleases() ([]*version.TerraformVersion, error) {
+func (hashicorp *HashicorpRemote) ListTerraformReleases() ([]*version.TerraformVersion, error) {
 
 	releasesPage, err := downloadReleasesPage()
 	if err != nil {
@@ -31,7 +33,7 @@ func ListTerraformReleases() ([]*version.TerraformVersion, error) {
 }
 
 // ListTerraformBuilds lists builds of a particular release
-func ListTerraformBuilds(release *version.TerraformVersion) ([]*TerraformBuild, error) {
+func (hashicorp *HashicorpRemote) ListTerraformBuilds(release *version.TerraformVersion) ([]*TerraformBuild, error) {
 	buildsPage, err := downloadBuildsPage(release)
 	if err != nil {
 		return nil, err
@@ -95,19 +97,10 @@ func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
 }
 
 // GetURL gives the remote url to a particular terraform version on the hashicorp site.
-func GetURL(release *version.TerraformVersion) string {
-	tfArch := util.GetFirstEnv("TFVM_TERRAFORM_ARCH", "TERRAFORM_ARCH")
-	if tfArch == "" {
-		tfArch = runtime.GOARCH
-	}
-
-	tfOs := util.GetFirstEnv("TFVM_TERRAFORM_OS", "TERRAFORM_OS")
-	if tfOs == "" {
-		tfOs = runtime.GOOS
-	}
+func GetURL(release *version.TerraformVersion, os string, arch string) string {
 
 	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseURL(),
-		release.String(), release.String(), tfOs, tfArch)
+		release.String(), release.String(), os, arch)
 }
 
 func getReleasesBaseURL() string {

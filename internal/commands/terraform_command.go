@@ -40,7 +40,12 @@ func RunTerraformCommand(args []string) error {
 		return err
 	}
 
-	tfRelease, err := inventory.GetTerraformRelease(tfVersionSelection.VersionSpec())
+	err = inventory.Save()
+	if err != nil {
+		return err
+	}
+
+	tfRelease, err := inventory.GetMatchingTerraformRelease(tfVersionSelection.VersionSpec())
 	if err != nil {
 		if version.IsNoSuchTerraformRelease(err) {
 			util.Die(1, "Terraform version %s is not known.", tfVersionSelection.VersionSpec().String())
@@ -50,22 +55,7 @@ func RunTerraformCommand(args []string) error {
 		return err
 	}
 
-	installed, err := inventory.IsTerraformInstalled(tfRelease)
-	if err != nil {
-		return err
-	}
-
-	if !installed {
-		err = inventory.InstallTerraform(tfRelease)
-		if err != nil {
-			return err
-		}
-	}
-
-	tf, err := inventory.GetTerraform(tfRelease)
-	if err != nil {
-		return err
-	}
+	tf, err := inventory.GetInstalledTerraform(tfRelease.Version)
 
 	exitCode, err := tf.Run(args...)
 	if err != nil {
