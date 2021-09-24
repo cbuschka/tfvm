@@ -29,6 +29,7 @@ type State struct {
 	TerraformReleases []*TerraformReleaseState `json:"terraformReleases"`
 }
 
+// ContainsBuild answers if a terraform contains build information about an build for os and arch.
 func (terraformRelease *TerraformReleaseState) ContainsBuild(os string, arch string) bool {
 
 	if terraformRelease.Builds == nil {
@@ -44,6 +45,7 @@ func (terraformRelease *TerraformReleaseState) ContainsBuild(os string, arch str
 	return false
 }
 
+// MergeIn merges the given release state into the inventory state.
 func (terraformRelease *TerraformReleaseState) MergeIn(other *TerraformReleaseState) {
 
 	if other.Builds == nil {
@@ -57,6 +59,7 @@ func (terraformRelease *TerraformReleaseState) MergeIn(other *TerraformReleaseSt
 	}
 }
 
+// GetDefaultState retrieves the default state.
 func GetDefaultState() (*State, error) {
 	state := State{}
 	err := json.Unmarshal([]byte(defaultStateJSON), &state)
@@ -67,10 +70,12 @@ func GetDefaultState() (*State, error) {
 	return &state, nil
 }
 
+// NewEmptyState create a new empty state.
 func NewEmptyState() *State {
 	return &State{LastUpdateTime: time.Unix(0, 0), TerraformReleases: []*TerraformReleaseState{}}
 }
 
+// LoadFromFile loads the json from statefilepath into the state struct.
 func (state *State) LoadFromFile(statefilepath string) error {
 
 	_, err := os.Stat(statefilepath)
@@ -95,6 +100,7 @@ func (state *State) LoadFromFile(statefilepath string) error {
 	return nil
 }
 
+// WriteTo writes the state as json to writer w.
 func (state *State) WriteTo(w io.Writer) (int64, error) {
 	data, err := state.Marshall()
 	if err != nil {
@@ -103,18 +109,6 @@ func (state *State) WriteTo(w io.Writer) (int64, error) {
 
 	size, err := w.Write(data)
 	return int64(size), err
-}
-
-// Fill fills state with terraform releases and updates state.LastUpdateTime.
-func (state *State) Fill(terraformReleasesAsc []*version.TerraformVersion) {
-	state.LastUpdateTime = time.Now()
-
-	tfReleaseStates := make([]*TerraformReleaseState, len(terraformReleasesAsc))
-	for index, tfRelease := range terraformReleasesAsc {
-		tfReleaseStates[index] = &TerraformReleaseState{Version: tfRelease, Builds: nil}
-	}
-
-	state.TerraformReleases = tfReleaseStates
 }
 
 // Marshall converts state into json on disk format.
@@ -129,11 +123,11 @@ func (state *State) Marshall() ([]byte, error) {
 }
 
 // AddMissingBuilds adds missing builds.
-func (tfReleaseState *TerraformReleaseState) AddMissingBuilds(newBuilds []*remote.TerraformBuild) error {
+func (terraformRelease *TerraformReleaseState) AddMissingBuilds(newBuilds []*remote.TerraformBuild) error {
 
 	for _, newBuild := range newBuilds {
-		if !tfReleaseState.ContainsBuild(newBuild.Os, newBuild.Arch) {
-			tfReleaseState.Builds = append(tfReleaseState.Builds, &TerraformReleaseBuildState{Os: newBuild.Os, Arch: newBuild.Arch, DownloadPath: newBuild.DownloadPath})
+		if !terraformRelease.ContainsBuild(newBuild.Os, newBuild.Arch) {
+			terraformRelease.Builds = append(terraformRelease.Builds, &TerraformReleaseBuildState{Os: newBuild.Os, Arch: newBuild.Arch, DownloadPath: newBuild.DownloadPath})
 		}
 	}
 

@@ -5,6 +5,8 @@ import (
 	"os"
 )
 
+// Load loads the inventory state from an optionally present state file
+// and merges it with the current state.
 func (inventory *Inventory) Load() error {
 
 	err := os.MkdirAll(inventory.cacheDir, 0755)

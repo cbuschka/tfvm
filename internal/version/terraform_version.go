@@ -39,6 +39,7 @@ type TerraformVersion struct {
 	version *goversion.Version
 }
 
+// SafeNewTerraformVersion parses version or panics.
 func SafeNewTerraformVersion(version string) *TerraformVersion {
 	v, err := NewTerraformVersion(version)
 	if err != nil {
@@ -47,6 +48,7 @@ func SafeNewTerraformVersion(version string) *TerraformVersion {
 	return v
 }
 
+// NewTerraformVersion parses version.
 func NewTerraformVersion(version string) (*TerraformVersion, error) {
 	tfReleaseVersion, err := goversion.NewVersion(version)
 	if err != nil {
@@ -55,7 +57,8 @@ func NewTerraformVersion(version string) (*TerraformVersion, error) {
 	return &TerraformVersion{version: tfReleaseVersion}, err
 }
 
-func (tfVersion *TerraformVersion) UnmarshalJSON(data []byte) error {
+// UnmarshalJSON unmarshalls terraform version from json.
+func (release *TerraformVersion) UnmarshalJSON(data []byte) error {
 
 	unquoted, err := strconv.Unquote(string(data))
 	if err != nil {
@@ -65,12 +68,13 @@ func (tfVersion *TerraformVersion) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	tfVersion.version = version
+	release.version = version
 	return nil
 }
 
-func (tfVersion *TerraformVersion) MarshalJSON() ([]byte, error) {
+// MarshalJSON converts json into a version.
+func (release *TerraformVersion) MarshalJSON() ([]byte, error) {
 
-	unquoted := strconv.Quote(tfVersion.String())
+	unquoted := strconv.Quote(release.String())
 	return []byte(unquoted), nil
 }

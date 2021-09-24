@@ -32,6 +32,7 @@ func (inventory *Inventory) Update() error {
 	return nil
 }
 
+// UpdateBuilds updates the build mata data of release tfReleaseState.Version.
 func (inventory *Inventory) UpdateBuilds(tfReleaseState *state.TerraformReleaseState) error {
 
 	builds, err := inventory.remoteProvider.ListTerraformBuilds(tfReleaseState.Version)

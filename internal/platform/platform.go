@@ -5,15 +5,18 @@ import (
 	"runtime"
 )
 
+// Platform is terraform supported combination of OS and processor architecture.
 type Platform struct {
 	Os   string
 	Arch string
 }
 
+// GetPrimaryPlatform retrieves the primary platform.
 func GetPrimaryPlatform() Platform {
 	return GetSupportedPlatforms()[0]
 }
 
+// GetSupportedPlatforms retrieves all platforms binaries can be executed of.
 func GetSupportedPlatforms() []Platform {
 
 	os := getOs()

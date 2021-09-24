@@ -18,11 +18,11 @@ type TerraformBuild struct {
 	DownloadPath string
 }
 
-type HashicorpRemote struct {
+type hashicorpRemote struct {
 }
 
 // ListTerraformReleases lists terraform versions from the hashicorp website.
-func (hashicorp *HashicorpRemote) ListTerraformReleases() ([]*version.TerraformVersion, error) {
+func (hashicorp *hashicorpRemote) ListTerraformReleases() ([]*version.TerraformVersion, error) {
 
 	releasesPage, err := downloadReleasesPage()
 	if err != nil {
@@ -33,7 +33,7 @@ func (hashicorp *HashicorpRemote) ListTerraformReleases() ([]*version.TerraformV
 }
 
 // ListTerraformBuilds lists builds of a particular release
-func (hashicorp *HashicorpRemote) ListTerraformBuilds(release *version.TerraformVersion) ([]*TerraformBuild, error) {
+func (hashicorp *hashicorpRemote) ListTerraformBuilds(release *version.TerraformVersion) ([]*TerraformBuild, error) {
 	buildsPage, err := downloadBuildsPage(release)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (hashicorp *HashicorpRemote) ListTerraformBuilds(release *version.Terraform
 	return extractBuilds(buildsPage)
 }
 
-func getHtmlContentsFrom(url string) (string, error) {
+func getHTMLContentsFrom(url string) (string, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -67,12 +67,12 @@ func getHtmlContentsFrom(url string) (string, error) {
 
 func downloadReleasesPage() (string, error) {
 	url := fmt.Sprintf("%s/index.html", getReleasesBaseURL())
-	return getHtmlContentsFrom(url)
+	return getHTMLContentsFrom(url)
 }
 
 func downloadBuildsPage(release *version.TerraformVersion) (string, error) {
 	url := fmt.Sprintf("%s/index.html", getBuildBaseURL(release))
-	return getHtmlContentsFrom(url)
+	return getHTMLContentsFrom(url)
 }
 
 func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
