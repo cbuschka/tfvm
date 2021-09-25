@@ -1,6 +1,7 @@
 package inventory
 
 import (
+	"github.com/cbuschka/tfvm/internal/log"
 	"os"
 	"os/exec"
 	"syscall"
@@ -8,6 +9,8 @@ import (
 
 // Run calls terraform with args.
 func (terraform *Terraform) Run(args ...string) (int, error) {
+	log.Infof("Running terraform: %v", args)
+
 	cmd := exec.Command(terraform.path, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

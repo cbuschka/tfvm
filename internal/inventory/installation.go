@@ -4,7 +4,7 @@ import (
 	"archive/zip"
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/inventory/state"
-	platformPkg "github.com/cbuschka/tfvm/internal/platform"
+	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/remote"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
@@ -20,7 +20,9 @@ import (
 // the platform and fallbacks.
 func (inventory *Inventory) GetInstalledTerraform(terraformVersion *version.TerraformVersion) (*Terraform, error) {
 
-	for _, platform := range platformPkg.GetSupportedPlatforms() {
+	log.Debugf("Request for installed terraform %s", terraformVersion.String())
+
+	for _, platform := range inventory.platforms {
 		terraform, err := inventory.InstallTerraform(terraformVersion, platform.Os, platform.Arch)
 		if err != nil {
 			if !IsNoSuchTerraformReleaseBuild(err) {
@@ -36,6 +38,8 @@ func (inventory *Inventory) GetInstalledTerraform(terraformVersion *version.Terr
 
 // InstallTerraform installs a terraform version for an particular os and arch.
 func (inventory *Inventory) InstallTerraform(terraformVersion *version.TerraformVersion, osName string, arch string) (*Terraform, error) {
+
+	log.Debugf("Request to install terraform %s on %s/%s", terraformVersion.String(), osName, arch)
 
 	installed, err := inventory.IsTerraformInstalled(terraformVersion, osName, arch)
 	if err != nil {

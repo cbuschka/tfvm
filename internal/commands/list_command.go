@@ -3,7 +3,6 @@ package commands
 import (
 	"fmt"
 	inventoryPkg "github.com/cbuschka/tfvm/internal/inventory"
-	"github.com/cbuschka/tfvm/internal/platform"
 	"github.com/cbuschka/tfvm/internal/util"
 	workspacePkg "github.com/cbuschka/tfvm/internal/workspace"
 )
@@ -40,7 +39,7 @@ func RunTfvmListCommand(args []string) error {
 		return err
 	}
 
-	primaryPlatform := platform.GetPrimaryPlatform()
+	primaryPlatform := inventory.GetPrimaryPlatform()
 
 	for _, tfRelease := range inventory.GetTerraformReleasesAsc() {
 		installed, err := inventory.IsTerraformInstalled(tfRelease, primaryPlatform.Os, primaryPlatform.Arch)

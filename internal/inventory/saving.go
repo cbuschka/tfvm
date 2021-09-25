@@ -27,7 +27,7 @@ func (inventory *Inventory) WriteTo(w io.Writer) (int64, error) {
 // Save saves the inventory state into the state.json file.
 func (inventory *Inventory) Save() error {
 
-	stateFilePath, err := getStateFilePath()
+	stateFilePath, err := inventory.getStateFilePath()
 	if err != nil {
 		return err
 	}
