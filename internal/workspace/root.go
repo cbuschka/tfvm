@@ -8,9 +8,12 @@ import (
 
 func getRootDir() (string, error) {
 
-	cwd, err := os.Getwd()
-	rootDir := cwd
-	err = util.WalkUp(cwd, func(path string, info os.FileInfo) (bool, error) {
+	rootDir, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	err = util.WalkUp(rootDir, func(path string, info os.FileInfo) (bool, error) {
 		dotGitDir := filepath.Join(path, ".git")
 		isDir, err := util.IsDir(dotGitDir)
 		if err != nil {
