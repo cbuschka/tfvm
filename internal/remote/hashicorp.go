@@ -55,7 +55,7 @@ func getHTMLContentsFrom(url string) (string, error) {
 	resp, err := client.Do(req)
 	if resp.StatusCode != 200 {
 		log.Debugf("Response to GET for '%s': %d/%s", url, resp.StatusCode, resp.Status)
-		return "", fmt.Errorf("Downloading %s failed.", url)
+		return "", fmt.Errorf("downloading %s failed", url)
 	}
 
 	if err != nil {
