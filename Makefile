@@ -50,9 +50,12 @@ build:	test lint
 
 build_all:	build build_linux build_windows build_macosx
 
-build_linux:	build_linux_amd64 build_linux_386
+build_linux:	build_linux_amd64 build_linux_386 build_linux_arm64
 	@echo "### Building Linux variants..."
 	$(call build_binary,linux,amd64,)
+
+build_linux_arm64:	build
+	$(call build_binary,linux,arm64,)
 
 build_linux_amd64:	build
 	$(call build_binary,linux,amd64,)
