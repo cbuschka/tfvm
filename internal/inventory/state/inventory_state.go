@@ -100,6 +100,17 @@ func (state *State) LoadFromFile(statefilepath string) error {
 	return nil
 }
 
+// ToJSON converts state to json representation.
+func (state *State) ToJSON() (string, error) {
+
+	data, err := state.Marshall()
+	if err != nil {
+		return "", err
+	}
+
+	return string(data), nil
+}
+
 // WriteTo writes the state as json to writer w.
 func (state *State) WriteTo(w io.Writer) (int64, error) {
 	data, err := state.Marshall()

@@ -3,6 +3,7 @@ package workspace
 import (
 	"errors"
 	"fmt"
+	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
 	"io/ioutil"
@@ -22,6 +23,8 @@ func GetWorkspace() (*Workspace, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	log.Infof("Workspace root dir: '%s'", rootDir)
 
 	config, err := loadConfig(rootDir)
 	if err != nil {

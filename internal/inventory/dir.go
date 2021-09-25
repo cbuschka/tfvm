@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"fmt"
+	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/version"
 	"github.com/mitchellh/go-homedir"
 	"os"
@@ -10,10 +11,7 @@ import (
 
 // GetTerraformBasePath returns the base path for a terraform installation.
 func (inventory *Inventory) GetTerraformBasePath(tfRelease *version.TerraformVersion, os string, arch string) (string, error) {
-	inventoryDir, err := getInventoryDir()
-	if err != nil {
-		return "", err
-	}
+	inventoryDir := inventory.getInventoryDir()
 
 	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", tfRelease.String(),
 		fmt.Sprintf("%s_%s", os, arch))
@@ -41,8 +39,13 @@ func (inventory *Inventory) GetCacheDir() string {
 	return inventory.cacheDir
 }
 
+func (inventory *Inventory) getInventoryDir() string {
+	return inventory.cacheDir
+}
+
 func getInventoryDir() (string, error) {
 	invDirFromEnv := os.Getenv("TFVM_DIR")
+	log.Debugf("Environment var TFVM_DIR: '%s'", invDirFromEnv)
 	if invDirFromEnv != "" {
 		return invDirFromEnv, nil
 	}
@@ -88,11 +91,8 @@ func getDefaultInventoryDir() (string, error) {
 	return dotCacheTfvmDir, nil
 }
 
-func getStateFilePath() (string, error) {
-	inventoryDir, err := getInventoryDir()
-	if err != nil {
-		return "", err
-	}
+func (inventory *Inventory) getStateFilePath() (string, error) {
+	inventoryDir := inventory.getInventoryDir()
 	statefilepath := filepath.Join(inventoryDir, "v1", "state.json")
 	return statefilepath, nil
 }

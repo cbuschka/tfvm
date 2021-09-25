@@ -3,6 +3,7 @@ package inventory
 import (
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/inventory/state"
+	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/version"
 	"os"
 	"sort"
@@ -69,6 +70,9 @@ func (inventory *Inventory) GetTerraformRelease(tfReleaseVersion *version.Terraf
 
 // GetTerraform get reference to a terraform installation of a given version.
 func (inventory *Inventory) GetTerraform(tfRelease *version.TerraformVersion, osName string, arch string) (*Terraform, error) {
+
+	log.Debugf("Looking up terraform %s on %s/%s...", tfRelease.String(), osName, arch)
+
 	tfPath, err := inventory.getTerraformPath(tfRelease, osName, arch)
 	if err != nil {
 		return nil, err

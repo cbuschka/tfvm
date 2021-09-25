@@ -2,6 +2,7 @@ package inventory
 
 import (
 	statePkg "github.com/cbuschka/tfvm/internal/inventory/state"
+	"github.com/cbuschka/tfvm/internal/log"
 	"os"
 )
 
@@ -14,10 +15,12 @@ func (inventory *Inventory) Load() error {
 		return err
 	}
 
-	stateFilePath, err := getStateFilePath()
+	stateFilePath, err := inventory.getStateFilePath()
 	if err != nil {
 		return err
 	}
+
+	log.Debugf("State file path: '%s'", stateFilePath)
 
 	state := statePkg.NewEmptyState()
 
@@ -25,12 +28,23 @@ func (inventory *Inventory) Load() error {
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return err
+		} else {
+			return nil
 		}
-	} else {
-		inventory.mergeInState(state)
 	}
 
-	return err
+	if log.IsTraceEnabled() {
+		stateJSON, err := state.ToJSON()
+		if err != nil {
+			log.Tracef("state.ToJSON() failed: %v", err)
+		} else {
+			log.Tracef("Inventory state after load:\n%s", stateJSON)
+		}
+	}
+
+	inventory.mergeInState(state)
+
+	return nil
 }
 
 func (inventory *Inventory) mergeInState(state *statePkg.State) {

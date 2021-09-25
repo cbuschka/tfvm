@@ -3,8 +3,9 @@ package remote
 import (
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/build"
+	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/util"
-	"github.com/cbuschka/tfvm/internal/version"
+	versionPkg "github.com/cbuschka/tfvm/internal/version"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -22,7 +23,7 @@ type hashicorpRemote struct {
 }
 
 // ListTerraformReleases lists terraform versions from the hashicorp website.
-func (hashicorp *hashicorpRemote) ListTerraformReleases() ([]*version.TerraformVersion, error) {
+func (hashicorp *hashicorpRemote) ListTerraformReleases() ([]*versionPkg.TerraformVersion, error) {
 
 	releasesPage, err := downloadReleasesPage()
 	if err != nil {
@@ -33,7 +34,7 @@ func (hashicorp *hashicorpRemote) ListTerraformReleases() ([]*version.TerraformV
 }
 
 // ListTerraformBuilds lists builds of a particular release
-func (hashicorp *hashicorpRemote) ListTerraformBuilds(release *version.TerraformVersion) ([]*TerraformBuild, error) {
+func (hashicorp *hashicorpRemote) ListTerraformBuilds(release *versionPkg.TerraformVersion) ([]*TerraformBuild, error) {
 	buildsPage, err := downloadBuildsPage(release)
 	if err != nil {
 		return nil, err
@@ -52,6 +53,10 @@ func getHTMLContentsFrom(url string) (string, error) {
 	userAgent := fmt.Sprintf("tfvm/%s (https://github.com/cbuschka/tfvm)", build.GetBuildInfo().Version)
 	req.Header.Set("User-Agent", userAgent)
 	resp, err := client.Do(req)
+	if resp.StatusCode != 200 {
+		log.Debugf("Response to GET for '%s': %d/%s", url, resp.StatusCode, resp.Status)
+		return "", fmt.Errorf("Downloading %s failed.", url)
+	}
 
 	if err != nil {
 		return "", err
@@ -62,6 +67,8 @@ func getHTMLContentsFrom(url string) (string, error) {
 		return "", err
 	}
 
+	log.Tracef("Response to GET for '%s': %d\n%s", url, resp.StatusCode, html)
+
 	return string(html), nil
 }
 
@@ -70,12 +77,12 @@ func downloadReleasesPage() (string, error) {
 	return getHTMLContentsFrom(url)
 }
 
-func downloadBuildsPage(release *version.TerraformVersion) (string, error) {
+func downloadBuildsPage(release *versionPkg.TerraformVersion) (string, error) {
 	url := fmt.Sprintf("%s/index.html", getBuildBaseURL(release))
 	return getHTMLContentsFrom(url)
 }
 
-func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
+func extractReleases(releasePage string) ([]*versionPkg.TerraformVersion, error) {
 	re, err := regexp.Compile(">terraform_([^<]+)</a>")
 	if err != nil {
 		return nil, err
@@ -83,10 +90,10 @@ func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
 
 	matchSets := re.FindAllStringSubmatch(releasePage, -1)
 
-	releases := make([]*version.TerraformVersion, len(matchSets))
+	releases := make([]*versionPkg.TerraformVersion, len(matchSets))
 	for index, matchSet := range matchSets {
 		semVersionStr := strings.TrimSpace(matchSet[1])
-		version, err := version.NewTerraformVersion(semVersionStr)
+		version, err := versionPkg.NewTerraformVersion(semVersionStr)
 		if err != nil {
 			return nil, err
 		}
@@ -97,7 +104,7 @@ func extractReleases(releasePage string) ([]*version.TerraformVersion, error) {
 }
 
 // GetURL gives the remote url to a particular terraform version on the hashicorp site.
-func GetURL(release *version.TerraformVersion, os string, arch string) string {
+func GetURL(release *versionPkg.TerraformVersion, os string, arch string) string {
 
 	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseURL(),
 		release.String(), release.String(), os, arch)
@@ -105,6 +112,9 @@ func GetURL(release *version.TerraformVersion, os string, arch string) string {
 
 func getReleasesBaseURL() string {
 	baseURL := util.GetFirstEnv("TFVM_TERRAFORM_RELEASES_BASE_URL")
+
+	log.Debugf("Environment var TFVM_TERRAFORM_RELEASES_BASE_URL: '%s'", baseURL)
+
 	if baseURL != "" {
 		return baseURL
 	}
@@ -112,7 +122,7 @@ func getReleasesBaseURL() string {
 	return "https://releases.hashicorp.com/terraform"
 }
 
-func getBuildBaseURL(release *version.TerraformVersion) string {
+func getBuildBaseURL(release *versionPkg.TerraformVersion) string {
 	return fmt.Sprintf("%s/%s", getReleasesBaseURL(), release.String())
 }
 

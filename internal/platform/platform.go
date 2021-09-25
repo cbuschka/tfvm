@@ -1,6 +1,7 @@
 package platform
 
 import (
+	"fmt"
 	"github.com/cbuschka/tfvm/internal/util"
 	"runtime"
 )
@@ -9,11 +10,6 @@ import (
 type Platform struct {
 	Os   string
 	Arch string
-}
-
-// GetPrimaryPlatform retrieves the primary platform.
-func GetPrimaryPlatform() Platform {
-	return GetSupportedPlatforms()[0]
 }
 
 // GetSupportedPlatforms retrieves all platforms binaries can be executed of.
@@ -28,6 +24,10 @@ func GetSupportedPlatforms() []Platform {
 	}
 
 	return platforms
+}
+
+func (platform Platform) String() string {
+	return fmt.Sprintf("%s/%s", platform.Os, platform.Arch)
 }
 
 func getArch() string {
