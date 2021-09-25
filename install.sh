@@ -57,13 +57,7 @@ function get_arch() {
   case "${unameOut}" in
   x86_64*) ARCH="amd64" ;;
   386*) ARCH="386" ;;
-  arm64*)
-    if [[ "$OS" == darwin ]]; then
-      ARCH="amd64"
-    else
-      echo "${unameOut} is not supported except on darwin. Aborted"
-    fi
-  ;;
+  arm64*) ARCH="arm64" ;;
   *)
     echo "${unameOut} is not supported. Aborted"
     exit 1
