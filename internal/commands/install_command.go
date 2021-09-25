@@ -41,6 +41,7 @@ func RunTfvmInstallCommand(args []string) error {
 
 	_, err = inventory.GetInstalledTerraform(tfRelease.Version)
 	if err != nil {
+		util.Die(1, "Installing terraform failed: %s.", err.Error())
 		return err
 	}
 
