@@ -25,7 +25,6 @@ func main() {
 		util.Die(1, "Marshalling failed: %s", err.Error())
 	}
 
-
 	_, err = fmt.Fprintf(os.Stdout, buffer.String())
 	if err != nil {
 		panic(err)
