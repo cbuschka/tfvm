@@ -31,6 +31,7 @@ func RunTfvmCommand(args []string) error {
 	} else {
 		util.Print("Unsupported command: '%s'", args[0])
 		printUsage()
+		util.Die(1, "")
 		return nil
 	}
 }
