@@ -28,9 +28,9 @@ func (inventory *Inventory) Load() error {
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return err
-		} else {
-			return nil
 		}
+
+		return nil
 	}
 
 	if log.IsTraceEnabled() {
