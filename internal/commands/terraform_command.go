@@ -56,6 +56,10 @@ func RunTerraformCommand(args []string) error {
 	}
 
 	tf, err := inventory.GetInstalledTerraform(tfRelease.Version)
+	if err != nil {
+		util.Die(1, "Running terraform failed: %s.", err.Error())
+		return err
+	}
 
 	exitCode, err := tf.Run(args...)
 	if err != nil {
