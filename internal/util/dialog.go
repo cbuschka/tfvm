@@ -10,7 +10,9 @@ var forceQuiet = false
 
 // Die prints a message and exists the process with exitCode.
 func Die(exitCode int, format string, a ...interface{}) {
-	_, _ = fmt.Fprintf(os.Stderr, "%s\n", fmt.Sprintf(format, a...))
+	if format != "" {
+		_, _ = fmt.Fprintf(os.Stderr, "%s\n", fmt.Sprintf(format, a...))
+	}
 	log.Infof("Exiting with code %d.", exitCode)
 	os.Exit(exitCode)
 }
