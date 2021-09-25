@@ -18,6 +18,7 @@ func Tracef(format string, args ...interface{}) {
 	logger.Debugf(format, args...)
 }
 
+// IsTraceEnabled answers if messages on trace level would be logged.
 func IsTraceEnabled() bool {
 	return logger.IsEnabledFor(golog.DEBUG)
 }
@@ -27,30 +28,37 @@ func Debug(s string) {
 	logger.Info(s)
 }
 
+// IsDebugEnabled answers if messages on debug level would be logged.
 func IsDebugEnabled() bool {
 	return logger.IsEnabledFor(golog.INFO)
 }
 
+// Debugf logs messages to stderr.
 func Debugf(format string, args ...interface{}) {
 	logger.Infof(format, args...)
 }
 
+// IsInfoEnabled answers if messages on info level would be logged.
 func IsInfoEnabled() bool {
 	return logger.IsEnabledFor(golog.NOTICE)
 }
 
+// Infof logs messages to stderr.
 func Infof(format string, args ...interface{}) {
 	logger.Noticef(format, args...)
 }
 
+// Info logs messages to stderr.
 func Info(args ...interface{}) {
 	logger.Notice(args...)
 }
 
+// Warningf logs messages to stderr.
 func Warningf(format string, args ...interface{}) {
 	logger.Warningf(format, args...)
 }
 
+// SetVerbosity sets logger log level based on verbosity level.
 func SetVerbosity(verbosity int) {
 	if verbosity == 0 {
 		leveledFormattedBackend.SetLevel(golog.WARNING, "")
