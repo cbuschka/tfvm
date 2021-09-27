@@ -39,10 +39,8 @@ func RunTfvmListCommand(args []string) error {
 		return err
 	}
 
-	primaryPlatform := inventory.GetPrimaryPlatform()
-
 	for _, tfRelease := range inventory.GetTerraformReleasesAsc() {
-		installed, err := inventory.IsTerraformInstalled(tfRelease, primaryPlatform.Os, primaryPlatform.Arch)
+		installed, err := inventory.IsTerraformInstalledOnAnyPlatform(tfRelease)
 		if err != nil {
 			return err
 		}
