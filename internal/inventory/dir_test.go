@@ -25,7 +25,7 @@ func (m *mockFs) GetHomeDir() (string, error) {
 	return adjustPathForRuntimeOS("/HOME"), nil
 }
 
-func TestInventoryDirOnMacOSIsDotTfvmIfExists(t *testing.T) {
+func TestInventoryDirOnMacOSIsDotTfvmIfExistsAndDotTfvmNotPresent(t *testing.T) {
 
 	inventoryDir, err := getInventoryDir(fs(&mockFs{existingDirs: []string{adjustPathForRuntimeOS("/HOME/.tfvm")}}), platformPkg.Platform{Os: "darwin", Arch: "arm64"})
 	if err != nil {
@@ -36,7 +36,18 @@ func TestInventoryDirOnMacOSIsDotTfvmIfExists(t *testing.T) {
 	assert.Equal(t, adjustPathForRuntimeOS("/HOME/.tfvm"), inventoryDir)
 }
 
-func TestInventoryDirOnMacOSIsLibraryCachesTfvmIfDotTfvmNotPresent(t *testing.T) {
+func TestInventoryDirOnMacOSIsDotCacheTfvmIfExists(t *testing.T) {
+
+	inventoryDir, err := getInventoryDir(fs(&mockFs{existingDirs: []string{adjustPathForRuntimeOS("/HOME/.cache/tfvm")}}), platformPkg.Platform{Os: "darwin", Arch: "arm64"})
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	assert.Equal(t, adjustPathForRuntimeOS("/HOME/.cache/tfvm"), inventoryDir)
+}
+
+func TestInventoryDirOnMacOSIsLibraryCachesTfvmIfNeitherDotTfvmNorDotCacheTfvmPresent(t *testing.T) {
 
 	inventoryDir, err := getInventoryDir(fs(&mockFs{existingDirs: []string{}}), platformPkg.Platform{Os: "darwin", Arch: "arm64"})
 	if err != nil {

@@ -91,11 +91,21 @@ func getDefaultInventoryDir(fs fs, platform platformPkg.Platform) (string, error
 		return oldInventoryDir, nil
 	}
 
+	xdgInventoryDir := getDefaultInventoryDirForXDG(homeDir)
+	xdgInventoryDirExists, err := fs.IsDir(xdgInventoryDir)
+	if err != nil {
+		return "", nil
+	}
+
+	if xdgInventoryDirExists {
+		return xdgInventoryDir, nil
+	}
+
 	if platform.IsMacOS() {
 		return getDefaultInventoryDirForMacOS(homeDir), nil
 	}
 
-	return getDefaultInventoryDirForXDG(homeDir), nil
+	return xdgInventoryDir, nil
 }
 
 func getDefaultInventoryDirForMacOS(homeDir string) string {
