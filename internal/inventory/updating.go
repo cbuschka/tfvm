@@ -82,18 +82,18 @@ func (inventory *Inventory) updateMissingBuilds(tfReleaseState *state.TerraformR
 }
 
 func (inventory *Inventory) updateMissingChecksums(tfReleaseState *state.TerraformReleaseState) error {
-	log.Debugf("Updating builds for %s...", tfReleaseState.Version.String())
+	log.Debugf("Updating checksums for %s...", tfReleaseState.Version.String())
 
-	builds, err := inventory.remoteProvider.ListTerraformBuilds(tfReleaseState.Version)
+	checksumsByPlatform, err := inventory.remoteProvider.ListChecksums(tfReleaseState.Version)
 	if err != nil {
 		return err
 	}
 
-	err = tfReleaseState.AddMissingBuilds(builds)
+	err = tfReleaseState.AddMissingChecksums(checksumsByPlatform)
 	if err != nil {
 		return err
 	}
 
-	log.Infof("Updated build for %s.", tfReleaseState.Version.String())
+	log.Infof("Updated checksums for %s.", tfReleaseState.Version.String())
 	return nil
 }

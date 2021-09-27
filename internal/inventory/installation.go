@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"archive/zip"
+	"crypto/sha256"
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/inventory/state"
 	"github.com/cbuschka/tfvm/internal/log"
@@ -11,6 +12,7 @@ import (
 	"github.com/cbuschka/tfvm/internal/version"
 	"io"
 	"io/ioutil"
+	"math/big"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -81,6 +83,18 @@ func (inventory *Inventory) InstallTerraform(terraformVersion *version.Terraform
 			return nil, err
 		}
 
+		log.Debugf("Checksum for terraform %s for %s/%s is %s.", terraformVersion.String(), tfReleaseBuild.Os, tfReleaseBuild.Arch, tfReleaseBuild.SHA256Checksum)
+		if tfReleaseBuild.SHA256Checksum == "n/a" || tfReleaseBuild.SHA256Checksum == "" {
+			util.Print("Cannot verify downloaded terraform version %s for %s.", terraformVersion.String(), platform)
+		} else {
+			sha256Checksum := new(big.Int)
+			sha256Checksum, _ = sha256Checksum.SetString(tfReleaseBuild.SHA256Checksum, 16)
+			err := verifyFile(tmpfile.Name(), sha256Checksum)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		util.Print("Installing terraform %s for %s...", terraformVersion.String(), platform)
 		basePath, err := inventory.GetTerraformBasePath(terraformVersion, platform)
 		if err != nil {
@@ -102,6 +116,34 @@ func (inventory *Inventory) InstallTerraform(terraformVersion *version.Terraform
 	}
 
 	return terraform, nil
+}
+
+func verifyFile(name string, expectedSHA256Checksum *big.Int) error {
+
+	log.Debugf("Verifying file %s...", name)
+
+	f, err := os.Open(name)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	hasher := sha256.New()
+	if _, err := io.Copy(hasher, f); err != nil {
+		return err
+	}
+
+	calculatedChecksumBytes := hasher.Sum(nil)
+	calculatedChecksum := new(big.Int)
+	calculatedChecksum = calculatedChecksum.SetBytes(calculatedChecksumBytes)
+
+	if calculatedChecksum.Cmp(expectedSHA256Checksum) != 0 {
+		return fmt.Errorf("downloaded terraform zip has not expected checksum")
+	}
+
+	log.Infof("Successfully verified file %s, calculated checksum: %s, expected checksum: %s...", name, calculatedChecksum.Text(16), expectedSHA256Checksum.Text(16))
+
+	return nil
 }
 
 func downloadFile(url string, filepath string) error {
