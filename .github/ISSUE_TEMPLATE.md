@@ -24,6 +24,9 @@ describe the steps to reproduce exactly
 ```
 (paste your output here)
 ```
+**Output of `TF_LOG=trace tfvm <your command>`:**
+
+(paste your output here)
 
 **Additional environment details**
 
