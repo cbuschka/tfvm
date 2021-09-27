@@ -34,7 +34,7 @@ check_go_version:
 
 init:	check_go_version
 	@if [ "${OS}" != "Linux" ] && [ "${OS}" != "Darwin" ]; then \
-		echo "Sorry only Linux and Mac OS X supported as build platform. (This is ${OS}.)"; \
+		echo "Sorry only Linux and macOS supported as build platform. (This is ${OS}.)"; \
 		exit 1; \
 	fi; \
 	mkdir -p ${GOPATH}
@@ -77,7 +77,7 @@ build_windows:	build
 	$(call build_binary,windows,386,.exe)
 
 build_macosx:	build
-	@echo "### Building Mac OS X variants..."
+	@echo "### Building macOS variants..."
 	$(call build_binary,darwin,amd64,)
 	$(call build_binary,darwin,arm64,)
 

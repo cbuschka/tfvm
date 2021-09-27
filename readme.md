@@ -11,7 +11,7 @@
 * also available as [github action setup-tfvm](https://github.com/cbuschka/setup-tfvm) (fully transparent terraform setup)
 
 ## System Requirements
-* 64-Bit Linux, MacOS X or Windows
+* Linux (386, amd64, arm64), macOS (amd64, arm64) or Windows (386, amd64)
 
 ## Installation
 
@@ -74,8 +74,8 @@ tfvm help
 [Supported Environment Variables](./doc/env-vars.md)
 
 ## Development Requirements
-* Go 1.16.x, Linux or Mac OS X for development
-* GNU make
+* Go 1.17.x, Linux or macOS for development
+* GNU make >= 4.3
 
 ## Similar tools
 * [tfenv](https://github.com/tfutils/tfenv) [(comparison)](./doc/tfvm-vs-tfenv-vs-terraform-switcher.md)
