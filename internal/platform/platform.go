@@ -12,6 +12,11 @@ type Platform struct {
 	Arch string
 }
 
+// IsMacOS answers if platform is a macOS platform.
+func (platform *Platform) IsMacOS() bool {
+	return platform.Os == "darwin"
+}
+
 // IsWindows answers if platform is a windows platform.
 func (platform *Platform) IsWindows() bool {
 	return platform.Os == "windows"

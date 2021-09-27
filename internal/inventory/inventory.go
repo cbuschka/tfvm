@@ -5,6 +5,7 @@ import (
 	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/platform"
 	"github.com/cbuschka/tfvm/internal/remote"
+	"os"
 	"time"
 )
 
@@ -36,16 +37,21 @@ func GetInventory() (*Inventory, error) {
 
 // NewInventory creates a new empty inventory instance.
 func NewInventory() (*Inventory, error) {
-	inventoryDir, err := getInventoryDir()
+	platforms := platform.GetSupportedPlatforms()
+
+	inventoryDir, err := getInventoryDir(getRealFs(), platforms[0])
 	if err != nil {
 		return nil, err
 	}
 	log.Debugf("Inventory dir: '%s'", inventoryDir)
 
-	inventory := Inventory{LastUpdateTime: time.Unix(0, 0), TerraformReleases: map[string]*statePkg.TerraformReleaseState{}, cacheDir: inventoryDir}
+	err = os.MkdirAll(inventoryDir, 0755)
 	if err != nil {
 		return nil, err
 	}
+	log.Tracef("Created inventory dir")
+
+	inventory := Inventory{LastUpdateTime: time.Unix(0, 0), TerraformReleases: map[string]*statePkg.TerraformReleaseState{}, cacheDir: inventoryDir, platforms: platforms}
 
 	defaultState, err := statePkg.GetDefaultState()
 	if err != nil {
@@ -64,7 +70,6 @@ func NewInventory() (*Inventory, error) {
 	inventory.mergeInState(defaultState)
 
 	inventory.remoteProvider = remote.GetDefaultProvider()
-	inventory.platforms = platform.GetSupportedPlatforms()
 	log.Infof("Supported platforms: %v", inventory.platforms)
 
 	return &inventory, err
