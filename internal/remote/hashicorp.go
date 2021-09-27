@@ -8,6 +8,7 @@ import (
 	"github.com/cbuschka/tfvm/internal/util"
 	versionPkg "github.com/cbuschka/tfvm/internal/version"
 	"io/ioutil"
+	"math/big"
 	"net/http"
 	"regexp"
 	"strings"
@@ -71,6 +72,41 @@ func getHTMLContentsFrom(url string) (string, error) {
 	log.Tracef("Response to GET for '%s': %d\n%s", url, resp.StatusCode, html)
 
 	return string(html), nil
+}
+
+func (hashicorp *hashicorpRemote) ListChecksums(release *versionPkg.TerraformVersion) (map[string]big.Int, error) {
+	url := fmt.Sprintf("%s/%s/terraform_%s_SHA256SUMS", getReleasesBaseURL(), release.String(), release.String())
+	contents, err := getHTMLContentsFrom(url)
+	if err != nil {
+		return nil, err
+	}
+	return extractChecksums(contents)
+}
+
+func extractChecksums(contents string) (map[string]big.Int, error) {
+
+	re, err := regexp.Compile("\\s*([0-9a-f]+)\\s+terraform_[^_]+_([^_]+)_([^_]+).zip")
+	if err != nil {
+		return nil, err
+	}
+
+	matchSets := re.FindAllStringSubmatch(contents, -1)
+
+	checksumsByFilename := map[string]big.Int{}
+	for _, matchSet := range matchSets {
+		sha256ChecksumStr := strings.TrimSpace(matchSet[1])
+		sha256Checksum := new(big.Int)
+		sha256Checksum, _ = sha256Checksum.SetString(sha256ChecksumStr, 16)
+		os := strings.TrimSpace(matchSet[2])
+		arch := strings.TrimSpace(matchSet[3])
+		platformStr := fmt.Sprintf("%s/%s", os, arch)
+		if err != nil {
+			return nil, err
+		}
+		checksumsByFilename[platformStr] = *sha256Checksum
+	}
+
+	return checksumsByFilename, nil
 }
 
 func downloadReleasesPage() (string, error) {

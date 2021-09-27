@@ -22,8 +22,8 @@ func (inventory *Inventory) Update() error {
 			inventory.TerraformReleases[tfReleaseVersion.String()] = tfReleaseState
 		}
 
-		if tfReleaseState.Builds == nil || len(tfReleaseState.Builds) == 0 {
-			err := inventory.UpdateBuilds(tfReleaseState)
+		if inventory.mustBeUpdated(tfReleaseState) {
+			err := inventory.UpdateTerraformRelease(tfReleaseState)
 			if err != nil {
 				return err
 			}
@@ -37,8 +37,33 @@ func (inventory *Inventory) Update() error {
 	return nil
 }
 
-// UpdateBuilds updates the build mata data of release tfReleaseState.Version.
-func (inventory *Inventory) UpdateBuilds(tfReleaseState *state.TerraformReleaseState) error {
+func (inventory *Inventory) mustBeUpdated(tfReleaseState *state.TerraformReleaseState) bool {
+
+	if tfReleaseState.Builds == nil || len(tfReleaseState.Builds) == 0 {
+		return true
+	}
+
+	for _, build := range tfReleaseState.Builds {
+		if build == nil || build.SHA256Checksum == "" {
+			return true
+		}
+	}
+
+	return false
+}
+
+// UpdateTerraformRelease updates the build meta data of a terraform release.
+func (inventory *Inventory) UpdateTerraformRelease(tfReleaseState *state.TerraformReleaseState) error {
+
+	err := inventory.updateMissingBuilds(tfReleaseState)
+	if err != nil {
+		return err
+	}
+
+	return inventory.updateMissingChecksums(tfReleaseState)
+}
+
+func (inventory *Inventory) updateMissingBuilds(tfReleaseState *state.TerraformReleaseState) error {
 
 	log.Debugf("Updating builds for %s...", tfReleaseState.Version.String())
 
@@ -52,7 +77,23 @@ func (inventory *Inventory) UpdateBuilds(tfReleaseState *state.TerraformReleaseS
 		return err
 	}
 
-	log.Infof("Updated inventory build for %s.", tfReleaseState.Version.String())
+	log.Infof("Updated build for %s.", tfReleaseState.Version.String())
+	return nil
+}
 
+func (inventory *Inventory) updateMissingChecksums(tfReleaseState *state.TerraformReleaseState) error {
+	log.Debugf("Updating builds for %s...", tfReleaseState.Version.String())
+
+	builds, err := inventory.remoteProvider.ListTerraformBuilds(tfReleaseState.Version)
+	if err != nil {
+		return err
+	}
+
+	err = tfReleaseState.AddMissingBuilds(builds)
+	if err != nil {
+		return err
+	}
+
+	log.Infof("Updated build for %s.", tfReleaseState.Version.String())
 	return nil
 }

@@ -55,7 +55,7 @@ func (inventory *Inventory) InstallTerraform(terraformVersion *version.Terraform
 		}
 
 		if tfRelease.Builds == nil || len(tfRelease.Builds) == 0 {
-			err = inventory.UpdateBuilds(tfRelease)
+			err = inventory.UpdateTerraformRelease(tfRelease)
 			if err != nil {
 				util.Die(1, "Updating release failed: %s", err.Error())
 				return nil, err

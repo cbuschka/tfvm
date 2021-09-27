@@ -2,19 +2,22 @@ package state
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/cbuschka/tfvm/internal/remote"
 	"github.com/cbuschka/tfvm/internal/version"
 	"io"
 	"io/ioutil"
+	"math/big"
 	"os"
 	"time"
 )
 
 // TerraformReleaseBuildState describes a single terraform release build state.
 type TerraformReleaseBuildState struct {
-	Os           string `json:"os"`
-	Arch         string `json:"arch"`
-	DownloadPath string `json:"download_path"`
+	Os             string `json:"os"`
+	Arch           string `json:"arch"`
+	DownloadPath   string `json:"download_path"`
+	SHA256Checksum string `json:"sha256_checksum"`
 }
 
 // TerraformReleaseState describes a single terraform release state.
@@ -138,7 +141,23 @@ func (terraformRelease *TerraformReleaseState) AddMissingBuilds(newBuilds []*rem
 
 	for _, newBuild := range newBuilds {
 		if !terraformRelease.ContainsBuild(newBuild.Os, newBuild.Arch) {
-			terraformRelease.Builds = append(terraformRelease.Builds, &TerraformReleaseBuildState{Os: newBuild.Os, Arch: newBuild.Arch, DownloadPath: newBuild.DownloadPath})
+			terraformRelease.Builds = append(terraformRelease.Builds, &TerraformReleaseBuildState{Os: newBuild.Os, Arch: newBuild.Arch, DownloadPath: newBuild.DownloadPath, SHA256Checksum: ""})
+		}
+	}
+
+	return nil
+}
+
+// AddMissingChecksums adds missing checksums.
+func (terraformRelease *TerraformReleaseState) AddMissingChecksums(sha256ChecksumsByPlatform map[string]big.Int) error {
+
+	for _, build := range terraformRelease.Builds {
+		newBuildPlatformStr := fmt.Sprintf("%s/%s", build.Os, build.Arch)
+		sha256Checksum, found := sha256ChecksumsByPlatform[newBuildPlatformStr]
+		if found {
+
+			sha256ChecksumStr := sha256Checksum.Text(16)
+			build.SHA256Checksum = sha256ChecksumStr
 		}
 	}
 

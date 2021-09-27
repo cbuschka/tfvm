@@ -5,6 +5,7 @@ import (
 	"github.com/cbuschka/tfvm/internal/remote"
 	"github.com/cbuschka/tfvm/internal/version"
 	"github.com/stretchr/testify/assert"
+	"math/big"
 	"testing"
 )
 
@@ -26,6 +27,9 @@ func (d *MockRemoteProvider) ListTerraformReleases() ([]*version.TerraformVersio
 }
 func (d *MockRemoteProvider) ListTerraformBuilds(release *version.TerraformVersion) ([]*remote.TerraformBuild, error) {
 	return []*remote.TerraformBuild{{Os: "MyOs", Arch: "MyArch", DownloadPath: "MyDownloadPath"}}, nil
+}
+func (d *MockRemoteProvider) ListChecksums(release *version.TerraformVersion) (map[string]big.Int, error) {
+	return map[string]big.Int{}, nil
 }
 
 func TestMergeInAddsMissingVersion(t *testing.T) {

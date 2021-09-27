@@ -19,7 +19,8 @@ func TestUnmarshallState(t *testing.T) {
     {
      "os": "darwin",
      "arch": "amd64",
-     "download_path": "/terraform/0.1.0/terraform_0.1.0_darwin_amd64.zip"
+     "download_path": "/terraform/0.1.0/terraform_0.1.0_darwin_amd64.zip",
+     "sha256_checksum": "cafebabe"
     }
    ]
   }
@@ -37,30 +38,31 @@ func TestUnmarshallState(t *testing.T) {
 	assert.Equal(t, "darwin", state.TerraformReleases[0].Builds[0].Os)
 	assert.Equal(t, "amd64", state.TerraformReleases[0].Builds[0].Arch)
 	assert.Equal(t, "/terraform/0.1.0/terraform_0.1.0_darwin_amd64.zip", state.TerraformReleases[0].Builds[0].DownloadPath)
+	assert.Equal(t, "cafebabe", state.TerraformReleases[0].Builds[0].SHA256Checksum)
 }
 
 func TestMarshallState(t *testing.T) {
 
 	state := State{}
-	state.TerraformReleases = []*TerraformReleaseState{{Version: version.SafeNewTerraformVersion("1.2.3"), Builds: []*TerraformReleaseBuildState{{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}}}}
+	state.TerraformReleases = []*TerraformReleaseState{{Version: version.SafeNewTerraformVersion("1.2.3"), Builds: []*TerraformReleaseBuildState{{Os: "os", Arch: "arch", DownloadPath: "downloadPath", SHA256Checksum: "cafebabe"}}}}
 	marshalledState, err := json.Marshal(state)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, "{\"lastUpdateTime\":\"0001-01-01T00:00:00Z\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\"}]}]}", string(marshalledState))
+	assert.Equal(t, "{\"lastUpdateTime\":\"0001-01-01T00:00:00Z\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\",\"sha256_checksum\":\"cafebabe\"}]}]}", string(marshalledState))
 }
 
 func TestMarshallUnmarshalRoundtrip(t *testing.T) {
 
 	state := State{}
-	state.TerraformReleases = []*TerraformReleaseState{{Version: version.SafeNewTerraformVersion("1.2.3"), Builds: []*TerraformReleaseBuildState{{Os: "os", Arch: "arch", DownloadPath: "downloadPath"}}}}
+	state.TerraformReleases = []*TerraformReleaseState{{Version: version.SafeNewTerraformVersion("1.2.3"), Builds: []*TerraformReleaseBuildState{{Os: "os", Arch: "arch", DownloadPath: "downloadPath", SHA256Checksum: "cafebabe"}}}}
 	marshalledState, err := json.Marshal(state)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, "{\"lastUpdateTime\":\"0001-01-01T00:00:00Z\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\"}]}]}", string(marshalledState))
+	assert.Equal(t, "{\"lastUpdateTime\":\"0001-01-01T00:00:00Z\",\"terraformReleases\":[{\"version\":\"1.2.3\",\"builds\":[{\"os\":\"os\",\"arch\":\"arch\",\"download_path\":\"downloadPath\",\"sha256_checksum\":\"cafebabe\"}]}]}", string(marshalledState))
 
 	newState := State{}
 	err = json.Unmarshal(marshalledState, &newState)
@@ -75,6 +77,7 @@ func TestMarshallUnmarshalRoundtrip(t *testing.T) {
 	assert.Equal(t, "os", newState.TerraformReleases[0].Builds[0].Os)
 	assert.Equal(t, "arch", newState.TerraformReleases[0].Builds[0].Arch)
 	assert.Equal(t, "downloadPath", newState.TerraformReleases[0].Builds[0].DownloadPath)
+	assert.Equal(t, "cafebabe", newState.TerraformReleases[0].Builds[0].SHA256Checksum)
 }
 
 func TestUnmarshalledStateContainsBuilds(t *testing.T) {
