@@ -10,10 +10,7 @@ import (
 )
 
 func main() {
-
 	args := os.Args
-	verbosity, args := removeVerbosityFlags(args)
-	log.SetVerbosity(verbosity)
 
 	log.Debugf("Orig args: %v", os.Args)
 	log.Infof("Args: %v", args)
@@ -36,18 +33,4 @@ func main() {
 
 	log.Infof("Exiting with code 0.")
 	os.Exit(0)
-}
-
-func removeVerbosityFlags(args []string) (int, []string) {
-	verbose := 0
-	newArgs := []string{}
-	for _, arg := range args {
-		if arg == "-v" || arg == "-vv" || arg == "-vvv" {
-			verbose += len(arg) - 1
-		} else {
-			newArgs = append(newArgs, arg)
-		}
-	}
-
-	return verbose, newArgs
 }

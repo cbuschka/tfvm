@@ -1,84 +1,114 @@
 package log
 
 import (
-	golog "github.com/op/go-logging"
+	"fmt"
 	"os"
+	"strings"
+	"time"
 )
 
-var logger = initLogger()
-var leveledFormattedBackend golog.LeveledBackend
+type Level int
+
+// Log levels.
+const (
+	TRACE Level = iota
+	DEBUG
+	INFO
+	NONE
+)
+
+var levelNames = []string{
+	"TRACE",
+	"DEBUG",
+	"INFO",
+	"NONE",
+}
+
+var threshold = initLogging()
+
+func getThresholdFromEnv() Level {
+	logLevel := strings.TrimSpace(strings.ToUpper(os.Getenv("TFVM_LOG")))
+	for index, name := range levelNames {
+		if logLevel == name {
+			return Level(index)
+		}
+	}
+
+	return NONE
+}
 
 // Trace logs message to stderr.
 func Trace(s string) {
-	logger.Debug(s)
+	if IsTraceEnabled() {
+		writeLog(time.Now(), TRACE, s)
+	}
 }
 
 // Tracef logs message to stderr.
 func Tracef(format string, args ...interface{}) {
-	logger.Debugf(format, args...)
+	if IsTraceEnabled() {
+		writeLogf(time.Now(), TRACE, format, args...)
+	}
 }
 
 // IsTraceEnabled answers if messages on trace level would be logged.
 func IsTraceEnabled() bool {
-	return logger.IsEnabledFor(golog.DEBUG)
+	return TRACE >= threshold
 }
 
 // Debug logs message to stderr.
 func Debug(s string) {
-	logger.Info(s)
+	if IsDebugEnabled() {
+		writeLog(time.Now(), DEBUG, s)
+	}
 }
 
 // IsDebugEnabled answers if messages on debug level would be logged.
 func IsDebugEnabled() bool {
-	return logger.IsEnabledFor(golog.INFO)
+	return DEBUG >= threshold
 }
 
 // Debugf logs messages to stderr.
 func Debugf(format string, args ...interface{}) {
-	logger.Infof(format, args...)
+	if IsDebugEnabled() {
+		writeLogf(time.Now(), DEBUG, format, args...)
+	}
 }
 
 // IsInfoEnabled answers if messages on info level would be logged.
 func IsInfoEnabled() bool {
-	return logger.IsEnabledFor(golog.NOTICE)
+	return INFO >= threshold
 }
 
 // Infof logs messages to stderr.
 func Infof(format string, args ...interface{}) {
-	logger.Noticef(format, args...)
+	if IsInfoEnabled() {
+		writeLogf(time.Now(), INFO, format, args...)
+	}
 }
 
 // Info logs messages to stderr.
-func Info(args ...interface{}) {
-	logger.Notice(args...)
-}
-
-// Warningf logs messages to stderr.
-func Warningf(format string, args ...interface{}) {
-	logger.Warningf(format, args...)
-}
-
-// SetVerbosity sets logger log level based on verbosity level.
-func SetVerbosity(verbosity int) {
-	if verbosity == 0 {
-		leveledFormattedBackend.SetLevel(golog.WARNING, "")
-	} else if verbosity == 1 {
-		leveledFormattedBackend.SetLevel(golog.NOTICE, "")
-	} else if verbosity == 2 {
-		leveledFormattedBackend.SetLevel(golog.INFO, "")
-	} else if verbosity > 2 {
-		leveledFormattedBackend.SetLevel(golog.DEBUG, "")
+func Info(s string) {
+	if IsInfoEnabled() {
+		writeLog(time.Now(), INFO, s)
 	}
-	logger.Noticef("Logging verbosity: %d", verbosity)
 }
 
-func initLogger() *golog.Logger {
-	format := golog.MustStringFormatter(`%{time:15:04:05.000} [%{level:.4s}] ▶ %{color:reset}%{message}`)
-	logger := golog.MustGetLogger("testdrive")
-	backend := golog.NewLogBackend(os.Stderr, "", 0)
-	formattedBackend := golog.NewBackendFormatter(backend, format)
-	leveledFormattedBackend = golog.AddModuleLevel(formattedBackend)
-	leveledFormattedBackend.SetLevel(golog.INFO, "")
-	logger.SetBackend(leveledFormattedBackend)
-	return logger
+func writeLog(timestamp time.Time, level Level, message string) {
+	_, err := fmt.Fprintf(os.Stderr, "%-35s [%-5s] ▶ %s\n", timestamp.Format(time.RFC3339Nano), levelNames[level], message)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func writeLogf(timestamp time.Time, level Level, format string, args ...interface{}) {
+	writeLog(timestamp, level, fmt.Sprintf(format, args...))
+}
+
+func initLogging() Level {
+	threshold := getThresholdFromEnv()
+	if INFO >= threshold {
+		writeLogf(time.Now(), INFO, "Logging threshold: %s", levelNames[threshold])
+	}
+	return threshold
 }

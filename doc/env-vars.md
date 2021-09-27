@@ -8,4 +8,4 @@
 | TFVM_TERRAFORM_OS | TERRAFORM_OS | OS of selected terraform version: windows, darwin, linux | Platform os |
 | TFVM_TERRAFORM_RELEASES_BASE_URL | n/a | Base URL for downloading terraform binaries | https://releases.hashicorp.com/terraform |
 | XDG_CACHE_HOME | n/a | Base dir for inventory dir | $HOME/.cache/tfvm |
-
+| TFVM_LOG | n/a | Enable/increase logging, values: trace, debug, info, none | none |
