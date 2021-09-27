@@ -13,7 +13,7 @@ func getRootDir() (string, error) {
 		return "", err
 	}
 
-	err = util.WalkUp(rootDir, func(path string, info os.FileInfo) (bool, error) {
+	err = walkUp(rootDir, func(path string) (bool, error) {
 		dotGitDir := filepath.Join(path, ".git")
 		isDir, err := util.IsDir(dotGitDir)
 		if err != nil {
