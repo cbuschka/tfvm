@@ -40,7 +40,6 @@ func NewInventory() (*Inventory, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	log.Debugf("Inventory dir: '%s'", inventoryDir)
 
 	inventory := Inventory{LastUpdateTime: time.Unix(0, 0), TerraformReleases: map[string]*statePkg.TerraformReleaseState{}, cacheDir: inventoryDir}

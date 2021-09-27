@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/inventory/state"
 	"github.com/cbuschka/tfvm/internal/log"
+	platformPkg "github.com/cbuschka/tfvm/internal/platform"
 	"github.com/cbuschka/tfvm/internal/remote"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
@@ -23,7 +24,7 @@ func (inventory *Inventory) GetInstalledTerraform(terraformVersion *version.Terr
 	log.Debugf("Request for installed terraform %s", terraformVersion.String())
 
 	for _, platform := range inventory.platforms {
-		terraform, err := inventory.InstallTerraform(terraformVersion, platform.Os, platform.Arch)
+		terraform, err := inventory.InstallTerraform(terraformVersion, platform)
 		if err != nil {
 			if !IsNoSuchTerraformReleaseBuild(err) {
 				return nil, err
@@ -37,11 +38,11 @@ func (inventory *Inventory) GetInstalledTerraform(terraformVersion *version.Terr
 }
 
 // InstallTerraform installs a terraform version for an particular os and arch.
-func (inventory *Inventory) InstallTerraform(terraformVersion *version.TerraformVersion, osName string, arch string) (*Terraform, error) {
+func (inventory *Inventory) InstallTerraform(terraformVersion *version.TerraformVersion, platform platformPkg.Platform) (*Terraform, error) {
 
-	log.Debugf("Request to install terraform %s on %s/%s", terraformVersion.String(), osName, arch)
+	log.Debugf("Request to install terraform %s on %s", terraformVersion.String(), platform)
 
-	installed, err := inventory.IsTerraformInstalled(terraformVersion, osName, arch)
+	installed, err := inventory.IsTerraformInstalled(terraformVersion, platform)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +62,7 @@ func (inventory *Inventory) InstallTerraform(terraformVersion *version.Terraform
 			}
 		}
 
-		tfReleaseBuild, err := inventory.getBuild(tfRelease, osName, arch)
+		tfReleaseBuild, err := inventory.getBuild(tfRelease, platform)
 		if err != nil {
 			return nil, err
 		}
@@ -73,15 +74,15 @@ func (inventory *Inventory) InstallTerraform(terraformVersion *version.Terraform
 		defer os.Remove(tmpfile.Name())
 
 		util.Print("Downloading terraform %s for %s/%s...", terraformVersion.String(), tfReleaseBuild.Os, tfReleaseBuild.Arch)
-		url := remote.GetURL(terraformVersion, tfReleaseBuild.Os, tfReleaseBuild.Arch)
+		url := remote.GetURL(terraformVersion, platform)
 		err = downloadFile(url, tmpfile.Name())
 		if err != nil {
 			util.Die(1, "Download failed: %s", err.Error())
 			return nil, err
 		}
 
-		util.Print("Installing terraform %s for %s/%s...", terraformVersion.String(), osName, arch)
-		basePath, err := inventory.GetTerraformBasePath(terraformVersion, tfReleaseBuild.Os, tfReleaseBuild.Arch)
+		util.Print("Installing terraform %s for %s...", terraformVersion.String(), platform)
+		basePath, err := inventory.GetTerraformBasePath(terraformVersion, platform)
 		if err != nil {
 			return nil, err
 		}
@@ -92,10 +93,10 @@ func (inventory *Inventory) InstallTerraform(terraformVersion *version.Terraform
 			return nil, err
 		}
 
-		util.Print("Terraform %s for %s/%s installed.", terraformVersion.String(), osName, arch)
+		util.Print("Terraform %s for %s installed.", terraformVersion.String(), platform)
 	}
 
-	terraform, err := inventory.GetTerraform(terraformVersion, osName, arch)
+	terraform, err := inventory.GetTerraform(terraformVersion, platform)
 	if err != nil {
 		return nil, err
 	}
@@ -174,10 +175,10 @@ func unzip(src string, dest string) ([]string, error) {
 	return filenames, nil
 }
 
-func (inventory *Inventory) getBuild(release *state.TerraformReleaseState, osName string, arch string) (*state.TerraformReleaseBuildState, error) {
+func (inventory *Inventory) getBuild(release *state.TerraformReleaseState, platform platformPkg.Platform) (*state.TerraformReleaseBuildState, error) {
 
 	for _, build := range release.Builds {
-		if build.Os == osName && build.Arch == arch {
+		if build.Os == platform.Os && build.Arch == platform.Arch {
 			return build, nil
 		}
 	}

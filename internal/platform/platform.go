@@ -12,6 +12,11 @@ type Platform struct {
 	Arch string
 }
 
+// IsWindows answers if platform is a windows platform.
+func (platform *Platform) IsWindows() bool {
+	return platform.Os == "windows"
+}
+
 // GetSupportedPlatforms retrieves all platforms binaries can be executed of.
 func GetSupportedPlatforms() []Platform {
 

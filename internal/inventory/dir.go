@@ -3,6 +3,7 @@ package inventory
 import (
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/log"
+	platformPkg "github.com/cbuschka/tfvm/internal/platform"
 	"github.com/cbuschka/tfvm/internal/version"
 	"github.com/mitchellh/go-homedir"
 	"os"
@@ -10,22 +11,22 @@ import (
 )
 
 // GetTerraformBasePath returns the base path for a terraform installation.
-func (inventory *Inventory) GetTerraformBasePath(tfRelease *version.TerraformVersion, os string, arch string) (string, error) {
+func (inventory *Inventory) GetTerraformBasePath(tfRelease *version.TerraformVersion, platform platformPkg.Platform) (string, error) {
 	inventoryDir := inventory.getInventoryDir()
 
 	versionedTfPath := filepath.Join(inventoryDir, "v1", "installed", tfRelease.String(),
-		fmt.Sprintf("%s_%s", os, arch))
+		fmt.Sprintf("%s_%s", platform.Os, platform.Arch))
 	return versionedTfPath, nil
 }
 
-func (inventory *Inventory) getTerraformPath(tfRelease *version.TerraformVersion, os string, arch string) (string, error) {
-	basePath, err := inventory.GetTerraformBasePath(tfRelease, os, arch)
+func (inventory *Inventory) getTerraformPath(tfRelease *version.TerraformVersion, platform platformPkg.Platform) (string, error) {
+	basePath, err := inventory.GetTerraformBasePath(tfRelease, platform)
 	if err != nil {
 		return "", err
 	}
 
 	var terraformPath string
-	if os == "windows" {
+	if platform.IsWindows() {
 		terraformPath = filepath.Join(basePath, "terraform.exe")
 	} else {
 		terraformPath = filepath.Join(basePath, "terraform")

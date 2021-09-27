@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/inventory/state"
 	"github.com/cbuschka/tfvm/internal/log"
+	platformPkg "github.com/cbuschka/tfvm/internal/platform"
 	"github.com/cbuschka/tfvm/internal/version"
 	"os"
 	"sort"
@@ -69,11 +70,11 @@ func (inventory *Inventory) GetTerraformRelease(tfReleaseVersion *version.Terraf
 }
 
 // GetTerraform get reference to a terraform installation of a given version.
-func (inventory *Inventory) GetTerraform(tfRelease *version.TerraformVersion, osName string, arch string) (*Terraform, error) {
+func (inventory *Inventory) GetTerraform(tfRelease *version.TerraformVersion, platform platformPkg.Platform) (*Terraform, error) {
 
-	log.Debugf("Looking up terraform %s on %s/%s...", tfRelease.String(), osName, arch)
+	log.Debugf("Looking up terraform %s on %s...", tfRelease.String(), platform)
 
-	tfPath, err := inventory.getTerraformPath(tfRelease, osName, arch)
+	tfPath, err := inventory.getTerraformPath(tfRelease, platform)
 	if err != nil {
 		return nil, err
 	}
@@ -82,13 +83,13 @@ func (inventory *Inventory) GetTerraform(tfRelease *version.TerraformVersion, os
 		return nil, err
 	}
 
-	return newTerraform(tfRelease.String(), osName, arch, tfPath), nil
+	return newTerraform(tfRelease.String(), platform.Os, platform.Arch, tfPath), nil
 }
 
 // IsTerraformInstalledOnAnyPlatform answers if a particular terraform version is already installed locally.
 func (inventory *Inventory) IsTerraformInstalledOnAnyPlatform(tfRelease *version.TerraformVersion) (bool, error) {
 	for _, platform := range inventory.platforms {
-		installed, err := inventory.IsTerraformInstalled(tfRelease, platform.Os, platform.Arch)
+		installed, err := inventory.IsTerraformInstalled(tfRelease, platform)
 		if err != nil {
 			return false, err
 		}
@@ -102,8 +103,8 @@ func (inventory *Inventory) IsTerraformInstalledOnAnyPlatform(tfRelease *version
 }
 
 // IsTerraformInstalled answers if a particular terraform version is already installed locally.
-func (inventory *Inventory) IsTerraformInstalled(tfRelease *version.TerraformVersion, osName string, arch string) (bool, error) {
-	versionedTfPath, err := inventory.getTerraformPath(tfRelease, osName, arch)
+func (inventory *Inventory) IsTerraformInstalled(tfRelease *version.TerraformVersion, platform platformPkg.Platform) (bool, error) {
+	versionedTfPath, err := inventory.getTerraformPath(tfRelease, platform)
 	if err != nil {
 		return false, err
 	}

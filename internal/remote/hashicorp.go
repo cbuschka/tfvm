@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cbuschka/tfvm/internal/build"
 	"github.com/cbuschka/tfvm/internal/log"
+	platformPkg "github.com/cbuschka/tfvm/internal/platform"
 	"github.com/cbuschka/tfvm/internal/util"
 	versionPkg "github.com/cbuschka/tfvm/internal/version"
 	"io/ioutil"
@@ -104,10 +105,10 @@ func extractReleases(releasePage string) ([]*versionPkg.TerraformVersion, error)
 }
 
 // GetURL gives the remote url to a particular terraform version on the hashicorp site.
-func GetURL(release *versionPkg.TerraformVersion, os string, arch string) string {
+func GetURL(release *versionPkg.TerraformVersion, platform platformPkg.Platform) string {
 
 	return fmt.Sprintf("%s/%s/terraform_%s_%s_%s.zip", getReleasesBaseURL(),
-		release.String(), release.String(), os, arch)
+		release.String(), release.String(), platform.Os, platform.Arch)
 }
 
 func getReleasesBaseURL() string {
