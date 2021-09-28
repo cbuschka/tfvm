@@ -3,6 +3,7 @@ package inventory
 import (
 	"bufio"
 	statePkg "github.com/cbuschka/tfvm/internal/inventory/state"
+	"github.com/cbuschka/tfvm/internal/log"
 	"io"
 	"os"
 	"path/filepath"
@@ -27,10 +28,14 @@ func (inventory *Inventory) WriteTo(w io.Writer) (int64, error) {
 // Save saves the inventory state into the state.json file.
 func (inventory *Inventory) Save() error {
 
+	log.Debug("Saving inventory...")
+
 	stateFilePath, err := inventory.getStateFilePath()
 	if err != nil {
 		return err
 	}
+
+	log.Debugf("State file path: '%s'", stateFilePath)
 
 	if err := os.MkdirAll(filepath.Dir(stateFilePath), os.ModePerm); err != nil {
 		return err
@@ -46,5 +51,11 @@ func (inventory *Inventory) Save() error {
 	}
 	w := bufio.NewWriter(file)
 	_, err = inventory.WriteTo(w)
-	return err
+	if err != nil {
+		return err
+	}
+
+	log.Info("Inventory successfully saved.")
+
+	return nil
 }

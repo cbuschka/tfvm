@@ -89,15 +89,24 @@ func (inventory *Inventory) GetTerraform(tfRelease *version.TerraformVersion, pl
 // IsTerraformInstalledOnAnyPlatform answers if a particular terraform version is already installed locally.
 func (inventory *Inventory) IsTerraformInstalledOnAnyPlatform(tfRelease *version.TerraformVersion) (bool, error) {
 	for _, platform := range inventory.platforms {
+
+		log.Debugf("Checking if terraform %s is installed on %s", tfRelease.String(), platform)
+
 		installed, err := inventory.IsTerraformInstalled(tfRelease, platform)
 		if err != nil {
 			return false, err
 		}
 
 		if installed {
+			log.Infof("Terraform %s is installed on %s", tfRelease.String(), platform)
+
 			return true, nil
+		} else {
+			log.Debugf("Terraform %s not installed on %s", tfRelease.String(), platform)
 		}
 	}
+
+	log.Infof("Terraform %s not installed on any platform", tfRelease.String())
 
 	return false, nil
 }
@@ -109,6 +118,8 @@ func (inventory *Inventory) IsTerraformInstalled(tfRelease *version.TerraformVer
 		return false, err
 	}
 
+	log.Debugf("Terraform path for %s on %s: %s", tfRelease.String(), platform, versionedTfPath)
+
 	if _, err := os.Stat(versionedTfPath); err != nil {
 		if os.IsNotExist(err) {
 			return false, nil
@@ -116,6 +127,8 @@ func (inventory *Inventory) IsTerraformInstalled(tfRelease *version.TerraformVer
 
 		return false, err
 	}
+
+	log.Infof("Terraform %s on %s found at %s", tfRelease.String(), platform, versionedTfPath)
 
 	return true, nil
 }

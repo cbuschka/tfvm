@@ -10,6 +10,8 @@ import (
 // and merges it with the current state.
 func (inventory *Inventory) Load() error {
 
+	log.Debug("Loading inventory...")
+
 	err := os.MkdirAll(inventory.cacheDir, 0755)
 	if err != nil {
 		return err
@@ -24,6 +26,7 @@ func (inventory *Inventory) Load() error {
 
 	state := statePkg.NewEmptyState()
 
+	log.Debug("Loading from state file...")
 	err = state.LoadFromFile(stateFilePath)
 	if err != nil {
 		if !os.IsNotExist(err) {
@@ -42,7 +45,10 @@ func (inventory *Inventory) Load() error {
 		}
 	}
 
+	log.Debug("Merging state into inventory...")
 	inventory.mergeInState(state)
+
+	log.Info("Inventory successfully loaded.")
 
 	return nil
 }

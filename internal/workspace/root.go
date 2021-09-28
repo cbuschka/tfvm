@@ -25,7 +25,7 @@ func getRootDir() (string, error) {
 			return false, err
 		}
 
-		log.Tracef("Checked if git dir exists: %s => %s", dotGitDir, isDir)
+		log.Tracef("Checked if git dir exists: %s => %t", dotGitDir, isDir)
 
 		if isDir {
 			log.Trace("Git dir found.")
