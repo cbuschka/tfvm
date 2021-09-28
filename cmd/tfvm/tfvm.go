@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/cbuschka/tfvm/internal/build"
 	"github.com/cbuschka/tfvm/internal/commands"
 	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/util"
@@ -14,6 +15,8 @@ func main() {
 
 	log.Debugf("Orig args: %v", os.Args)
 	log.Infof("Args: %v", args)
+	buildInfo := build.GetBuildInfo()
+	log.Infof("Build info: version=%s, commitish=%s, build timestamp=%s, build os=%s, build arch=%s", buildInfo.Version, buildInfo.Commitish, buildInfo.BuildTime, buildInfo.OS, buildInfo.Arch)
 
 	programName := filepath.Base(args[0])
 	log.Debugf("Program name: '%s'", programName)
