@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/util"
 	"os"
 	"path/filepath"
@@ -8,11 +9,15 @@ import (
 
 func getRootDir() (string, error) {
 
+	log.Trace("Finding workplace root dir...")
+
 	rootDir, err := os.Getwd()
 	if err != nil {
 		return "", err
 	}
+	log.Tracef("CWD: %s", rootDir)
 
+	log.Tracef("Walking up the tree, starting with %s...", rootDir)
 	err = walkUp(rootDir, func(path string) (bool, error) {
 		dotGitDir := filepath.Join(path, ".git")
 		isDir, err := util.IsDir(dotGitDir)
@@ -20,7 +25,11 @@ func getRootDir() (string, error) {
 			return false, err
 		}
 
+		log.Tracef("Checked if git dir exists: %s => %s", dotGitDir, isDir)
+
 		if isDir {
+			log.Trace("Git dir found.")
+
 			rootDir = path
 			return false, nil
 		}
@@ -30,6 +39,8 @@ func getRootDir() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	log.Debugf("Root dir: %s", rootDir)
 
 	return rootDir, err
 }
