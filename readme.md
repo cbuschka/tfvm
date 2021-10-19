@@ -104,3 +104,6 @@ Copyright (c) 2020-2021 by [Cornelius Buschka](https://github.com/cbuschka).
 
 [Apache License, Version 2.0](./license.txt)
 
+## Thanks!
+Special thanks goes to [JetBrains s.r.o.](https://www.jetbrains.com/) for supporting the development of this project with
+a free [IntelliJ IDEA Ultimate ![IntelliJ IDEA](./doc/idea.png)](https://www.jetbrains.com/idea/download) license.
