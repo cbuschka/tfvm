@@ -99,6 +99,10 @@ Contributions are welcome!
 * Push to the branch (git push origin foobar)
 * Create a new pull request and describe what you want to achieve or fix
 
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=cbuschka/tfvm)](https://github.com/cbuschka/tfvm/graphs/contributors)
+
 ## License
 Copyright (c) 2020-2021 by [Cornelius Buschka](https://github.com/cbuschka).
 
