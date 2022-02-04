@@ -110,3 +110,6 @@ test_with_docker:
 		-e HOME=/build \
 		golang:1.17-buster \
 		make test
+
+update_dependencies:	init
+	go get -t -u ./...
