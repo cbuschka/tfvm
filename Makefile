@@ -41,7 +41,7 @@ init:	check_go_version
 
 lint:	init
 	@echo "### Running linter..."
-	go get -u golang.org/x/lint/golint
+	go install golang.org/x/lint/golint@latest
 	${GOPATH}/bin/golint ./internal/... ./cmd/...
 
 build:	test lint
