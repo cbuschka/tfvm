@@ -25,8 +25,8 @@ endef
 all:	clean build_linux build_windows build_macosx integration_test
 
 check_go_version:
-	@if [[ ! "$$(go version)" =~ ^.*go1.17.*$$ ]]; then \
-		echo "Wrong go version. Expected go 1.17."; \
+	@if [[ ! "$$(go version)" =~ ^.*go1.18.*$$ ]]; then \
+		echo "Wrong go version. Expected go 1.18."; \
 		exit 1; \
 	else \
 		echo "Go version ok."; \
