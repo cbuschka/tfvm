@@ -74,7 +74,7 @@ tfvm help
 [Supported Environment Variables](./doc/env-vars.md)
 
 ## Development Requirements
-* Go 1.17.x, Linux or macOS for development
+* Go 1.18.x, Linux or macOS for development
 * GNU make >= 4.3
 
 ## Similar tools
