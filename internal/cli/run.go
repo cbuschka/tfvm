@@ -7,7 +7,6 @@ import (
 	"github.com/cbuschka/tfvm/internal/util"
 	"os"
 	"path/filepath"
-	"runtime"
 )
 
 // Run tfvm command based on command line args.
@@ -18,14 +17,9 @@ func Run(args []string) error {
 	buildInfo := build.GetBuildInfo()
 	log.Infof("Build info: version=%s, commitish=%s, build timestamp=%s, build os=%s, build arch=%s", buildInfo.Version, buildInfo.Commitish, buildInfo.BuildTime, buildInfo.OS, buildInfo.Arch)
 
-	programName := filepath.Base(args[0])
-	log.Debugf("Program name: '%s'", programName)
-
 	var err error
-	if programName == "terraform" || (runtime.GOOS == "windows" && programName == "terraform.exe") {
+	if isProgramNameTerraform(args) {
 		err = commands.RunTerraformCommand(args[1:])
-	} else if programName != "terraform" && len(args) > 1 && args[1] == "terraform" {
-		err = commands.RunTerraformCommand(args[2:])
 	} else {
 		err = commands.RunTfvmCommand(args[1:])
 	}
@@ -36,4 +30,15 @@ func Run(args []string) error {
 
 	log.Infof("Exiting with code 0.")
 	return nil
+}
+
+func isProgramNameTerraform(args []string) bool {
+	if len(args) == 0 {
+		return false
+	}
+
+	programName := filepath.Base(args[0])
+	log.Debugf("Program name: '%s'", programName)
+
+	return programName == "terraform" || programName == "terraform.exe"
 }

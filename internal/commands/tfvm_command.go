@@ -28,6 +28,8 @@ func RunTfvmCommand(args []string) error {
 	} else if args[0] == "version" {
 		printVersion()
 		return nil
+	} else if args[0] == "terraform" {
+		return RunTerraformCommand(args[1:])
 	} else {
 		util.Print("Unsupported command: '%s'", args[0])
 		printUsage()

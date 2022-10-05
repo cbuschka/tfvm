@@ -2,6 +2,7 @@ package commands
 
 import (
 	inventoryPkg "github.com/cbuschka/tfvm/internal/inventory"
+	"github.com/cbuschka/tfvm/internal/log"
 	"github.com/cbuschka/tfvm/internal/util"
 	"github.com/cbuschka/tfvm/internal/version"
 	workspacePkg "github.com/cbuschka/tfvm/internal/workspace"
@@ -10,6 +11,8 @@ import (
 
 // RunTerraformCommand runs tfvm terraform, resp. terraform command.
 func RunTerraformCommand(args []string) error {
+
+	log.Infof("Running tfvm terraform %v...", args)
 
 	workspace, err := workspacePkg.GetWorkspace()
 	if err != nil {
