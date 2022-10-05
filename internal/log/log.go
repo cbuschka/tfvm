@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Level is the type for log levels.
 type Level int
 
 // Log levels.

@@ -101,9 +101,9 @@ func (inventory *Inventory) IsTerraformInstalledOnAnyPlatform(tfRelease *version
 			log.Infof("Terraform %s is installed on %s", tfRelease.String(), platform)
 
 			return true, nil
-		} else {
-			log.Debugf("Terraform %s not installed on %s", tfRelease.String(), platform)
 		}
+
+		log.Debugf("Terraform %s not installed on %s", tfRelease.String(), platform)
 	}
 
 	log.Infof("Terraform %s not installed on any platform", tfRelease.String())
