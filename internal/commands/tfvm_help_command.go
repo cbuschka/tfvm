@@ -11,8 +11,9 @@ func printUsage() {
 	util.Print(`
 Usage:	tfvm <command>
 	or terraform <terraform command and options>
+	or tfenv <tfenv command and options>
 
-A terraform version manager.
+THE terraform version manager.
 
 Commands:
   terraform	Run terraform selected via .terraform-version file.
