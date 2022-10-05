@@ -21,7 +21,7 @@
 curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/main/install.sh -o - | sudo bash
 ```
 
-### as unpriviledged user in ${HOME}/.local/bin if available, else ${HOME}/bin as a fallback
+### as unpriviledged user in ```${HOME}/.local/bin``` if available, else ```${HOME}/bin``` as a fallback
 
 ```
 curl -sL https://raw.githubusercontent.com/cbuschka/tfvm/main/install.sh -o - | bash
