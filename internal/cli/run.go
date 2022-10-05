@@ -17,9 +17,14 @@ func Run(args []string) error {
 	buildInfo := build.GetBuildInfo()
 	log.Infof("Build info: version=%s, commitish=%s, build timestamp=%s, build os=%s, build arch=%s", buildInfo.Version, buildInfo.Commitish, buildInfo.BuildTime, buildInfo.OS, buildInfo.Arch)
 
+	programName := getProgramNameFrom(args)
+	log.Debugf("Program name: '%s'", programName)
+
 	var err error
-	if isProgramNameTerraform(args) {
+	if isProgramNameTerraform(programName) {
 		err = commands.RunTerraformCommand(args[1:])
+	} else if isProgramNameTfenv(programName) {
+		err = commands.RunTfenvCommand(args[1:])
 	} else {
 		err = commands.RunTfvmCommand(args[1:])
 	}
@@ -32,13 +37,14 @@ func Run(args []string) error {
 	return nil
 }
 
-func isProgramNameTerraform(args []string) bool {
-	if len(args) == 0 {
-		return false
-	}
+func getProgramNameFrom(args []string) string {
+	return filepath.Base(args[0])
+}
 
-	programName := filepath.Base(args[0])
-	log.Debugf("Program name: '%s'", programName)
-
+func isProgramNameTerraform(programName string) bool {
 	return programName == "terraform" || programName == "terraform.exe"
+}
+
+func isProgramNameTfenv(programName string) bool {
+	return programName == "tfenv"
 }
