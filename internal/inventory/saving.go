@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"bufio"
+	"github.com/cbuschka/tfvm/internal/atomio"
 	statePkg "github.com/cbuschka/tfvm/internal/inventory/state"
 	"github.com/cbuschka/tfvm/internal/log"
 	"io"
@@ -25,7 +26,7 @@ func (inventory *Inventory) WriteTo(w io.Writer) (int64, error) {
 	return int64(size), err
 }
 
-// Save saves the inventory state into the state.json file.
+// Save saves the inventory state into the state.json file in an atomic way.
 func (inventory *Inventory) Save() error {
 
 	log.Debug("Saving inventory...")
@@ -44,8 +45,8 @@ func (inventory *Inventory) Save() error {
 		return err
 	}
 
-	file, err := os.OpenFile(stateFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-	defer file.Close()
+	file, err := atomio.OpenTempFile(stateFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	defer atomio.CloseAndReplaceFile(file, stateFilePath)
 	if err != nil {
 		return err
 	}
