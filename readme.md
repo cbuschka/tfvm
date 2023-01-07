@@ -46,12 +46,12 @@ tfvm list
 
 ### Configure terraform version
 ```
-echo "0.12.8" > .terraform-version
+echo "1.3.7" > .terraform-version
 
 tfvm which
 ```
 
-"latest" and [semver ranges](https://github.com/hashicorp/go-version#version-constraints), e.g. ```>= 0.12.1, <0.12.10```, are also supported.
+"latest" and [semver ranges](https://github.com/hashicorp/go-version#version-constraints), e.g. ```>= 1.3.0, <1.4.0```, are also supported.
 
 ### Invoke selected terraform
 ```
