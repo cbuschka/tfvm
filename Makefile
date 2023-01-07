@@ -7,6 +7,7 @@ ifeq (${GOPATH},)
 endif
 OS ::= $(shell uname -s)
 SHELL = /bin/bash
+GO_VERSION=1.19
 
 define build_binary
 	@echo "Building $(1)/$(2)..."
@@ -25,8 +26,8 @@ endef
 all:	clean build_linux build_windows build_macosx integration_test
 
 check_go_version:
-	@if [[ ! "$$(go version)" =~ ^.*go1.18.*$$ ]]; then \
-		echo "Wrong go version. Expected go 1.18."; \
+	@if [[ ! "$$(go version)" =~ ^.*go${GO_VERSION}.*$$ ]]; then \
+		echo "Wrong go version. Expected go ${GO_VERSION}."; \
 		exit 1; \
 	else \
 		echo "Go version ok."; \
@@ -100,7 +101,7 @@ build_with_docker:
 		-v ${PROJECT_DIR}:/build \
 		-w /build \
 		-e HOME=/build \
-		golang:1.17-buster \
+		golang:${GO_VERSION}-buster \
 		make build
 
 test_with_docker:
@@ -108,7 +109,7 @@ test_with_docker:
 		-v ${PROJECT_DIR}:/build \
 		-w /build \
 		-e HOME=/build \
-		golang:1.17-buster \
+		golang:${GO_VERSION}-buster \
 		make test
 
 update_dependencies:	init
