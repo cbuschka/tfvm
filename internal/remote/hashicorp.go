@@ -57,14 +57,15 @@ func getHTMLContentsFrom(url string) (string, error) {
 	userAgent := fmt.Sprintf("tfvm/%s (https://github.com/cbuschka/tfvm)", build.GetBuildInfo().Version)
 	req.Header.Set("User-Agent", userAgent)
 	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+
 	if resp.StatusCode != 200 {
 		log.Debugf("Response to GET for '%s': %d/%s", url, resp.StatusCode, resp.Status)
 		return "", fmt.Errorf("downloading %s failed", url)
 	}
 
-	if err != nil {
-		return "", err
-	}
 	defer resp.Body.Close()
 	html, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
