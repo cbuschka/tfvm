@@ -19,14 +19,20 @@ if [ ! -d "${TARGET_DIR}" ]; then
   exit 1
 fi
 
+VERSION=$(basename $(curl -Ls -o /dev/null -w %\{url_effective\} https://github.com/cbuschka/tfvm/releases/latest))
+
+CURRENT_TFVM_VERSION=$(tfvm version 2>/dev/null || true)
+if [ "x${CURRENT_TFVM_VERSION}" = "x${VERSION}" ]; then
+  echo "tfvm ${VERSION} is already installed."
+  exit 0
+fi
+
 if [ -f "${TARGET_DIR}/terraform" ]; then
   mv ${TARGET_DIR}/terraform ${TARGET_DIR}/terraform.${TIMESTAMP}
   echo "${TARGET_DIR}/terraform already exists. Moved out of the way as ${TARGET_DIR}/terraform.${TIMESTAMP}."
 fi
 
 echo "Will install tfvm as ${TARGET_DIR}/tfvm and ${TARGET_DIR}/terraform."
-
-VERSION=$(basename $(curl -Ls -o /dev/null -w %\{url_effective\} https://github.com/cbuschka/tfvm/releases/latest))
 
 function get_os() {
   local unameOut="$(uname -s)"
@@ -65,12 +71,6 @@ function get_arch() {
 
 get_os
 get_arch
-
-CURRENT_TFVM_VERSION=$(tfvm version 2>/dev/null || true)
-if [ "x${CURRENT_TFVM_VERSION}" = "x${VERSION}" ]; then
-  echo "tfvm ${VERSION} is already installed."
-  exit 0
-fi
 
 echo "Downloading tfvm ${VERSION}..."
 TMP_FILE=$(mktemp)
