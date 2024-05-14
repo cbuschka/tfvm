@@ -7,7 +7,7 @@ ifeq (${GOPATH},)
 endif
 OS ::= $(shell uname -s)
 SHELL = /bin/bash
-GO_VERSION=1.19
+GO_VERSION=1.22
 
 define build_binary
 	@echo "Building $(1)/$(2)..."
@@ -109,7 +109,7 @@ test_with_docker:
 		-v ${PROJECT_DIR}:/build \
 		-w /build \
 		-e HOME=/build \
-		golang:${GO_VERSION}-buster \
+		golang:${GO_VERSION} \
 		make test
 
 update_dependencies:	init
